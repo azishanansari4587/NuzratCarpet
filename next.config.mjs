@@ -4,6 +4,9 @@ const nextConfig = {
     // images: {
     //     unoptimized: true, // Disable Image Optimization
     // },
+    webpack(config) {
+        return config;
+    },
     reactStrictMode: true,
 };
 

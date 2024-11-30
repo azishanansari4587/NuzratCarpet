@@ -138,8 +138,8 @@ const Products = () => {
                         />
                       </CardContent>
                       <CardFooter className="flex justify-between">
-                          <Link href={'/products/view_product'}><Button variant="outline"> <Eye className="mr-2 h-4 w-4"/> View</Button></Link>
-                          <Link href={'/products/edit_product'}><Button variant="outline"> <FilePenLine className="mr-2 h-4 w-4"/> Edit</Button></Link>
+                          <Link href={`/products/view_product/${item.id}`}><Button variant="outline"> <Eye className="mr-2 h-4 w-4"/> View</Button></Link>
+                          <Link href={`/products/edit_product/${item.id}`}><Button variant="outline"> <FilePenLine className="mr-2 h-4 w-4"/> Edit</Button></Link>
                           <Link href={''}><Button variant="destructive"> <Trash className="mr-2 h-4 w-4"/> Delete</Button></Link>
                       </CardFooter>
                   </Card>

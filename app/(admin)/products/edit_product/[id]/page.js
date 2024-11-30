@@ -9,7 +9,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { useParams, useRouter } from "next/navigation";
-
+import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const colors = [
     { name: 'Red', value: 'bg-red-500' },
@@ -26,7 +27,7 @@ const colors = [
     // Add more colors as needed
 ];
 
-const EditProduct = ({ productId }) => {
+const EditProduct = ({}) => {
   const [product, setProduct] = useState(null);
   const [color, setColor] = useState("");
   const [collectionId, setCollectionId] = useState("");
@@ -51,6 +52,14 @@ const EditProduct = ({ productId }) => {
         const res = await fetch(`/api/products/${id}`);
         const data = await res.json();
         // console.log(data);
+
+        const parsedProduct = {
+          ...data,
+          images: Array.isArray(data.images) ? data.images : JSON.parse(data.images),
+          imagePath: Array.isArray(data.image_path) ? data.image_path : JSON.parse(data.image_path),
+          tags: Array.isArray(data.tags) ? data.tags : JSON.parse(data.tags),
+          sizes: Array.isArray(data.sizes) ? data.sizes : JSON.parse(data.sizes),
+      };
         
         if (res.ok) {
           setProduct(data);
@@ -62,10 +71,10 @@ const EditProduct = ({ productId }) => {
           setColor(data.color);
           setCollectionId(data.collectionId);
           setRugs(data.rugs);
-          setSizes(Array.isArray(data.sizes) ? data.sizes : []); // Ensure sizes is an array
-          setTags(Array.isArray(data.tags) ? data.tags : []); // Ensure tags is an array
-        //   setImagePreview(data.imageUrls);
-        setImagePreview(Array.isArray(data.imageUrls) ? data.imageUrls : []);
+          setSizes(parsedProduct.sizes); // Ensure sizes is an array
+          setTags(parsedProduct.tags); // Ensure tags is an array
+          // setImagePreview(data.imageUrls);
+          setImagePreview(parsedProduct.images);
         } else {
           setMessage(`Error: ${data.error}`);
         }
@@ -88,19 +97,19 @@ const EditProduct = ({ productId }) => {
     fetchCollections();
   }, [id]);
 
-  const handleImageChange = (event) => {
-    const filesImage = Array.from(event.target.files);
-    const newImagePreviews = filesImage.map((file) => URL.createObjectURL(file));
-    setFiles((prevImages) => [...prevImages, ...filesImage]);
-    setImagePreview((prevPreviews) => [...prevPreviews, ...newImagePreviews]);
-  };
+  // const handleImageChange = (event) => {
+  //   const filesImage = Array.from(event.target.files);
+  //   const newImagePreviews = filesImage.map((file) => URL.createObjectURL(file));
+  //   setFiles((prevImages) => [...prevImages, ...filesImage]);
+  //   setImagePreview((prevPreviews) => [...prevPreviews, ...newImagePreviews]);
+  // };
 
-  const removeImage = (imageUrl) => {
-    const newImagePreviews = imagePreview.filter((preview) => preview !== imageUrl);
-    const newImages = files.filter((_, index) => newImagePreviews.includes(imagePreview[index]));
-    setImagePreview(newImagePreviews);
-    setFiles(newImages);
-  };
+  // const removeImage = (imageUrl) => {
+  //   const newImagePreviews = imagePreview.filter((preview) => preview !== imageUrl);
+  //   const newImages = files.filter((_, index) => newImagePreviews.includes(imagePreview[index]));
+  //   setImagePreview(newImagePreviews);
+  //   setFiles(newImages);
+  // };
 
   const handleSizeChange = (newSize) => {
     if (newSize && !sizes.includes(newSize)) {
@@ -158,9 +167,14 @@ const EditProduct = ({ productId }) => {
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: formData,
       });
       const data = await res.json();
+      console.log(data);
+      
       if (res.ok) {
         setMessage("Product updated successfully!");
         router.push("/products");
@@ -262,14 +276,15 @@ const EditProduct = ({ productId }) => {
                           name="files"
                           multiple
                           className="absolute inset-0 opacity-0 cursor-pointer"
-                          onChange={handleImageChange}
+                          // onChange={handleImageChange}
                         />
                         <span className="text-gray-400">Click to upload images</span>
                       </div>
-                      {imagePreview && imagePreview.length > 0 && imagePreview.map((imageUrl, index) => (
-                        <div key={index} className="relative">
+                      {/* {imagePreview && imagePreview.length > 0 && imagePreview.map((imageUrl, index) => ( */}
+                        {imagePreview ?.map((img, index) => (
+                          <div key={index} className="relative">
                           <Image
-                            src={imageUrl}
+                            src={img}
                             alt={`Preview ${index + 1}`}
                             width={500}
                             height={300}
@@ -279,13 +294,15 @@ const EditProduct = ({ productId }) => {
                           <Button
                             variant="destructive"
                             size="xs"
-                            onClick={() => removeImage(imageUrl)}
+                            onClick={() => removeImage(img)}
                             className="absolute top-1 right-1"
                           >
                             Remove
                           </Button>
                         </div>
-                      ))}
+                        ))}
+                        
+                      {/* ))} */}
                     </div>
                   </CardContent>
                 </Card>
@@ -307,11 +324,7 @@ const EditProduct = ({ productId }) => {
                               <SelectItem key={index} value={color.value}> 
                             <div className='flex items-center gap-3'><span className={`block h-9 w-9 rounded ${color.value}`} />{color.name}</div>
                               </SelectItem>
-                            ))}
-                          {/* Add color options here */}
-                          {/* <SelectItem value="Red">Red</SelectItem>
-                          <SelectItem value="Blue">Blue</SelectItem> */}
-                          {/* Add more colors as needed */}
+                        ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -353,21 +366,23 @@ const EditProduct = ({ productId }) => {
                       />
                       <div>
                         {sizes.map((size) => (
-                          <span key={size} className="inline-block mr-2">
+                         <Badge key={size} className="bg-gray-500 text-white">
                             {size}
                             <Button
-                              variant="destructive"
+                              // variant="destructive"
+                              className="ml-1 rounded-full outline-none hover:bg-red-1"
                               size="xs"
-                              onClick={() => handleSizeRemove(size)}
+                              onClick={() => handleTagRemove(size)}
                             >
-                              Remove
+                              <X className="h-3 w-3" />
                             </Button>
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                     </div>
                     <div className="grid gap-3">
                       <Label>Tags</Label>
+                      
                       <Input
                         placeholder="Add tag"
                         onKeyDown={(e) => {
@@ -380,16 +395,17 @@ const EditProduct = ({ productId }) => {
                       />
                       <div>
                         {tags.map((tag) => (
-                          <span key={tag} className="inline-block mr-2">
+                          <Badge key={tag} className="bg-gray-500 text-white">
                             {tag}
                             <Button
-                              variant="destructive"
+                              // variant="destructive"
+                              className="ml-1 rounded-full outline-none hover:bg-red-1"
                               size="xs"
                               onClick={() => handleTagRemove(tag)}
                             >
-                              Remove
+                              <X className="h-3 w-3" />
                             </Button>
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                     </div>

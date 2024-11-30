@@ -14,7 +14,7 @@ import {useParams } from 'next/navigation';
 import Link from 'next/link'
 import Spinner from '@/components/Spinner';
 import Image from 'next/image';
-// import useCart from '../../cart/useCart';
+import toast from 'react-hot-toast';
 
 
   
@@ -99,7 +99,9 @@ const Product = () => {
         setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
     };
 
-    const addToCart = async () => {
+
+
+     const addToCart = async () => {
     // Fetch product details by ID
     const response = await fetch(`/api/products/${id}`);
     if (!response.ok) {
@@ -115,6 +117,10 @@ const Product = () => {
         tags: Array.isArray(data.tags) ? data.tags : JSON.parse(data.tags),
         sizes: Array.isArray(data.sizes) ? data.sizes : JSON.parse(data.sizes),
     };
+    if(!selectedSize){
+        toast.error('Please select a size');
+        return;
+    }
 
     // Construct cart item with full details
     const cartItem = {
@@ -140,10 +146,9 @@ const Product = () => {
 
     // Save updated cart to localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
-
-    alert('Product added to cart');
+    toast.success('Product added to cart 🛒' );
+    // alert('Product added to cart');
 };
-
   
     return (
         <>
@@ -162,7 +167,7 @@ const Product = () => {
                         }} modules={[Navigation]} className='w-full h-full'>
                                 {product?.images?.map((img, index) => ( 
                                     <SwiperSlide key={index} className="col-span-1 transition duration-150 ease-in hover:opacity-90">
-                                        <Image
+                                        <img
                                             src={img}
                                             alt={img}
                                             className="block h-full object-cover lg:h-[700px]"
@@ -209,10 +214,10 @@ const Product = () => {
                                                console.log('Selected size:', selectedValue);  // Log the selected size
                                                setSelectedSize(selectedValue);  // Set the selected size in state
                                              }}
-                                            
+                                            required
                                             className="text-heading mb-2 mr-2 flex  cursor-pointer items-center justify-center rounded border border-gray-100 p-1 text-xs font-semibold transition duration-200 ease-in-out hover:border-black md:mb-3 md:mr-3 md:text-sm "
                                         >
-                                            <option>Choose an option</option>
+                                            <option type="read-only">Choose an option</option>
                                             {product?.sizes?.map((size, index) => (
                                             <option key={index} value={size}>{size}</option>
                                         ))}
@@ -231,7 +236,7 @@ const Product = () => {
                                             key={relatedProduct.id}
                                             className="text-heading mb-2 mr-2 flex h-64 w-32 cursor-pointer items-center justify-center rounded border border-gray-100 p-1 text-xs font-semibold uppercase transition duration-200 ease-in-out hover:border-black md:mb-3 md:mr-3 md:h-20 md:w-20 md:text-sm"
                                         >
-                                            <Image src={relatedProduct.images[0]} className="h-full w-full object-cover" alt={relatedProduct.name} />
+                                            <img src={relatedProduct.images[0]} className="h-full w-full object-cover" alt={relatedProduct.name} />
                                         
                                             </li>
                                         

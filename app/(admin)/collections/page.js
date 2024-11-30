@@ -59,7 +59,7 @@ const Collections = () =>  {
           <div>
             <h2 className="text-3xl font-semibold">Collections</h2>
           </div>
-          
+          <Link href="/collections/add_collections"><button className='rounded-md bg-black px-4 py-2 text-white'>Add Collection</button></Link>
         </div>
         <hr className='my-4 py-0.5 text-black bg-black'/>
         <div className="mt-6 flex flex-col">

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const SignUp = () => {
     const [name, setName] = useState('');
@@ -48,7 +49,7 @@ const SignUp = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2">
                     <div className="hidden lg:relative lg:flex items-end px-4 pb-10 pt-60 sm:px-6 sm:pb-16 md:justify-center lg:px-8 lg:pb-24">
                         <div className="absolute inset-0">
-                            <Image
+                            <img
                             className="h-full w-full rounded-md object-cover object-top"
                             src="https://images.unsplash.com/photo-1671576585636-d857cdf0f06c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60"
                             alt=""
@@ -138,13 +139,13 @@ const SignUp = () => {
                             <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl">Sign up</h2>
                             <p className="mt-2 text-base text-gray-600">
                             Already have an account?{' '}
-                            <a
-                                href="#"
+                            <Link
+                                href="/signin"
                                 title=""
                                 className="font-medium text-black transition-all duration-200 hover:underline"
                             >
                                 Sign In
-                            </a>
+                            </Link>
                             </p>
                             <form onSubmit={handleSubmit} className="mt-8">
                             <div className="space-y-5">

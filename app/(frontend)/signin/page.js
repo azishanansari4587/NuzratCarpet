@@ -1,9 +1,9 @@
 "use client"
 import React, { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -24,9 +24,12 @@ const SignIn = () => {
                 body: JSON.stringify({email, password}),
             });
             const data = await result.json();
+            console.log(data);
 
+            // After a successful login, store the user data in localStorage
+            localStorage.setItem('user', JSON.stringify(data.user.id));
+            
             if(result.ok) {
-                //Redirect to Homepage or Dashboard after successfull sign in
                 router.push('/');
             } else {
                 setError(data.error);
@@ -35,7 +38,12 @@ const SignIn = () => {
             setError('An unexpected error occured');
         }
     };
+    const loginUser = (userData) => {
+        localStorage.setItem('user', JSON.stringify(userData));
+        console.log('User stored in localStorage:', userData); // Check if the user data has `id` or `_id`
+    };
 
+      
     return (
         <section className='bg-white'>
             <div className='mx-auto min-h-screen  max-w-7xl py-24 md:py-24 bg-white'>
@@ -43,7 +51,7 @@ const SignIn = () => {
                     <div className=" grid grid-cols-1 lg:grid-cols-2">
                         <div className="relative flex items-end px-4 pb-10 pt-60 sm:px-6 sm:pb-16 md:justify-center lg:px-8 lg:pb-24">
                             <div className="absolute inset-0">
-                                <Image
+                                <img
                                 className="h-full w-full rounded-md object-cover object-top"
                                 src="https://plus.unsplash.com/premium_photo-1673533137302-02312e0184f7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=60"
                                 alt=""
@@ -163,14 +171,14 @@ const SignIn = () => {
                                             <label htmlFor="password" className="text-base font-medium text-gray-900">
                                             Password
                                             </label>
-                                            <a
-                                            href="#"
+                                            <Link
+                                            href='/forgotPassword'
                                             title=""
                                             className="text-sm font-semibold text-black hover:underline"
                                             >
                                             {' '}
                                             Forgot password?{' '}
-                                            </a>
+                                            </Link>
                                         </div>
                                         <div className="mt-2">
                                             <input
@@ -191,6 +199,7 @@ const SignIn = () => {
                                         Get started <ArrowRight className="ml-2" size={16} />
                                     </button>
                                     </div>
+                                    <p>{error}</p>
                                 </div>
                                 </form>
                                 

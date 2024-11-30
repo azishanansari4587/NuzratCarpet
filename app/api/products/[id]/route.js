@@ -7,7 +7,10 @@ export async function GET(req, { params }) {
   const { id } = params;
 
   try {
-    const [rows] = await connection.query("SELECT * FROM products WHERE id = ?", [id]);
+    const [rows] = await connection.query(
+      // "SELECT * FROM products WHERE id = ?", [id]
+      "SELECT products.*, collections.name AS collection_name FROM products JOIN collections ON products.collectionId = collections.id WHERE products.id = ?", [id]
+    );
     
     if (rows.length === 0) {
       return new NextResponse(JSON.stringify({ error: 'Product not found' }), { status: 404 });
@@ -43,7 +46,7 @@ export async function PUT(request, { params }) {
   // }
 
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    // const connection = await mysql.createConnection(dbConfig);
     
     // Create a directory to store the files if it does not exist
     const uploadDir = path.resolve("./public/uploads");
@@ -87,6 +90,9 @@ export async function PUT(request, { params }) {
         id // Use the product ID from the URL to update the correct product
       ]
     );
+    if (result.affectedRows === 0) {
+      return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
+    }
 
     return NextResponse.json({ message: "Product updated successfully", success: true }, { status: 200 });
   } catch (error) {

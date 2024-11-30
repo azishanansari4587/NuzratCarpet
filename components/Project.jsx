@@ -7,14 +7,12 @@ import third from '@/public/KARDIO.jpg'
 
 const Project = () => {
   return (
-
     <section>
         <div className="mx-auto  px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
             <div className="text-center">
 
                 <p className='text-5xl text-center font-Open text-gray-700'><span className='text-amber-700'>Projects</span> from the World of <span className='text-amber-700'>Nuzrat Carpet Emporium</span></p>
             </div>
-
             <ul className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
             <li>
                 <a href="#" className="group relative block">

@@ -12,7 +12,7 @@ export async function POST(request) {
   
         // Insert or update cart items
         await connection.execute(
-          `INSERT INTO cart (user_id, item_id, quantity, color, size) VALUES (?, ?, ?, ?, ?)
+          `INSERT INTO cart (user_id, product_id, quantity, color, size) VALUES (?, ?, ?, ?, ?)
            ON DUPLICATE KEY UPDATE quantity = VALUES(quantity), color = VALUES(color), size = VALUES(size)`,
           [userId, itemId, quantity, color, size]
         );

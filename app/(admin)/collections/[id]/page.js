@@ -22,7 +22,7 @@ import {
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const EditCollection = () => {
+const EditCollection = ({}) => {
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
     const [message, setMessage] = useState('');
@@ -43,17 +43,19 @@ const EditCollection = () => {
 
 
     useEffect (()=> {
-        if (!id) return;
+        // if (!id) return;
 
         const fetchCollection = async () => {
             try {
                 const res = await fetch(`/api/collections/${id}`);
                 const data = await res.json();
+                console.log(data);
+                
                 if( res.ok) {
-                    setName(data.name);
-                    setStatus(data.status.toString());
+                    setName(data.name || '');
+                    setStatus(data.status.toString() || '');
                 } else {
-                    setError(data.error);
+                    setError(data.error || 'An unexpected error occured');
                 } 
             } catch (error) {
                 setError('An unexpected error occured');
@@ -67,6 +69,7 @@ const EditCollection = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
+        setIsLoading(true);
 
         try {
             const res = await fetch(`/api/collections/${id}`, {
@@ -77,7 +80,8 @@ const EditCollection = () => {
                 body: JSON.stringify({name, status}),
             });
             const data = await res.json();
-
+            console.log(data);
+            
             if (res.ok) {
                 
                 setMessage('Collections updated successfully!');

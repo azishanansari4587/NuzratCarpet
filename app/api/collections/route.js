@@ -34,7 +34,6 @@ export async function POST(request) {
 export async function GET() {
     try {
       const [rows] = await connection.execute('SELECT * FROM collections');
-  
       return NextResponse.json(rows, { status: 200 });
     } catch (error) {
       return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 });

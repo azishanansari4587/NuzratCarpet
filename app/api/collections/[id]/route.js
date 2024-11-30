@@ -6,7 +6,7 @@ export async function GET(request, { params }) {
   const { id } = params;
 
   try {
-    const [rows] = await connection.execute('SELECT * FROM collections WHERE id = ?', [id]);
+    const [rows] = await connection.query('SELECT * FROM collections WHERE id = ?', [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Collections not found' }, { status: 404 });

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
-  CardDescription,
+  CardDescription, 
   CardFooter,
   CardHeader,
   CardTitle,
@@ -42,6 +42,7 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Calendar } from "@/components/ui/calendar"
 import Spinner from '@/components/Spinner';
+
 
 
 
@@ -92,9 +93,17 @@ const Dashboard = () => {
     fetchTotals();
   }, []);
 
+
 if (error) {
     return <p>{error}</p>;
 }
+
+// const { data: session } = useSession();
+// const session = await getServerSession(authOptions);
+
+//   if (!session || session.user.role !== 1) {
+//     return <p>Access denied. Admins only.</p>;
+//   }
 
   return (
     <>

@@ -155,7 +155,7 @@ const Shop = () => {
           </header>
           { isLoading ? ( <Spinner/>) : (
 
-          <div className="mt-4 lg:mt-8 lg:grid lg:grid-cols-5 lg:items-start lg:gap-8">
+          <div className="mt-4 lg:mt-8 lg:grid lg:grid-cols-5 lg:items-start lg:gap-16">
             <div className=" space-y-4 lg:block">
 
               <div>
@@ -262,7 +262,7 @@ const Shop = () => {
                               id=''
                               name="category"
                               value=''
-                              onChange=''
+                              onChange={handleFilterChange}
                               className="size-5 rounded border-gray-300"
                             />
 
@@ -318,6 +318,7 @@ const Shop = () => {
                             <input
                               type="checkbox"
                               id="FilterRed"
+                              onChange={handleFilterChange}
                               className="size-5 rounded border-gray-300"
                             />
                             <span className="text-sm font-medium text-gray-700"> {color.name} </span>
@@ -369,6 +370,7 @@ const Shop = () => {
                             <input
                               type="checkbox"
                               id="FilterRed"
+                              onChange={handleFilterChange}
                               className="size-5 rounded border-gray-300"
                             />
 
@@ -407,15 +409,15 @@ const Shop = () => {
             </div>
 
             <div className="lg:col-span-4">
-              <ul className="grid gap-4 grid-cols-2 lg:grid-cols-3">
-                {product.map((items)=> (
+              <ul className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                {product?.map((items)=> (
                   <li key={items.id}>
                     
                   <Link href={`/products/${items.id}`} className="group block overflow-hidden">
-                    <Image
+                    <img
                       src={items.images[0]}
                       alt=""
-                      className="h-[300px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[350px]"
+                      className="h-[300px] object-cover transition duration-500 group-hover:scale-105 sm:h-[350px]"
                     />
 
                     <div className="relative bg-white pt-3">
