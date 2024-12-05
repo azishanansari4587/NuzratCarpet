@@ -2,6 +2,7 @@
 import { useState } from 'react';
 
 import React from 'react'
+import Link from 'next/link';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -81,7 +82,7 @@ const ForgotPassword = () => {
                 type="submit"
                 className="block w-full rounded-lg bg-black px-5 py-3 text-sm font-medium text-white"
             >
-                Reset Password
+                <Link href="/resetPassword">ResetPassword</Link>
             </button>
 
             </form>

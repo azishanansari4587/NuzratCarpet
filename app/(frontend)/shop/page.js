@@ -26,17 +26,20 @@ const colors = [
 
 const Shop = () => {
 
-  const [product, setProduct] = useState('');
-  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   // const [color, setColor] = useState('');
-  const [collectionId, setCollectionId] = useState('');
+  // const [collectionId, setCollectionId] = useState('');
   const [collections, setCollections] = useState([]);
 
-    // Filter states
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedMaterials, setSelectedMaterials] = useState([]);
-  const [selectedColors, setSelectedColors] = useState([]);
+  const [filter, setFilter] = useState({
+    rugs: '',
+    collectionId: '',
+    color: '',
+  });
+
 
 
   useEffect(() => {
@@ -46,6 +49,7 @@ const Shop = () => {
         const res = await fetch('/api/collections');
         const data = await res.json();
         setCollections(data);
+        // setFilteredProducts(data);
       } catch (error) {
         console.error('Failed to fetch collections', error);
       }
@@ -55,14 +59,14 @@ const Shop = () => {
 
 
    // Handle Color Change
-  const handleColorChange = (value) => {
-    setColor(value);
-  };
+  // const handleColorChange = (value) => {
+  //   setColor(value);
+  // };
 
 
-  const handleCollectionChange = (value) => {
-    setCollectionId(value);
-  };
+  // const handleCollectionChange = (value) => {
+  //   setCollectionId(value);
+  // };
 
 
 
@@ -75,10 +79,25 @@ const Shop = () => {
   }, [])
 
 
+  const handleFilterChange = (e) => {
+    const {name, value} = e.target;
+    setFilter((prev) => {
+      const selected = prev[name].includes(value)
+        ? prev[name].filter((item) => item !== value) // Uncheck - remove from array
+        : [...prev[name], value]; // Check - add to array
+
+      return { ...prev, [name]: selected };
+    });
+  }
+
+
+
+
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch('/api/products');
+
+        const res = await fetch(`/api/products`);
         const data = await res.json();
 
         // Ensure images field is correctly parsed
@@ -102,41 +121,28 @@ const Shop = () => {
   }, []);
 
 
-  // Handle filter change
-  const handleFilterChange = (filterType, filterValue) => {
-    if (filterType === 'material') {
-      const newMaterials = selectedMaterials.includes(filterValue)
-        ? selectedMaterials.filter((item) => item !== filterValue)
-        : [...selectedMaterials, filterValue];
-      setSelectedMaterials(newMaterials);
-    } else if (filterType === 'color') {
-      const newColors = selectedColors.includes(filterValue)
-        ? selectedColors.filter((item) => item !== filterValue)
-        : [...selectedColors, filterValue];
-      setSelectedColors(newColors);
-    }
-  };
+  const filterProducts = () => {
+    const { rugs, collectionId, color } = filter;
+    const filteredProducts = product.filter((product) => {
 
-  // Apply filters to products
+      const collectionMatch = collectionId.length > 0 ? collectionId.includes(product.collectionId.toString()) : true;
+      const colorMatch = color.length > 0 ? color.includes(product.color) : true;
+      const rugsMatch = rugs.length > 0 ? rugs.includes(product.rugs) : true;
+
+      return collectionMatch && colorMatch && rugsMatch;
+       
+  });
+    setFilteredProducts(filteredProducts);
+  }
+
   useEffect(() => {
-    let filtered = products;
+    filterProducts();
+  }, [filter]);
 
-    // Filter by materials
-    if (selectedMaterials.length > 0) {
-      filtered = filtered.filter((product) =>
-        selectedMaterials.includes(product.material)
-      );
-    }
 
-    // Filter by colors
-    if (selectedColors.length > 0) {
-      filtered = filtered.filter((product) =>
-        selectedColors.includes(product.color)
-      );
-    }
+ 
 
-    setFilteredProducts(filtered);
-  }, [selectedMaterials, selectedColors, products]);
+
 
 
 
@@ -159,66 +165,11 @@ const Shop = () => {
             <div className=" space-y-4 lg:block">
 
               <div>
-                {/* <p className="block text-lg font-medium text-gray-700">Filters</p> */}
+                <p className="block text-lg font-medium text-gray-700">Filters</p>
 
                 <div className="my-8 space-y-2">
 
-                  {/* <details
-                    className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden"
-                  >
-                    <summary
-                      className="flex cursor-pointer items-center justify-between gap-2 p-4 text-gray-900 transition"
-                    >
-                      <span className="text-sm font-medium"> Category </span>
-
-                      <span className="transition group-open:-rotate-180">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className="h-4 w-4"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                          />
-                        </svg>
-                      </span>
-                    </summary>
-
-                    <div className="border-t border-gray-200 bg-white">
-                      <header className="flex items-center justify-between p-4">
-                        <span className="text-sm text-gray-700"> 0 Selected </span>
-
-                        <button type="button" className="text-sm text-gray-900 underline underline-offset-4">
-                          Reset
-                        </button>
-                      </header>
-
-                      <ul className="space-y-1 border-t border-gray-200 p-4">
-                        {category.map((cat)=> (
-                          <li>
-                          <label htmlFor="FilterRed" className="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              id="FilterRed"
-                              className="size-5 rounded border-gray-300"
-                            />
-
-                            <span className="text-sm font-medium text-gray-700"> {cat.category_name} </span>
-                          </label>
-                        </li>
-                        ))}
-                        
-
-                      </ul>
-                    </div>
-                  </details> */}
-
-                  <details
+                <details
                     className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden"
                   >
                     <summary
@@ -246,27 +197,24 @@ const Shop = () => {
 
                     <div className="border-t border-gray-200 bg-white">
                       <header className="flex items-center justify-between p-4">
-                        <span className="text-sm text-gray-700"> 0 Selected </span>
-
-                        <button type="button" className="text-sm text-gray-900 underline underline-offset-4">
-                          Reset
-                        </button>
+                        <span className="text-sm text-gray-700"> {filter.collectionId.length} Selected </span>
                       </header>
 
                       <ul className="space-y-1 border-t border-gray-200 p-4">
-                      {collections.map((collection, index) => (
-                        <li key={index}>
-                          <label htmlFor="FilterRed" className="inline-flex items-center gap-2">
+                      {collections.map((coll, index) => (
+                        <li key={coll.id}>
+                          <label htmlFor={coll.id} className="inline-flex items-center gap-2">
                             <input
                               type="checkbox"
-                              id=''
-                              name="category"
-                              value=''
+                              id={coll.id}
+                              name="collectionId"
+                              value={coll.id}
+                              checked={filter.collectionId.includes(coll.id.toString())}
                               onChange={handleFilterChange}
                               className="size-5 rounded border-gray-300"
                             />
 
-                            <span className="text-sm font-medium text-gray-700">{collection.name}</span>
+                            <span className="text-sm font-medium text-gray-700">{coll.name}</span>
                           </label>
                         </li>
                       ))}
@@ -303,21 +251,20 @@ const Shop = () => {
 
                     <div className="border-t border-gray-200 bg-white">
                       <header className="flex items-center justify-between p-4">
-                        <span className="text-sm text-gray-700"> 0 Selected </span>
-
-                        <button type="button" className="text-sm text-gray-900 underline underline-offset-4">
-                          Reset
-                        </button>
+                        <span className="text-sm text-gray-700"> {filter.color.length} Selected </span>
                       </header>
 
                       <ul className="space-y-1 border-t border-gray-200 p-4">
 
                       {colors?.map((color, index) => (
                         <li key={index}>
-                          <label htmlFor="FilterRed" className="inline-flex items-center gap-2">
+                          <label htmlFor={color.value} className="inline-flex items-center gap-2">
                             <input
                               type="checkbox"
-                              id="FilterRed"
+                              id={color.value}
+                              name='color'
+                              value={color.value}
+                              checked={filter.color.includes(color.value)}
                               onChange={handleFilterChange}
                               className="size-5 rounded border-gray-300"
                             />
@@ -329,13 +276,14 @@ const Shop = () => {
                     </div>
                   </details>
 
+
                   <details
                     className="overflow-hidden rounded border border-gray-300 [&_summary::-webkit-details-marker]:hidden"
                   >
                     <summary
                       className="flex cursor-pointer items-center justify-between gap-2 p-4 text-gray-900 transition"
                     >
-                      <span className="text-sm font-medium"> Quality </span>
+                      <span className="text-sm font-medium"> Rugs </span>
 
                       <span className="transition group-open:-rotate-180">
                         <svg
@@ -357,50 +305,28 @@ const Shop = () => {
 
                     <div className="border-t border-gray-200 bg-white">
                       <header className="flex items-center justify-between p-4">
-                        <span className="text-sm text-gray-700"> 0 Selected </span>
-
-                        <button type="button" className="text-sm text-gray-900 underline underline-offset-4">
-                          Reset
-                        </button>
+                        <span className="text-sm text-gray-700"> {filter.rugs.length} Selected </span>
                       </header>
 
                       <ul className="space-y-1 border-t border-gray-200 p-4">
-                        <li>
-                          <label htmlFor="FilterRed" className="inline-flex items-center gap-2">
+                        {["HandKnitted", "HandTuffted", "Handwoven"]?.map((rug, index) => (
+                          <li key={index}>
+                          <label htmlFor={rug} className="inline-flex items-center gap-2">
                             <input
                               type="checkbox"
-                              id="FilterRed"
+                              id={rug}
+                              name='rugs'
+                              value={rug}
                               onChange={handleFilterChange}
                               className="size-5 rounded border-gray-300"
                             />
 
-                            <span className="text-sm font-medium text-gray-700"> HandKnitted </span>
+                            <span className="text-sm font-medium text-gray-700"> {rug} </span>
                           </label>
                         </li>
+                        ))}
+                        
 
-                        <li>
-                          <label htmlFor="FilterBlue" className="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              id="FilterBlue"
-                              className="size-5 rounded border-gray-300"
-                            />
-
-                            <span className="text-sm font-medium text-gray-700"> HandTuffted </span>
-                          </label>
-                        </li>
-
-                        <li>
-                          <label htmlFor="FilterGreen" className="inline-flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              id="FilterGreen"
-                              className="size-5 rounded border-gray-300"
-                            />
-
-                            <span className="text-sm font-medium text-gray-700"> HandWoven </span>
-                          </label>
-                        </li>
                       </ul>
                     </div>
                   </details>
@@ -410,7 +336,7 @@ const Shop = () => {
 
             <div className="lg:col-span-4">
               <ul className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-                {product?.map((items)=> (
+                {filteredProducts?.map((items)=> (
                   <li key={items.id}>
                     
                   <Link href={`/products/${items.id}`} className="group block overflow-hidden">
