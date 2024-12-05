@@ -79,10 +79,12 @@ const Banner = () => {
 
          
           <SwiperSlide key={items.id} className="relative text-center bg-white font-medium flex justify-center items-center">
-            <img
+            <Image
               src={items.images[0]}
               alt={items.name}
-              className="aspect-[3/2] w-full rounded-lg object-cover lg:aspect-auto lg:h-[600px] lg:object-center"
+              width={1600}
+              height={500}
+              className="aspect-[4/3] w-full rounded-lg object-cover lg:aspect-auto lg:h-[700px] lg:object-center"
             />
             <div className="absolute inset-0 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 hover:opacity-100  bg-opacity-50">
               <h3 className="lg:text-2xl text-white text-center">Designed by Shah Alam</h3>
@@ -102,7 +104,7 @@ const Banner = () => {
         <div className='top-[50%] absolute z-10 border border-black button-prev-slide left-5 text-black w-[40px] h-[40px] hover:text-white  hover:bg-black grid place-items-center'>
           <ChevronLeft />
         </div>
-        <div className='swiper-pagination  absolute z-10 text-black'>
+        <div className='swiper-pagination swiper-pagination-bullets absolute z-10 text-black'>
           
         </div>
         <div className='top-[50%] absolute z-10 border border-black button-next-slide right-5 text-black w-[40px] h-[40px] hover:text-white hover:bg-black grid place-items-center'> 

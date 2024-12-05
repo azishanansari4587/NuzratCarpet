@@ -6,10 +6,20 @@ import Footer from '@/components/Footer';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import Spinner from '@/components/Spinner';
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+    
+        return () => clearTimeout(timer);
+      }, []);
     
 
     useEffect(() => {
@@ -91,6 +101,7 @@ const Cart = () => {
     return (
         <>
             <Header/> 
+            { isLoading ? ( <Spinner/>) : (
                 <section className='bg-white py-12'>
                     <div className="mx-auto flex max-w-3xl flex-col space-y-4 p-6 px-2 sm:p-10 sm:px-2">
                         <h2 className="text-3xl font-medium">Your Cart</h2>
@@ -162,6 +173,7 @@ const Cart = () => {
                         
                     </div>
                 </section>
+            )}
             <Footer/>
         </>
     );

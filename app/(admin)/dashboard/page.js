@@ -42,12 +42,25 @@ import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Calendar } from "@/components/ui/calendar"
 import Spinner from '@/components/Spinner';
+import withAuth from '@/lib/withAuth';
+import { useRouter } from 'next/navigation';
 
 
 
 
 
 const Dashboard = () => {
+  const router = useRouter();
+
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        
+        // Redirect if not logged in or not admin
+        if (!user || JSON.parse(user).role !== 1) {
+            router.push('/signin');
+        }
+    }, [router]);
+
   const [date, setDate] = React.useState(new Date());
 
   const [totals, setTotals] = useState({
@@ -421,7 +434,7 @@ if (error) {
   )
 }
 
-export default Dashboard
+export default withAuth(Dashboard, [1]);
 
  {/* <section className='mx-auto max-w-7xl w-full p-4'>
       <div className="flex flex-col space-y-4  md:flex-row md:items-center md:justify-between md:space-y-0">

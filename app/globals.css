@@ -59,10 +59,12 @@
   }
 
   .swiper-pagination-bullet {
+    color: black !important;
     background-color: black !important; /* Change bullet color to black */
   }
   
   .swiper-pagination-bullet-active {
+    color: black !important;
     background-color: black !important; /* Ensure the active bullet is also black */
   }
 
@@ -77,6 +79,19 @@
   
   .animate-slow-spin {
     animation: slow-spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spin-loader {
+    animation: spin 1s linear infinite;
   }
 }
 

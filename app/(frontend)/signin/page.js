@@ -25,12 +25,19 @@ const SignIn = () => {
             });
             const data = await result.json();
             console.log(data);
-
-            // After a successful login, store the user data in localStorage
-            localStorage.setItem('user', JSON.stringify(data.user.id));
             
-            if(result.ok) {
-                router.push('/');
+            if (result.ok) {
+                const user = data.user;
+    
+                // Save user details in localStorage (or a state management library)
+                localStorage.setItem('user', JSON.stringify({ id: user.id, role: user.role }));
+    
+                // Redirect based on role
+                if (user.role === 1) {
+                    router.push('/dashboard');
+                } else if (user.role === 0) {
+                    router.push('/');
+                }
             } else {
                 setError(data.error);
             }
