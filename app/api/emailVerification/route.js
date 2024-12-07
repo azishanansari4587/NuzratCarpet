@@ -13,13 +13,13 @@ export async function GET(request) {
   }
 
   // Check if the token exists in the database
-  const subscriber = await connection('subscribers').where({ verification_token: token }).first();
+  const subscriber = await connection('users').where({ verification_token: token }).first();
   if (!subscriber) {
     return NextResponse.json({ message: 'Invalid or expired token' }, { status: 400 });
   }
 
   // Update the subscriber's status to verified
-  await connection('subscribers').where({ verification_token: token }).update({ is_verified: true });
+  await connection('users').where({ verification_token: token }).update({ is_verified: true });
 
   return NextResponse.json({ message: 'Email verified successfully!' }, { status: 200 });
 }

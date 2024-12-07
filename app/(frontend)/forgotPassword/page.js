@@ -1,12 +1,13 @@
 "use client"
 import { useState } from 'react';
-
 import React from 'react'
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,7 +20,13 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ email }),
             });
             const data = await response.json();
-            setMessage(data.message);
+            
+            if (response.ok) {
+                setMessage(data.message);
+                router.push('/resetPassword');
+            }else {
+                setMessage(data.error || 'Password reset failed');
+            }
         } catch (error) {
             setMessage(error.message + ' Password reset failed');
         }
@@ -82,7 +89,7 @@ const ForgotPassword = () => {
                 type="submit"
                 className="block w-full rounded-lg bg-black px-5 py-3 text-sm font-medium text-white"
             >
-                <Link href="/resetPassword">ResetPassword</Link>
+                ResetPassword
             </button>
 
             </form>

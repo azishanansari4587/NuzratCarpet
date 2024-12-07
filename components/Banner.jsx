@@ -104,7 +104,7 @@ const Banner = () => {
         <div className='top-[50%] absolute z-10 border border-black button-prev-slide left-5 text-black w-[40px] h-[40px] hover:text-white  hover:bg-black grid place-items-center'>
           <ChevronLeft />
         </div>
-        <div className='swiper-pagination swiper-pagination-bullets absolute z-10 text-black'>
+        <div className='swiper-pagination swiper-pagination-bullets absolute z-10 '>
           
         </div>
         <div className='top-[50%] absolute z-10 border border-black button-next-slide right-5 text-black w-[40px] h-[40px] hover:text-white hover:bg-black grid place-items-center'> 

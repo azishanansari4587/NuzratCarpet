@@ -1,5 +1,6 @@
+"use client"
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 export default function ResetPassword() {
@@ -7,12 +8,13 @@ export default function ResetPassword() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState(''); 
     const router = useRouter();
-    const {token} = router.query;
+    const searchParams = useSearchParams(); // Use this to access query parameters
+    const token = searchParams.get('token'); // Get the token from the URL
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/resetPassword', {
+            const response = await fetch('api/resetPassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -20,12 +22,13 @@ export default function ResetPassword() {
                 body: JSON.stringify({ token, password, confirmPassword }),
             });
             const data = await response.json();
-            setMessage(data.message);
+            
             if (response.ok) {
+                setMessage(data.message);
                 router.push('/login');
             }
         } catch (error) {
-            setMessage(error.data.message + ' Password reset failed');
+            setMessage(error.message + ' Password reset failed');
         }
     };
 

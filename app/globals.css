@@ -60,7 +60,7 @@
 
   .swiper-pagination-bullet {
     color: black !important;
-    background-color: black !important; /* Change bullet color to black */
+    background-color: black !important;
   }
   
   .swiper-pagination-bullet-active {

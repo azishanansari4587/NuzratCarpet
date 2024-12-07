@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "../globals.css";
 import { Toaster } from 'react-hot-toast';
-import { create } from "zustand";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,7 +14,26 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+                <script
+                    async
+                    src={`https://www.googletagmanager.com/gtag/js?id=YOUR_GA_TRACKING_ID`}
+                ></script>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            window.dataLayer = window.dataLayer || [];
+                            function gtag(){dataLayer.push(arguments);}
+                            gtag('js', new Date());
+                            gtag('config', 'YOUR_GA_TRACKING_ID', {
+                                page_path: window.location.pathname,
+                            });
+                        `,
+                    }}
+                ></script>
+            </head>
       <body className={inter.className}>
+      <GoogleAnalytics trackingId="YOUR_GA_TRACKING_ID" />
           {children}
           <Toaster />
       </body>
