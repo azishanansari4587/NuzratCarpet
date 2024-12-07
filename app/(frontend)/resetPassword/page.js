@@ -1,14 +1,15 @@
 "use client"
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 export default function ResetPassword() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState(''); 
-    // const router = useRouter();
-    const searchParams = new URLSearchParams(window.location.search); // Use this to access query parameters
-    const token = searchParams.get('token'); // Get the token from the URL
+    const router = useRouter();
+    // const searchParams = useSearchParams(); // Use this to access query parameters
+    const token = router.query; // Get the token from the URL
 
     const handleSubmit = async (e) => {
         e.preventDefault();
