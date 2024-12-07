@@ -1,7 +1,6 @@
 import React from 'react'
-import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users, Link, LogOut  } from 'lucide-react'
-
-
+import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe  } from 'lucide-react'
+import Link from 'next/link'
 const sideMenu =[
     {
         title: 'Dashboard',
@@ -31,7 +30,7 @@ const sideMenu =[
     },
     {
         title: 'Website',
-        icon: <Link className="h-5 w-5" aria-hidden="true"/>,
+        icon: <Globe className="h-5 w-5" aria-hidden="true"/>,
         path: '/link',
     },
     {
@@ -43,10 +42,10 @@ const sideMenu =[
 const SideMenu = () => {
   return (
     <aside className="hidden lg:flex w-64 flex-col overflow-y-auto border-r bg-white px-5 py-8">
-      <a href="#" className='text-center'>
+      <Link href="#" className='text-center'>
         <img src="/48.jpg"  className='w-12 py-4 item-center' alt="" />
         <img src="/47.jpg" alt="" />
-      </a>
+      </Link>
       <hr className='mt-4 font-bold text-black'/>
       <div className="mt-6 flex flex-1 flex-col justify-between">
         <nav className="-mx-3 space-y-6 ">
