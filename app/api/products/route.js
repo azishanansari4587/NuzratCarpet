@@ -26,7 +26,7 @@ export async function POST(request) {
 
   try {
       // Create a directory to store the files if it does not exist
-      const uploadDir = path.resolve("./public/uploads");
+      const uploadDir = path.resolve("/tmp/uploads");
       if (!fs.existsSync(uploadDir)) {
           fs.mkdirSync(uploadDir, { recursive: true });
       }
