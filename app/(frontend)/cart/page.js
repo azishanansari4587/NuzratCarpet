@@ -57,6 +57,8 @@ const Cart = () => {
     try {
         const userId = JSON.parse(localStorage.getItem('user'));
         const cartItems = JSON.parse(localStorage.getItem('cart'));
+        // console.log(cartItems.productId);
+        
 
         console.log('User:', userId);
 
@@ -78,6 +80,8 @@ const Cart = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: userId, cartItems }),
         });
+
+        console.log(cartItems.productId);
 
         if (response.ok) {
             // Clear the cart
@@ -114,9 +118,9 @@ const Cart = () => {
                         ) : (
                             <ul className="flex flex-col divide-y divide-gray-200">
                             {cartItems.map((cartItem, index) => (
-                                console.log(typeof cartItem.productId),
+                                console.log(cartItem.productId),
                                 
-                            <li key={cartItem.itemId} className="flex flex-col py-6 sm:flex-row sm:justify-between">
+                            <li key={cartItem.productId} className="flex flex-col py-6 sm:flex-row sm:justify-between">
                                 <div className="flex w-full space-x-2 sm:space-x-4">
                                 <img
                                     className="h-20 w-20 flex-shrink-0 rounded object-cover outline-none dark:border-transparent sm:h-32 sm:w-32"

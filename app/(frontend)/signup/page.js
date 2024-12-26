@@ -161,7 +161,7 @@ const SignUp = () => {
                                         id="name"
                                         name='name'
                                         value={name}
-                                        onChange={(e) => setName(e.target.name)}
+                                        onChange={(e) => setName(e.target.value)}
                                         ></input>
                                     </div>
                                 </div>
