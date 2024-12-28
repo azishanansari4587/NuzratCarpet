@@ -8,7 +8,7 @@ export async function POST(request) {
 
         const { userId, cartItems } = body;
 
-        if (!userId || !Array.isArray(cartItems) || cartItems.length === 0) {
+        if (!userId.id || !Array.isArray(cartItems) || cartItems.length === 0) {
             return new NextResponse(
                 JSON.stringify({ error: "Invalid user ID or empty cart items" }),
                 { status: 400 }
@@ -34,6 +34,8 @@ export async function POST(request) {
             // if (!itemId || !color || !size || !quantity) {
             //     throw new Error('Invalid cart item');
             // }
+
+            const userIdValue = userId.id;
 
             return connection.execute(
                 `
