@@ -67,39 +67,3 @@ export async function POST(request) {
         );
     }
 }
-
-
-// export async function POST(request) {
-//     const { userId, cartItems } = await request.json();
-
-//     if (!userId || !Array.isArray(cartItems) || cartItems.length === 0) {
-//         return new NextResponse(JSON.stringify({ error: 'Invalid user ID or empty cart items' }), { status: 400 });
-//     }
-    
-//     try {
-//         // await connection.beginTransaction();
-
-//         // Verify if user exists in the users table
-//         // const [userResult] = await connection.execute(
-//         //     "SELECT * FROM users WHERE id = ?", [userId]
-//         // );
-//         // if(userResult.length === 0) {
-//         //     return new NextResponse(JSON.stringify({ error: 'User not found' }), { status: 404 });
-//         // }
-
-//         const queries = cartItems.map((item) => {
-//             const { itemId,  color, size, quantity } = item;
-//             return connection.execute(
-//                 `INSERT INTO cart (user_id, product_id, color, size,  quantity) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE color = VALUES(color), size = VALUES(size),  quantity = VALUES(quantity)`,
-//                 [userId, itemId, color, size, quantity]
-//             );
-//         });
-
-//         await Promise.all(queries);
-//         return new NextResponse(JSON.stringify({ message: 'Cart updated successfully' }), { status: 200 }); 
-
-//     } catch (error) {
-//         console.error(error);
-//         return new NextResponse(JSON.stringify({ error: 'Failed to update cart' }), { status: 500 });
-//     }
-// }
