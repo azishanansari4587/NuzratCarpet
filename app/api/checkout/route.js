@@ -35,7 +35,6 @@ export async function POST(request) {
             //     throw new Error('Invalid cart item');
             // }
 
-            const userIdValue = userId.id;
 
             return connection.execute(
                 `
