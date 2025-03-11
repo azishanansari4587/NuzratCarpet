@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
-import fs from "fs";
 import connection from "@/lib/db";
+import cloudinary from "cloudinary";
 
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 export async function POST(request) {
@@ -26,27 +30,43 @@ export async function POST(request) {
 
   try {
       // Create a directory to store the files if it does not exist
-      const uploadDir = path.resolve("public/uploads");
-      if (!fs.existsSync(uploadDir)) {
-          fs.mkdirSync(uploadDir, { recursive: true });
-      }
+      // const uploadDir = path.resolve("public/uploads");
+      // if (!fs.existsSync(uploadDir)) {
+      //     fs.mkdirSync(uploadDir, { recursive: true });
+      // }
 
       // Save file paths to an array
-      const filePaths = [];
+      // const filePaths = [];
 
-      const fileName = [];
+      // const fileName = [];
+
+      // for (const file of files) {
+      //     const byteData = await file.arrayBuffer();
+      //     const buffer = Buffer.from(byteData).toString("base64");
+      //     const filePath = path.join(uploadDir, file.name);
+
+      //     // Save file to the file system
+      //     await writeFile(filePath, buffer);
+
+      //     // Store the relative file path (e.g., '/uploads/filename.jpg')
+      //     filePaths.push(`/uploads/${file.name}`);
+      //     fileName.push(file.name);
+      // }
+
+      const imageUrls = [];
 
       for (const file of files) {
-          const byteData = await file.arrayBuffer();
-          const buffer = Buffer.from(byteData).toString("base64");
-          const filePath = path.join(uploadDir, file.name);
+        const byteData = await file.arrayBuffer();
+        const buffer = Buffer.from(byteData);
 
-          // Save file to the file system
-          await writeFile(filePath, buffer);
+        const base64String = `data:${file.type};base64,${buffer.toString("base64")}`;
 
-          // Store the relative file path (e.g., '/uploads/filename.jpg')
-          filePaths.push(`/uploads/${file.name}`);
-          fileName.push(file.name);
+        //* Upload to Cloudinary
+        const uploadResponse = await cloudinary.v2.uploader.upload(base64String, {
+          folder: "NuzratProducts",
+        });
+
+        imageUrls.push(uploadResponse.secure_url);
       }
 
       // Insert the product with file paths
@@ -59,8 +79,8 @@ export async function POST(request) {
               quality,
               maintanace,
               JSON.stringify(tags),
-              JSON.stringify(filePaths), // Store the array of image paths
-              JSON.stringify(fileName),
+              JSON.stringify(imageUrls), // Store the array of image paths
+              JSON.stringify(imageUrls),
               color,
               rugs,
               JSON.stringify(sizes),
