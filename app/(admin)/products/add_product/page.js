@@ -317,14 +317,14 @@ const AddProduct = () => {
                             ))}
                           </div>
                         )} */}
-
+                        <div className="relative mb-4">
                         {imagePreview.map((imageUrl, index) => (
-                          <div key={index} className="relative">
+                          <div key={index} className='mb-4 w-full'>
                             <Image
                               src={imageUrl}
                               alt={`Preview ${index + 1}`}
-                              width={500}
-                              height={300}
+                              width={200}
+                              height={200}
                               layout="responsive"
                               className="object-cover rounded"
                             />
@@ -338,6 +338,8 @@ const AddProduct = () => {
                             </Button>
                           </div>
                         ))}
+                        </div>
+                        
                         
                       </div>
                     </CardContent>
@@ -465,11 +467,11 @@ const AddProduct = () => {
                   
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-2 ">
+              <div className="flex items-center justify-between gap-8 mt-4 ">
                 <Button variant="outline" size="sm">
-                  Discard
+                  Discard Product
                 </Button>
-                <button type="submit" >Save Product</button>
+                <Button type="submit" >Save Product</Button>
               </div>
             </form>
             {message && <p>{message}</p>}
