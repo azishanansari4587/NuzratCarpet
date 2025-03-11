@@ -38,7 +38,7 @@ export async function POST(request) {
 
       for (const file of files) {
           const byteData = await file.arrayBuffer();
-          const buffer = Buffer.from(byteData);
+          const buffer = Buffer.from(byteData).toString("base64");
           const filePath = path.join(uploadDir, file.name);
 
           // Save file to the file system
