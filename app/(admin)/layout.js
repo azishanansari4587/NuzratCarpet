@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className} data-cjcrx="addYes">
       <div className={`grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[250px_1fr]`}>
           <SideMenu/>
           <div className="flex flex-col">

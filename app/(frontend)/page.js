@@ -6,6 +6,7 @@ import ProductGrid from "@/components/ProductGrid";
 import Project from "@/components/Project";
 import TextSection from "@/components/TextSection";
 import CookieConsent from "@/components/CookieConsent";
+import { ProductCard } from "@/components/ProductCard";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Header/>
       <Banner/>
       <TextSection/>
+      {/* <ProductCard/> */}
       <ProductGrid/>
       <Project/>
       <Newsletter/>

@@ -339,7 +339,7 @@ const Shop = () => {
                 {filteredProducts?.map((items)=> (
                   <li key={items.id}>
                     
-                  <Link href={`/products/${items.id}`} className="group block overflow-hidden">
+                  <Link href={`/products/${items.slug}`} className="group block overflow-hidden">
                     <img
                       src={items.images[0]}
                       alt=""

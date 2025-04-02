@@ -378,17 +378,12 @@ const AddProduct = () => {
                         <div className="grid gap-3">
                           <Label htmlFor="collection">Collection</Label>
                           <Select onValueChange={handleCollectionChange}>
-                            <SelectTrigger
-                              id="collection"
-                            >
-                              <SelectValue placeholder="Select Collection" 
-                              // value={collectionId}
-                              // onChange={(e)=> setCollectionId(e.target.value)} 
-                              />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select Collection" />
                             </SelectTrigger>
                             <SelectContent>
                             {collections.map((collection) => (
-                              <SelectItem key={collection.id} value={collection.id}>{collection.name}</SelectItem>
+                              <SelectItem key={collection.id} name={collection.id} value={collection.id}>{collection.name}</SelectItem>
                             ))}
                             </SelectContent>
                           </Select>

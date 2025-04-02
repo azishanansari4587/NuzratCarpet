@@ -44,15 +44,19 @@ const EditProduct = ({}) => {
   const [maintanace, setMaintainance] = useState("");
   const [rugs, setRugs] = useState("");
   const router = useRouter();
-  const {id} = useParams();
+  const {slug} = useParams();
+
+
+ 
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${id}`);
+        const res = await fetch(`/api/products/${slug}`);
         const data = await res.json();
         // console.log(data);
-
+  
+        // const parseJSON = (value) => (Array.isArray(value) ? value : JSON.parse(value || "[]"));
         const parsedProduct = {
           ...data,
           images: Array.isArray(data.images) ? data.images : JSON.parse(data.images),
@@ -82,7 +86,7 @@ const EditProduct = ({}) => {
         setMessage("Failed to fetch product data");
       }
     };
-
+  
     const fetchCollections = async () => {
       try {
         const res = await fetch("/api/collections");
@@ -95,7 +99,7 @@ const EditProduct = ({}) => {
 
     fetchProduct();
     fetchCollections();
-  }, [id]);
+  }, [slug]);
 
   // const handleImageChange = (event) => {
   //   const filesImage = Array.from(event.target.files);
@@ -120,6 +124,18 @@ const EditProduct = ({}) => {
   const handleSizeRemove = (sizeToRemove) => {
     setSizes((prevSizes) => prevSizes.filter((size) => size !== sizeToRemove));
   };
+
+  // const handleSizeChange = (newSize) => {
+  //   if (newSize && !sizes.includes(newSize)) {
+  //     setSizes([...sizes, newSize]);
+  //   }
+  // };
+  
+  // const handleTagChange = (newTag) => {
+  //   if (newTag && !tags.includes(newTag)) {
+  //     setTags([...tags, newTag]);
+  //   }
+  // };
 
   const handleTagChange = (newTag) => {
     if (newTag && !tags.includes(newTag)) {
@@ -165,11 +181,8 @@ const EditProduct = ({}) => {
     Array.from(files).forEach((file) => formData.append("files", file));
 
     try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`/api/products/${slug}`, {
         method: "PUT",
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: formData,
       });
       const data = await res.json();
@@ -186,7 +199,7 @@ const EditProduct = ({}) => {
     }
   };
 
-  if (!product) return <p>Loading...</p>;
+  // if (!product) return <p>Loading...</p>;
 
   return (
     <div>
@@ -281,7 +294,7 @@ const EditProduct = ({}) => {
                         <span className="text-gray-400">Click to upload images</span>
                       </div>
                       {/* {imagePreview && imagePreview.length > 0 && imagePreview.map((imageUrl, index) => ( */}
-                        {imagePreview ?.map((img, index) => (
+                        { imagePreview?.length > 0 && imagePreview.map((img, index) => (
                           <div key={index} className="relative">
                           <Image
                             src={img}

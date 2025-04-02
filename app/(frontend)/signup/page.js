@@ -51,11 +51,11 @@ const SignUp = () => {
                         <div className="absolute inset-0">
                             <img
                             className="h-full w-full rounded-md object-cover object-top"
-                            src="https://images.unsplash.com/photo-1671576585636-d857cdf0f06c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60"
+                            src="./48.jpg?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=60"
                             alt=""
                             />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                        {/* <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                         <div className="relative">
                             <div className="w-full max-w-xl xl:mx-auto xl:w-full xl:max-w-xl xl:pr-24">
                                 <h3 className="text-4xl font-bold text-white">
@@ -132,7 +132,7 @@ const SignUp = () => {
                                     </li>
                                 </ul>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="lg:flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
                         <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">

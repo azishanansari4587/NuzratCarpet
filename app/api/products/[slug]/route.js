@@ -1,15 +1,29 @@
 import connection from "@/lib/db";
 import { NextResponse } from "next/server";
+import cloudinary from "cloudinary";
 
-
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function GET(req, { params }) {
-  const { id } = params;
+  if (!params) {
+    return new Response(JSON.stringify({ error: "Params are missing" }), { status: 400 });
+  }
+  const { slug } = params;
+
+  if (!slug) {
+    return new NextResponse(JSON.stringify({ error: "Product ID is required" }), { status: 400 });
+  }
+
 
   try {
     const [rows] = await connection.query(
       // "SELECT * FROM products WHERE id = ?", [id]
-      "SELECT products.*, collections.name AS collection_name FROM products JOIN collections ON products.collectionId = collections.id WHERE products.id = ?", [id]
+      "SELECT products.*, collections.name AS collection_name FROM products JOIN collections ON products.collectionId = collections.id WHERE products.slug = ?", 
+      [slug]
     );
     
     if (rows.length === 0) {
@@ -23,11 +37,21 @@ export async function GET(req, { params }) {
 }
 
 
-// PUT Method for Updating a Product
-export async function PUT(request, { params }) {
-  const { id } = params; // Extract the product ID from the URL parameters
-  const data = await request.formData();
+
+
+export async function PUT(request, context) {
   
+  const { params } = context;
+
+  // const { id } = params;
+  const { slug } = params.slug; // Extract the product ID from the URL parameters
+
+  if (!slug) {
+    return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+  }
+
+  const data = await request.formData();
+  const id = data.get("id");
   const name = data.get("name");
   const description = data.get("description");
   const info = data.get("info");
@@ -40,36 +64,43 @@ export async function PUT(request, { params }) {
   const tags = data.getAll("tags");
   const files = data.getAll("files");
 
+
   // Validation check (uncomment if needed)
   // if (!name || !info || !description || !quality || !maintanace || !collectionId || !tags || !rugs || !color || !sizes) {
   //     return NextResponse.json({ error: "Product name and Product Details are required" }, { status: 400 });
   // }
 
   try {
-    // const connection = await mysql.createConnection(dbConfig);
+
     
-    // Create a directory to store the files if it does not exist
-    const uploadDir = path.resolve("./public/uploads");
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
 
-    // Save file paths to an array
-    const filePaths = [];
-    const fileName = [];
+    let imageUrls = [];
 
-    for (const file of files) {
+    if (files.length > 0) {
+      // Upload new images if provided
+      for (const file of files) {
         const byteData = await file.arrayBuffer();
         const buffer = Buffer.from(byteData);
-        const filePath = path.join(uploadDir, file.name);
+        const base64String = `data:${file.type};base64,${buffer.toString("base64")}`;
 
-        // Save file to the file system
-        await writeFile(filePath, buffer);
+        const uploadResponse = await cloudinary.v2.uploader.upload(base64String, {
+          folder: "NuzratProducts",
+        });
 
-        // Store the relative file path (e.g., '/uploads/filename.jpg')
-        filePaths.push(`/uploads/${file.name}`);
-        fileName.push(file.name);
+        imageUrls.push(uploadResponse.secure_url);
+      }
+    } else {
+      // Fetch existing images if no new ones are provided
+      const [existingProduct] = await connection.execute(
+        "SELECT images FROM products WHERE id = ?",
+        [id]
+      );
+      if (existingProduct.length > 0) {
+        imageUrls = JSON.parse(existingProduct[0].images);
+      }
     }
+
+
 
     // Update the product in the database with new values
     const [result] = await connection.execute(
@@ -81,8 +112,7 @@ export async function PUT(request, { params }) {
         quality,
         maintanace,
         JSON.stringify(tags),
-        JSON.stringify(filePaths), // Store the array of image paths
-        JSON.stringify(fileName),
+        JSON.stringify(imageUrls), // Store the array of image paths
         color,
         rugs,
         JSON.stringify(sizes),
@@ -99,4 +129,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ error: "Database error: " + error.message }, { status: 500 });
   }
 }
+
+
+
+
 

@@ -27,16 +27,23 @@ const CookieConsent = () => {
     if (!isVisible) return null; // Don't render if not visible
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-lg z-50">
-            <div className="flex justify-between items-center">
-                <p>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+                <h2 className="text-xl font-semibold mb-3">🍪 Cookie Consent</h2>
+                <p className="text-gray-600">
                     We use cookies to enhance your experience. Do you accept the use of cookies?
                 </p>
-                <div>
-                    <button onClick={handleAccept} className="mr-2 bg-blue-500 text-white px-4 py-2 rounded">
+                <div className="mt-4 flex justify-center space-x-4">
+                    <button
+                        onClick={handleAccept}
+                        className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded transition"
+                    >
                         Accept
                     </button>
-                    <button onClick={handleDeny} className="bg-red-500 text-white px-4 py-2 rounded">
+                    <button
+                        onClick={handleDeny}
+                        className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded transition"
+                    >
                         Deny
                     </button>
                 </div>

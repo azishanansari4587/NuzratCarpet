@@ -13,6 +13,7 @@ cloudinary.v2.config({
 export async function POST(request) {
   const data = await request.formData();
   const name = data.get("name");
+  const slug = data.get("slug");
   const description = data.get("description");
   const info = data.get("info");
   const quality = data.get("quality");
@@ -24,35 +25,11 @@ export async function POST(request) {
   const tags = data.getAll("tags");
   const files = data.getAll("files");
 
-//   if (!name || !info || !description || !quality || !maintanace || !collectionId || !tags || !rugs || !color || !sizes) {
-//       return NextResponse.json({ error: "Product name and Product Details are required" }, { status: 400 });
-//   }
+  if (!name || !info || !description || !quality || !maintanace || !collectionId || !tags || !rugs || !color || !sizes) {
+      return NextResponse.json({ error: "Product name and Product Details are required" }, { status: 400 });
+  }
 
   try {
-      // Create a directory to store the files if it does not exist
-      // const uploadDir = path.resolve("public/uploads");
-      // if (!fs.existsSync(uploadDir)) {
-      //     fs.mkdirSync(uploadDir, { recursive: true });
-      // }
-
-      // Save file paths to an array
-      // const filePaths = [];
-
-      // const fileName = [];
-
-      // for (const file of files) {
-      //     const byteData = await file.arrayBuffer();
-      //     const buffer = Buffer.from(byteData).toString("base64");
-      //     const filePath = path.join(uploadDir, file.name);
-
-      //     // Save file to the file system
-      //     await writeFile(filePath, buffer);
-
-      //     // Store the relative file path (e.g., '/uploads/filename.jpg')
-      //     filePaths.push(`/uploads/${file.name}`);
-      //     fileName.push(file.name);
-      // }
-
       const imageUrls = [];
 
       for (const file of files) {
@@ -69,11 +46,22 @@ export async function POST(request) {
         imageUrls.push(uploadResponse.secure_url);
       }
 
+      const slugify = (str) => {
+        if (!str) return Date.now().toString(); // Use a unique timestamp if name is empty
+        return str
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, "-") // Replace spaces & special chars with '-'
+          .replace(/^-+|-+$/g, ""); // Remove leading/trailing '-'
+      };
+
+      const slug = slugify(name);
       // Insert the product with file paths
       const [result] = await connection.execute(
-          "INSERT INTO products (name, description, info, quality, maintanace, tags, images, image_path, color, rugs, sizes, collectionId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO products (name, slug, description, info, quality, maintanace, tags, images, image_path, color, rugs, sizes, collectionId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           [
               name,
+              slug,
               description,
               info,
               quality,
@@ -108,4 +96,40 @@ export async function GET() {
 }
 
 
+//* Delete a Product
+export async function DELETE(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const productId = searchParams.get("productId");
+
+    if (!productId) {
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+    }
+
+    // Fetch existing product images before deleting
+    const [existingProduct] = await connection.execute("SELECT images FROM products WHERE id = ?", [productId]);
+
+    if (!existingProduct.length) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    const imageUrls = JSON.parse(existingProduct[0].images);
+
+    // Delete images from Cloudinary (optional)
+    await Promise.all(
+      imageUrls.map(async (url) => {
+        const publicId = url.split("/").pop().split(".")[0]; // Extract public ID from URL
+        await cloudinary.v2.uploader.destroy(`NuzratProducts/${publicId}`);
+      })
+    );
+
+    // Delete product from DB
+    await connection.execute("DELETE FROM products WHERE id = ?", [productId]);
+
+    return NextResponse.json({ message: "Product deleted successfully", success: true }, { status: 200 });
+
+  } catch (error) {
+    return NextResponse.json({ error: "Database error: " + error.message }, { status: 500 });
+  }
+}
 

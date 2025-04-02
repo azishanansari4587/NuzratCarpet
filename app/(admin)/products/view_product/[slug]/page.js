@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 
 const ViewProduct = () => {
 
-  const { id } = useParams(); 
+  const { slug } = useParams(); 
   const [product, setProduct] = useState([]);
   const [tags, setTags] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -48,7 +48,7 @@ const ViewProduct = () => {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch(`/api/products/${id}`);
+        const res = await fetch(`/api/products/${slug}`);
         const data = await res.json();
 
         // Ensure images field is correctly parsed
@@ -83,7 +83,7 @@ const ViewProduct = () => {
 
     fetchCollections();
     fetchProduct();
-  }, [id]);
+  }, [slug]);
 
 
   return (

@@ -6,7 +6,15 @@ import { NextResponse } from "next/server";
 
 
 export async function GET(req, { params }) {
+  if (!params) {
+    return new Response(JSON.stringify({ error: "Params are missing" }), { status: 400 });
+  }
     const { id } = params;
+
+    if (!id) {
+      return new Response(JSON.stringify({ error: "Product ID is required" }), { status: 400 });
+    }
+
   
     try {
       const [rows] = await connection.query("SELECT * FROM products WHERE id = ?", [id]);

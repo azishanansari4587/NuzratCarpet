@@ -38,12 +38,12 @@ const Banner = () => {
           const data = await res.json();
   
           // Ensure images field is correctly parsed
-          const parsedData = data.map(item => ({
+          const parsedData = Array.isArray(data) ? data.map(item => ({
             ...item,
             images: Array.isArray(item.images) ? item.images : JSON.parse(item.images),
             imagePath: Array.isArray(item.image_path) ? item.image_path : JSON.parse(item.image_path),
             tags: Array.isArray(item.tags) ? item.tags : JSON.parse(item.tags),
-          }));
+          })) : [];
                
           setProduct(parsedData);
           setIsLoading(false);
@@ -71,7 +71,7 @@ const Banner = () => {
     pagination={{
       clickable: true,
       el: '.swiper-pagination',
-      type: 'bullets'
+      // type: 'bullets'
     }}
     modules={[Pagination,Navigation]}>
        {product.map((items)=>(
@@ -89,7 +89,7 @@ const Banner = () => {
             <div className="absolute inset-0 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 hover:opacity-100  bg-opacity-50">
               <h3 className="lg:text-2xl text-white text-center">Designed by Shah Alam</h3>
               <h2 className="py-3 lg:text-8xl text-white text-center">{items.name}</h2>
-              <Link href={`/products/${items.id}`} className="text-white border-b-2 lg:px-10 lg:py-2 hover:bg-black lg:m-2">
+              <Link href={`/products/${items.slug}`} className="text-white border-b-2 lg:px-10 lg:py-2 hover:bg-black lg:m-2">
                 Explore Now
               </Link>
             </div>
@@ -104,9 +104,9 @@ const Banner = () => {
         <div className='top-[50%] absolute z-10 border border-black button-prev-slide left-5 text-black w-[40px] h-[40px] hover:text-white  hover:bg-black grid place-items-center'>
           <ChevronLeft />
         </div>
-        <div className='swiper-pagination swiper-pagination-bullets absolute z-10 '>
+        {/* <div className='swiper-pagination swiper-pagination-bullets absolute z-10 '>
           
-        </div>
+        </div> */}
         <div className='top-[50%] absolute z-10 border border-black button-next-slide right-5 text-black w-[40px] h-[40px] hover:text-white hover:bg-black grid place-items-center'> 
           <ChevronRight />
         </div>

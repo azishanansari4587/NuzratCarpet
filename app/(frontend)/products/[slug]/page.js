@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
   
 
 const Product = () => {
-    const { id } = useParams(); 
+    const { slug } = useParams(); 
     const [error, setError] = useState('');
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [product, setProduct] = useState([]);
@@ -45,7 +45,7 @@ const Product = () => {
     useEffect(() => {
     async function fetchProduct() {
         try {
-        const res = await fetch(`/api/products/${id}`);
+        const res = await fetch(`/api/products/${slug}`);
         const data = await res.json();
 
         // Ensure images field is correctly parsed
@@ -69,7 +69,7 @@ const Product = () => {
 
     async function fetchRelatedProducts() {
     try {
-        const res = await fetch(`/api/products/${id}/related`);
+        const res = await fetch(`/api/products/${slug}/related`);
         const data = await res.json();
         const parsedData = data.map(item => ({
         ...item,
@@ -89,7 +89,7 @@ const Product = () => {
 
     fetchProduct();
     fetchRelatedProducts();
-    }, [id]);
+    }, [slug]);
 
     const increaseQuantity = () => {
         setQuantity((prevQuantity) => prevQuantity + 1);
@@ -103,7 +103,7 @@ const Product = () => {
 
      const addToCart = async () => {
     // Fetch product details by ID
-    const response = await fetch(`/api/products/${id}`);
+    const response = await fetch(`/api/products/${slug}`);
     if (!response.ok) {
         throw new Error('Failed to fetch product details');
     }
@@ -170,7 +170,7 @@ const Product = () => {
                                         <img
                                             src={img}
                                             alt={img}
-                                            className="block h-full object-cover lg:h-[700px]"
+                                            className="block h-full w-full object-cover lg:h-[600px]"
                                         />
                                     </SwiperSlide>
                                     ))} 
@@ -184,6 +184,21 @@ const Product = () => {
                                 
                                 
                             </Swiper>
+                            <div>
+                                <div className="mt-4 flex items-center gap-4">
+                                    <div className="flex items-center gap-4">
+                                    {product?.images?.map((img, index) => (
+                                        <img
+                                        key={index}
+                                        src={img}
+                                        alt={img}
+                                        className="h-52 w-52 cursor-pointer rounded object-cover"
+                                        onClick={() => setSelectedImage(img)}
+                                        />
+                                    ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="col-span-4 pt-8 lg:pt-0">
@@ -205,7 +220,19 @@ const Product = () => {
                                     <h3 className="my-4 text-heading mb-2.5 text-base font-semibold capitalize md:text-lg">
                                         size
                                     </h3>
-                                    <div className="colors -mr-3 ">
+                                    <div className="flex flex-wrap gap-2">
+                                        {product?.sizes?.map((size, index) => (
+                                            <div
+                                                key={index}
+                                                onClick={() => setSelectedSize(size)}
+                                                className={`cursor-pointer border rounded px-4 py-2 text-sm font-semibold transition duration-200 
+                                                    ${selectedSize === size ? "bg-black text-white border-black" : "border-gray-300 text-gray-700 hover:border-black"}`}
+                                            >
+                                                {size}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {/* <div className="colors -mr-3 ">
                                         
                                         <select
                                              value={selectedSize} 
@@ -222,8 +249,8 @@ const Product = () => {
                                             <option key={index} value={size}>{size}</option>
                                         ))}
                                         </select>
-                                        {/* onClick={() => setSelectedSize(size)} */}
-                                    </div>
+                                        
+                                    </div> */}
                                 </div>
                                 <div className="mb-4 ">
                                 <h3 className="text-heading mb-2.5 text-base font-semibold capitalize md:text-lg">

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
   Home,
   LineChart,
@@ -92,10 +92,11 @@ const Header = () => {
               </Button>
             </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
                 <DropdownMenuSeparator />
-                <a href="/signin"><DropdownMenuItem>SignIn</DropdownMenuItem></a>
-                <a href="/signup"><DropdownMenuItem>SignUp</DropdownMenuItem></a>
+                <Link href={"/myEnquiry"}><DropdownMenuItem>My Inquiry</DropdownMenuItem></Link>
+                <Link href={"/signin"}><DropdownMenuItem>SignIn</DropdownMenuItem></Link>
+                <Link href={"/signup"}><DropdownMenuItem>SignUp</DropdownMenuItem></Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Logout</DropdownMenuItem>
               </DropdownMenuContent>
@@ -114,6 +115,7 @@ const Header = () => {
                     <span className="sr-only">Toggle Menu</span>
                   </Button>
                 </SheetTrigger>
+                <SheetTitle></SheetTitle>
                 <SheetContent side="left" className="sm:max-w-xs">
                   <nav className="grid gap-6 text-lg font-medium">
                     <div

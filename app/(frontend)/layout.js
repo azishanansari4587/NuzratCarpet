@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
                     }}
                 ></script>
             </head>
-      <body className={inter.className}>
+      <body className={inter.className} data-cjcrx="addYes">
       <GoogleAnalytics trackingId="YOUR_GA_TRACKING_ID" />
           {children}
           <Toaster />
