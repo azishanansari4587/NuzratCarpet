@@ -12,14 +12,12 @@ export default function Home() {
   return (
     <>
       <CookieConsent />
-      <Header/>
       <Banner/>
       <TextSection/>
       {/* <ProductCard/> */}
       <ProductGrid/>
       <Project/>
       <Newsletter/>
-      <Footer/>
     </>
   );
 }

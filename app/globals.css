@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: #F5F5F5;
+    /* --background: 0 0% 100%; */
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -102,4 +103,13 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+body {
+  font-family: var(--font-lora), serif; /* Lora for body text */
+}
+
+h1, h2, h3 {
+  font-family: var(--font-playfair), serif; /* Playfair Display for Headings */
 }

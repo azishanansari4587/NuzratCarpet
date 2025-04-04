@@ -54,7 +54,6 @@ const Checkout = () => {
 
     return (
         <>
-            <Header />
             <section className='bg-white py-12'>
                 <div className="mx-auto max-w-3xl p-6">
                     <h2 className="text-3xl font-medium">Checkout</h2>
@@ -144,7 +143,6 @@ const Checkout = () => {
                     </form>
                 </div>
             </section>
-            <Footer />
         </>
     );
 };

@@ -56,9 +56,9 @@ const ProductGrid = () => {
         { isLoading ? ( <Spinner/>) : (
             <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
                 {product.map((item) => (
-                  item.tags.includes('Best') ? (
+                  item.tags.includes('New') ? (
                     <li key={item.id}>
-                        <Link href={`/products/${item.id}`} className="group block overflow-hidden">
+                        <Link href={`/products/${item.slug}`} className="group block overflow-hidden">
                             
                               <img
                               src={item.images[0]}

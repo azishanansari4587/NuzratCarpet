@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from '@/components/ui/separator'
 import MultiText from '@/components/MultiText';
 import { useRouter } from 'next/navigation'
+import { Checkbox } from "@/components/ui/checkbox";
 
 const colors = [
   { name: 'Red', value: 'bg-red-500' },
@@ -60,6 +61,9 @@ const AddProduct = () => {
   const [maintanace, setMaintainance] = useState('');
   const [rugs, setRugs] = useState('');
   const router = useRouter();
+
+  const availableTags = ["Banner", "New", "Discount"]; // Available options
+
 
   useEffect(() => {
     // Fetch collection from the Api
@@ -96,6 +100,13 @@ const AddProduct = () => {
   //   setColor(e.target.value);
   // };
 
+  const handleTagChange = (tag) => {
+    setTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag] // Add/remove tag
+    );
+  };
+
+
 
   const handleSizeChange = (newSize) => {
     if (newSize && !sizes.includes(newSize)) {
@@ -107,15 +118,6 @@ const AddProduct = () => {
     setSizes(sizes.filter((size) => size !== sizeToRemove));
   };
 
-  const handleTagChange = (newTag) => {
-    if (newTag && !tags.includes(newTag)) {
-      setTags([...tags, newTag]);
-    }
-  };
-
-  const handleTagRemove = (tagToRemove) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
-  };
 
   // Handle Color Change
   const handleColorChange = (value) => {
@@ -126,6 +128,10 @@ const AddProduct = () => {
   const handleCollectionChange = (value) => {
     setCollectionId(value);
   };
+
+    // Find the selected collection by ID
+  const selectedCollection = collections.find((c) => c.id === collectionId);
+
 
   // Handle Rugs Change
   const handleRugsChange = (value) => {
@@ -173,6 +179,7 @@ const AddProduct = () => {
             setFiles([]);
             setSizes([]);
             setTags([]);
+            toast.success('Product added to cart 🛒' );
             router.push('/products');
         } else {
             setMessage(`Error: ${data.error}`);
@@ -188,16 +195,9 @@ const AddProduct = () => {
           <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
             <form onSubmit={handleSubmit}>
               <div className="flex items-center gap-4">
-                
                 <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
                   Add Product
                 </h1>
-                {/* <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                  <Button variant="outline" size="sm">
-                    Discard
-                  </Button>
-                  <button type="submit">Save Product</button>
-                </div> */}
               </div>
               <Separator/>
               <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -293,30 +293,6 @@ const AddProduct = () => {
                         <Upload className="h-8 w-8 mb-2 text-gray-400"/>
                         <span className="text-gray-400">Click to upload images</span>
                       </div>
-                        {/* <input 
-                        id='image' 
-                        type='file' 
-                        accept='image/*'
-                        multiple  
-                        onChange={handleImageChange} 
-                        className="mt-1 block w-full text-sm text-gray-500 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-md file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"/> */}
-                        {/* {imagePreview.length > 0 && (
-                          <div className="grid grid-cols-3 gap-2">
-                            {imagePreview.map((imageUrl, index) => (
-                              <button onClick={() => removeImage(imageUrl)}>
-                                <Image
-                                  alt={`Image preview ${index}`}
-                                  className="aspect-square w-full rounded-md object-cover"
-                                  height="84"
-                                  src={imageUrl}
-                                  value={images}
-                                  // value={imagePreview}
-                                  width="84"
-                                />
-                              </button>
-                            ))}
-                          </div>
-                        )} */}
                         <div className="relative mb-4">
                         {imagePreview.map((imageUrl, index) => (
                           <div key={index} className='mb-4 w-full'>
@@ -326,7 +302,7 @@ const AddProduct = () => {
                               width={200}
                               height={200}
                               layout="responsive"
-                              className="object-cover rounded"
+                              className="object-cover rounded h-[200px] w-[200px]"
                             />
                             <Button
                               variant="destructive"
@@ -339,8 +315,6 @@ const AddProduct = () => {
                           </div>
                         ))}
                         </div>
-                        
-                        
                       </div>
                     </CardContent>
                   </Card>
@@ -377,14 +351,16 @@ const AddProduct = () => {
                       <div className="grid gap-6 ">
                         <div className="grid gap-3">
                           <Label htmlFor="collection">Collection</Label>
-                          <Select onValueChange={handleCollectionChange}>
+                          <Select value={collectionId} onValueChange={handleCollectionChange}>
                             <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select Collection" />
                             </SelectTrigger>
                             <SelectContent>
-                            {collections.map((collection) => (
-                              <SelectItem key={collection.id} name={collection.id} value={collection.id}>{collection.name}</SelectItem>
-                            ))}
+                              {collections.map((collection) => (
+                                <SelectItem key={collection.id} value={collection.id.toString()}>
+                                  {collection.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -449,12 +425,27 @@ const AddProduct = () => {
 
                         <div className="grid gap-3">
                           <Label htmlFor="tags">Tags</Label>
-                          <MultiText
-                            placeholder="Enter Tags and press Enter"
-                            value={tags}
-                            onChange={handleTagChange}
-                            onRemove={handleTagRemove}
-                          />
+                          <Select>
+                            <SelectTrigger id="tags">
+                              <SelectValue placeholder={tags.length ? tags.join(", ") : "Select Tags"} />
+                            </SelectTrigger>
+                            <SelectContent className="p-2 border rounded-lg bg-white shadow-md">
+                              {availableTags.map((tag, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100 rounded"
+                                  onClick={() => handleTagChange(tag)}
+                                >
+                                  <Checkbox checked={tags.includes(tag)} />
+                                  <span>{tag}</span>
+                                </div>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <div className="mt-4">
+                            <h3 className="font-medium">Selected Tags:</h3>
+                            <p className="text-gray-700">{tags.length ? tags.join(", ") : "None"}</p>
+                          </div>
                         </div>
                       </div>
                     </CardContent>

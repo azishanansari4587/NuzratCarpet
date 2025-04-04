@@ -148,7 +148,6 @@ const Shop = () => {
 
   return (
     <div>
-      <Headers/>
       <section className='bg-white'>
         <div className="mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           <header className='flex flex-col items-center'>
@@ -388,7 +387,6 @@ const Shop = () => {
           )}
         </div>
       </section>
-      <Footer/>
     </div>
   )
 }

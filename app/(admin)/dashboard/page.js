@@ -66,7 +66,9 @@ const Dashboard = () => {
   const [totals, setTotals] = useState({
     totalUsers: 0,
     totalProducts: 0,
-    totalCollections: 0
+    totalCollections: 0,
+    totalOrders: 0,
+    percentageChange: 0
   });
 
   // const [loading, setLoading] = useState(true);
@@ -92,7 +94,9 @@ const Dashboard = () => {
           setTotals({
             totalUsers:data.totalUsers,
             totalProducts:data.totalProducts,
-            totalCollections:data.totalCollections
+            totalCollections:data.totalCollections,
+            totalOrders:data.totalOrders,
+            percentageChange:data.totalEnquiryPercentage
           });
         } else  {
           setError('Failed to fetch totals');
@@ -110,13 +114,6 @@ const Dashboard = () => {
 if (error) {
     return <p>{error}</p>;
 }
-
-// const { data: session } = useSession();
-// const session = await getServerSession(authOptions);
-
-//   if (!session || session.user.role !== 1) {
-//     return <p>Access denied. Admins only.</p>;
-//   }
 
   return (
     <>
@@ -142,11 +139,11 @@ if (error) {
               <Card x-chunk="dashboard-05-chunk-2">
                 <CardHeader className="pb-2">
                   <CardDescription>Total Enquiry</CardDescription>
-                  <CardTitle className="text-4xl">5,329</CardTitle>
+                  <CardTitle className="text-4xl">{totals.totalOrders}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-muted-foreground">
-                    +80% from last month
+                  {totals.percentageChange >= 0 ? `+${totals.percentageChange}%` : `${totals.percentageChange}%`} from last month
                   </div>
                 </CardContent>
                 <CardFooter>

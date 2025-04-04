@@ -104,7 +104,6 @@ const Cart = () => {
 };
     return (
         <>
-            <Header/> 
             { isLoading ? ( <Spinner/>) : (
                 <section className='bg-white py-12'>
                     <div className="mx-auto flex max-w-3xl flex-col space-y-4 p-6 px-2 sm:p-10 sm:px-2">
@@ -173,12 +172,9 @@ const Cart = () => {
                             </div>
                             
                         )}
-                        {/* <p>{error}</p> */}
-                        
                     </div>
                 </section>
             )}
-            <Footer/>
         </>
     );
 };

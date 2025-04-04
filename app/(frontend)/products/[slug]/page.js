@@ -152,7 +152,6 @@ const Product = () => {
   
     return (
         <>
-            <Headers/>
             <div className="mx-auto max-w-7xl px-4 py-4 md:px-8 2xl:py-16">
             { isLoading ? ( <Spinner/>) : (
                 
@@ -214,7 +213,7 @@ const Product = () => {
                                     <p className="text-body text-sm leading-6  lg:text-base lg:leading-8">
                                     {product.description}
                                     </p>
-                                    <h3 className="my-4 text-heading mb-2.5 text-base font-semibold capitalize md:text-lg" onClick={() => setSelectedColor(color)}>Color </h3>
+                                    <h3 className="my-4 text-heading mb-2.5 text-base font-semibold capitalize md:text-lg" >Color </h3>
                                     <div className='flex items-center gap-3'><span className={`block h-9 w-9 rounded ${product.color}`} /></div>
                                     
                                     <h3 className="my-4 text-heading mb-2.5 text-base font-semibold capitalize md:text-lg">
@@ -393,7 +392,6 @@ const Product = () => {
                 </div> */}
                 
             </div>
-            <Footer/>
         </>
     );
 }

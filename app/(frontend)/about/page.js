@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer'
-import Headers from '@/components/Header'
+
 import React from 'react'
 import Image from 'next/image'
 
@@ -8,7 +8,6 @@ import first from '@/public/1.png'
 const About = () => {
   return (
     <div>
-        <Headers/>
         <div className='w-full bg-white'>
             <div className='mx-auto max-w-screen-2xl lg:px-8'>
                 <div className='flex flex-col justify-center px-4 py-10 lg:px-6'>
@@ -46,7 +45,6 @@ const About = () => {
                 </div>
             </div>
         </div>
-        <Footer/>
     </div>
   )
 }
