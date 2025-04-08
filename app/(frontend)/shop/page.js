@@ -153,9 +153,8 @@ const Shop = () => {
           <header className='flex flex-col items-center'>
             <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Shop</h2>
 
-            <p className="mt-4 max-w-md  text-gray-500">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque praesentium cumque iure
-              dicta incidunt est ipsam, officia dolor fugit natus?
+            <p className="mt-4 max-w-5xl text-center sm:mt-5 sm:text-lg sm:leading-relaxed  text-gray-500">
+            Welcome to our curated collection of timeless elegance and handcrafted excellence. Explore a wide range of carpets and home décor pieces — each one uniquely woven with heritage, tradition, and passion.
             </p>
           </header>
           { isLoading ? ( <Spinner/>) : (

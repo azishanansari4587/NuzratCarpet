@@ -231,25 +231,6 @@ const Product = () => {
                                             </div>
                                         ))}
                                     </div>
-                                    {/* <div className="colors -mr-3 ">
-                                        
-                                        <select
-                                             value={selectedSize} 
-                                             onChange={(e) => {
-                                               const selectedValue = e.target.value;  // Get the selected value
-                                               console.log('Selected size:', selectedValue);  // Log the selected size
-                                               setSelectedSize(selectedValue);  // Set the selected size in state
-                                             }}
-                                            required
-                                            className="text-heading mb-2 mr-2 flex  cursor-pointer items-center justify-center rounded border border-gray-100 p-1 text-xs font-semibold transition duration-200 ease-in-out hover:border-black md:mb-3 md:mr-3 md:text-sm "
-                                        >
-                                            <option type="read-only">Choose an option</option>
-                                            {product?.sizes?.map((size, index) => (
-                                            <option key={index} value={size}>{size}</option>
-                                        ))}
-                                        </select>
-                                        
-                                    </div> */}
                                 </div>
                                 <div className="mb-4 ">
                                 <h3 className="text-heading mb-2.5 text-base font-semibold capitalize md:text-lg">
