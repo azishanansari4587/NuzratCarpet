@@ -21,7 +21,7 @@ const About = () => {
 
                     <div className='mx-auto max-w-7xl px-4 py-10 lg:px-64'>
                         <h2 className='text-3xl text-center leading-10 text-gray-600 font-medium py-8 lg:py-10 '>About of Nuzrat Carpet Emporium</h2>
-                        <p className='leading-8 text-gray-500'>Nuzrat Carpet Emporium, established in 1982 by Mr. Abdul Sattar in Mirzapur, Uttar Pradesh, India, is a family-owned manufacturer and exporter of handmade carpets and rugs. The company's origins trace back to the 1940s when Mr. Sattar's father, the late Mr. Haji Arman Ali, operated a small cottage industry producing hand-knotted carpets for the local market. Today, the third generation, led by Mr. Raju Ansari and Mr. Shah Alam, continues the family's legacy in the carpet industry.</p>
+                        <p className='leading-8 text-gray-500'>Nuzrat Carpet Emporium, established in 1982 by Mr. Abdul Sattar in Mirzapur, Uttar Pradesh, India, is a family-owned manufacturer and exporter of handmade carpets and rugs. The company&apos;s origins trace back to the 1940s when Mr. Sattar&apos;s father, the late Mr. Haji Arman Ali, operated a small cottage industry producing hand-knotted carpets for the local market. Today, the third generation, led by Mr. Raju Ansari and Mr. Shah Alam, continues the family&apos;s legacy in the carpet industry.</p>
                         <p className=' py-4 leading-8 text-gray-500'>
                         Specializing in hand-knotted, hand-woven, and hand-tufted carpets, Nuzrat Carpet Emporium utilizes a variety of natural fibers, including wool, linen, silk, cotton, hemp, jute, bamboo silk, and banana silk, as well as polyester. The company has expanded its product line to include furniture, cushions, poufs, and other home accessories.
                         </p>
@@ -31,7 +31,7 @@ const About = () => {
                         </p>
 
                         <p className='py-2 leading-8 text-gray-500'>
-                        The company's headquarters are located in Deopurwa (Hayat Nagar), Mirzapur - 231001, Uttar Pradesh, India.
+                        The company&apos;s headquarters are located in Deopurwa (Hayat Nagar), Mirzapur - 231001, Uttar Pradesh, India.
                         </p>
                     </div>
 
