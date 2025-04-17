@@ -22,6 +22,7 @@ const Banner = () => {
   const [product, setProduct] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
+  const slidesRef = useRef([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,9 +57,14 @@ const Banner = () => {
       fetchProduct();
     }, []);
   
-    if (!product) return;
+    
 
-    const slidesRef = useRef([]);
+    if (isLoading || product.length === 0) {
+      return <div>Loading...</div>; // 🌀 loader or fallback
+    }
+
+
+    
 
     const handleSlideChange = (swiper) => {
       slidesRef.current.forEach((el) => {
