@@ -1,5 +1,4 @@
 "use client"
-import { useState, useEffect } from 'react'
 import React from 'react'
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -28,15 +27,6 @@ const Header = () => {
     (state) => state.cart.reduce((sum, item) => sum + item.quantity, 0)
   );
 
-  console.log('Header re-rendered, totalItems:', totalItems);
-
-
-  // const [cartCount, setCartCount] = useState(0);
-
-  //   useEffect(() => {
-  //       const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  //       setCartCount(cart.reduce((total, item) => total + item.quantity, 0)); // Summing quantities
-  //   }, []);
 
   return (
     <header className='sticky top-0 z-40 w-full bg-white py-4 border-b border-gray-100'>
@@ -69,23 +59,6 @@ const Header = () => {
               Contact
             </Link>
 
-            {/* <ul className='flex items-center gap-6 text-sm'>
-              <li>
-                <a href="/" className='text-black transition hover:text-gray-600'>Home</a>
-              </li>
-              <li>
-                <a href="/shop" className='text-black transition hover:text-gray-600'>Shop</a>
-              </li>
-              <li>
-                <a href="#" className='text-black transition hover:text-gray-600'>Professionals</a>
-              </li>
-              <li>
-                <a href="/about" className='text-black transition hover:text-gray-600'>About</a>
-              </li>
-              <li>
-                <a href="/contact" className='text-black transition hover:text-gray-600'>Contact</a>
-              </li>
-            </ul> */}
             </nav>
             
             {/* Actions */}
@@ -129,7 +102,7 @@ const Header = () => {
             </div>  
 
 
-            <div className=" bg-[#f8f8f6] sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0  sm:px-6">
+            <div className=" sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0  sm:px-6">
               <Sheet >
                 <SheetTrigger asChild>
                   <Button size="icon" variant="outline" className="sm:hidden">
@@ -138,10 +111,9 @@ const Header = () => {
                   </Button>
                 </SheetTrigger>
                 <SheetTitle></SheetTitle>
-                <SheetContent side="left" className="sm:max-w-xs">
+                <SheetContent side="left" className="sm:max-w-xs bg-white">
                   <nav className="grid gap-6 text-lg font-medium">
                     <div
-                      href="#"
                       className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                     >
                       <Avatar>
@@ -151,14 +123,14 @@ const Header = () => {
 
                     </div>
                     <Link
-                      href="/"
+                      href={"/"}
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <Home className="h-5 w-5" />
                       Home
                     </Link>
                     <Link
-                      href="/shop"
+                      href={"/shop"}
                       className="flex items-center gap-4 px-2.5 text-foreground"
                     >
                       <Store className="h-5 w-5" />
@@ -172,28 +144,28 @@ const Header = () => {
                       Professional
                     </Link>
                     <Link
-                      href="/about"
+                      href={"/about"}
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <FileChartColumnIncreasing className="h-5 w-5" />
                       About
                     </Link>
                     <Link
-                      href="/contact"
+                      href={"/contact"}
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <Phone className="h-5 w-5" />
                       Contact
                     </Link>
                     <Link
-                      href="/cart"
+                      href={"/cart"}
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <ShoppingBasket className="h-5 w-5" />
-                      Cart (0)
+                      Cart
                     </Link>
                     <Link
-                      href="/signin"
+                      href={"/signin"}
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <User className="h-5 w-5" />

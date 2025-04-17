@@ -78,7 +78,7 @@ const Banner = () => {
 
   return (
     <section className='relative'> 
-    { isLoading ? ( <Spinner/>) : (
+    { isLoading ?  <Spinner/> : (
       <Swiper
       effect="fade"
       speed={2000} // 2 seconds fade transition
