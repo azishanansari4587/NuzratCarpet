@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from '@/components/ui/separator'
 import {useParams } from 'next/navigation'
 import { Badge } from "@/components/ui/badge";
+import withAuth from '@/lib/withAuth'
 
 
 
@@ -129,6 +130,7 @@ const ViewProduct = () => {
                             value = {product.description}
                             required
                           />
+                          {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.description }} /> */}
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="info">Information</Label>
@@ -284,4 +286,4 @@ const ViewProduct = () => {
   )
 }
 
-export default ViewProduct
+export default withAuth(ViewProduct, [1]);

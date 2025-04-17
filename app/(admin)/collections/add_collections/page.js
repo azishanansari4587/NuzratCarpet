@@ -19,10 +19,14 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
+import { Textarea } from '@/components/ui/textarea'
 
 const AddCollections = () => {
     const [name, setName] = useState('');
     const [status, setStatus] = useState('');
+    const [description, setDescription] = useState('');
+    const [image, setImage] = useState(null);
     const [error, setError] = useState('');
     const router = useRouter();
 
@@ -31,21 +35,33 @@ const AddCollections = () => {
 
         setError('');
 
+        if (!name || !status || !description || !image) {
+            toast.error('Please fill in all fields');
+            return;
+          }
+      
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('status', status);
+          formData.append('description', description);
+          formData.append('image', image);
+      
+
         try {
             const result = await fetch('/api/collections', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, status}),
+                method: 'POST',
+                body: formData,
             });
+        
 
             const data = await result.json();
 
             if( result.ok) {
-                setError('Category added successfully!');
+                toast.success('Category added successfully!');
                 setName('');
-                setStatus('');
+                setStatus('active');
+                setDescription('');
+                setImage(null);
                 router.push('/collections');
             } else {
                 setError(data.error);
@@ -69,7 +85,21 @@ const AddCollections = () => {
             <form onSubmit={handleSubmit}>
             <CardContent>
                 
-                <Input type="text" placeholder="Collection Name" name="name" value={name} onChange={(e) => setName(e.target.value)} required/>
+                <div className='my-3 grid gap-3'>
+                    <Label htmlFor="name">Collection Name</Label>
+                    <Input type="text" placeholder="Collection Name" name="name" value={name} onChange={(e) => setName(e.target.value)} required/>
+                </div>
+
+                <div className='my-3 grid gap-3'>
+                    <Label htmlFor="description">Collection Description</Label>
+                    <Textarea type="text" placeholder="Enter Collection Description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} required/>
+                </div>
+
+                <div className='my-3 grid gap-3'>
+                    <Label>Collection Image</Label>
+                    <Input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required className="w-full border border-gray-300 p-2 rounded-md"/> 
+                </div>   
+                
                 <div className="my-3 grid gap-3 ">
                     <Label htmlFor="status">Status</Label>
                     <Select value={status} onValueChange={setStatus}>
@@ -77,8 +107,8 @@ const AddCollections = () => {
                         <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="1">Active</SelectItem>
-                        <SelectItem value="0">Draft</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="draft">Draft</SelectItem>
                     </SelectContent>
                     </Select>
                 </div>

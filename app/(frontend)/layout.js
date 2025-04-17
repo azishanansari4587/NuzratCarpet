@@ -1,9 +1,11 @@
 import {Playfair_Display, Lora, Inter } from "next/font/google";
 import "../globals.css";
-import { Toaster } from 'react-hot-toast';
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // const inter = Inter({ subsets: ["latin"] });
 const playfair = Playfair_Display({
@@ -69,10 +71,14 @@ export default function RootLayout({ children }) {
             </head>
       <body className={`${playfair.variable} ${lora.variable}`.className} data-cjcrx="addYes">
       <GoogleAnalytics trackingId="YOUR_GA_TRACKING_ID" />
-        <Header/>
-          {children}
-          <Toaster />
-        <Footer/>  
+        <div className="min-h-screen bg-[#f8f8f6]">
+          <Header/>
+            <main>
+              {children}
+            </main> 
+            <ToastContainer position="top-right" autoClose={3000} theme="light" />
+          <Footer/>
+        </div>
       </body>
     </html>
   );

@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
   if (!params) {
     return new Response(JSON.stringify({ error: "Params are missing" }), { status: 400 });
   }
-  const { slug } = params;
+  const { slug } = await params;
 
   if (!slug) {
     return new NextResponse(JSON.stringify({ error: "Product ID is required" }), { status: 400 });
@@ -39,12 +39,12 @@ export async function GET(req, { params }) {
 
 
 
-export async function PUT(request, context) {
+export async function PUT(request, { params }) {
   
-  const { params } = context;
+  // const { params } = context;
 
   // const { id } = params;
-  const { slug } = params.slug; // Extract the product ID from the URL parameters
+  const { slug } = await params; // Extract the product ID from the URL parameters
 
   if (!slug) {
     return NextResponse.json({ error: "Product ID is required" }, { status: 400 });

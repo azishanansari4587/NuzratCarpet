@@ -7,15 +7,18 @@ import Project from "@/components/Project";
 import TextSection from "@/components/TextSection";
 import CookieConsent from "@/components/CookieConsent";
 import { ProductCard } from "@/components/ProductCard";
+import Featured from "@/components/Featured";
+import CollectionsGrid from "@/components/CollectionsGrid";
 
 export default function Home() {
   return (
     <>
       <CookieConsent />
       <Banner/>
-      <TextSection/>
-      {/* <ProductCard/> */}
+      <Featured/>
+      <CollectionsGrid/>
       <ProductGrid/>
+      <TextSection/>
       <Project/>
       <Newsletter/>
     </>

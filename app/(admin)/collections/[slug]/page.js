@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import withAuth from "@/lib/withAuth"
 
 
 import { useParams, useRouter } from 'next/navigation';
@@ -150,4 +151,4 @@ const EditCollection = ({}) => {
   )
 }
 
-export default EditCollection
+export default withAuth(EditCollection, [1]);

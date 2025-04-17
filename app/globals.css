@@ -94,6 +94,23 @@
   .spin-loader {
     animation: spin 1s linear infinite;
   }
+
+  @keyframes zoomInOut {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .zoom-animation {
+    animation: zoomInOut 5s ease-in-out;
+  }
+  
 }
 
 @layer base {
@@ -112,4 +129,8 @@ body {
 
 h1, h2, h3 {
   font-family: var(--font-playfair), serif; /* Playfair Display for Headings */
+}
+
+.btn {
+  @apply px-3 py-1 rounded bg-gray-200 text-sm hover:bg-gray-300 transition;
 }

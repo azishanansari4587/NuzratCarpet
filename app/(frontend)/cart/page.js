@@ -29,17 +29,13 @@ const Cart = () => {
     }, []);
 
 
-    const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-    };
-
     // Function to remove item
   const removeItem = (idToRemove) => {
     // Filter out the item with the given ID
     const filteredItems = cartItems.filter(
       (cartItem) => cartItem.productId !== idToRemove
     );
-    console.log(filteredItems);
+    // console.log(filteredItems);
     
 
     // Update the cartItems state with the filtered array
@@ -60,7 +56,7 @@ const Cart = () => {
         // console.log(cartItems.productId);
         
 
-        console.log('User:', userId);
+        // console.log('User:', userId);
 
         // Ensure the user is logged in
         if (!userId) {
@@ -81,7 +77,7 @@ const Cart = () => {
             body: JSON.stringify({ userId: userId, cartItems }),
         });
 
-        console.log(cartItems.productId);
+        // console.log(cartItems.productId);
 
         if (response.ok) {
             // Clear the cart
@@ -117,7 +113,7 @@ const Cart = () => {
                         ) : (
                             <ul className="flex flex-col divide-y divide-gray-200">
                             {cartItems.map((cartItem, index) => (
-                                console.log(cartItem.productId),
+                                // console.log(cartItem.productId),
                                 
                             <li key={cartItem.productId} className="flex flex-col py-6 sm:flex-row sm:justify-between">
                                 <div className="flex w-full space-x-2 sm:space-x-4">
@@ -165,7 +161,7 @@ const Cart = () => {
                                 <button 
                                     onClick={handleCheckout} 
                                     type="submit"
-                                    className="mt-4 w-full rounded bg-blue-600 py-2 text-white hover:bg-blue-700"
+                                    className="mt-4 w-full rounded bg-black py-2 text-white hover:bg-gray-700"
                                 >
                                     Proceed to Enquiry
                                 </button>

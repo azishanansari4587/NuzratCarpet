@@ -36,17 +36,17 @@ const Newsletter = () => {
     
 
   return (
-    <section className="bg-gray-50">
-        <div className="p-8 md:p-12 lg:px-16 lg:py-24">
-            <div className="mx-auto max-w-lg text-center">
-            <h2 className="text-2xl font-bold text-gray-900 md:text-3xl">
-                SUBSCRIBE NEWSLETTER
+    <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-xl mx-auto text-center">
+            <h2 className="text-2xl font-light mb-4">
+              STAY CONNECTED
             </h2>
 
             <p className=" text-gray-500 sm:mt-4 sm:block">
-                Let&apos;s stay in touch! Subscribe to our newsletter for latest updates.
+              Subscribe to receive updates on new collections, design insights, and exclusive offers.
             </p>
-            </div>
+          </div>
 
             <div className="mx-auto mt-8 max-w-xl">
             <form onSubmit={handleSubscribe} className="sm:flex sm:gap-4">

@@ -142,10 +142,6 @@ const Shop = () => {
 
  
 
-
-
-
-
   return (
     <div>
       <section className='bg-white'>
@@ -336,49 +332,22 @@ const Shop = () => {
               <ul className="grid gap-4 grid-cols-2 lg:grid-cols-4">
                 {filteredProducts?.map((items)=> (
                   <li key={items.id}>
-                    
-                  <Link href={`/products/${items.slug}`} className="group block overflow-hidden">
-                    <img
-                      src={items.images[0]}
-                      alt=""
-                      className="h-[300px] object-cover transition duration-500 group-hover:scale-105 sm:h-[350px]"
+                  <Link href={`/products/${items.slug}`} className="group block relative w-full h-64">
+                    <Image
+                      src={`${items.images[0]}?height=200&width=200`}
+                      alt={items.name}
+                      fill
+                      className="object-cover transition-opacity group-hover:opacity-90"
+                      priority
                     />
-
-                    <div className="relative bg-white pt-3">
-
-                      <div className="my-1.5 flex gap-1">
-                        <form>
-                          <fieldset>
-                            <legend className="sr-only">Color</legend>
-                          </fieldset>
-
-                          {/* <div className="flex flex-wrap justify-center gap-2 [&:hover_label]:opacity-75">
-                          {items.color.map((colors)=>(
-                            <div key={colors}>
-                              <input type="checkbox" id="ColorSg" className="sr-only" />
-                              
-                                <label
-                                htmlFor="ColorSg"
-                                className={`block size-8 cursor-pointer, ${colors}  transition hover:!opacity-100`}
-                                >
-                                  <span className="sr-only"> Space Gray </span>
-                                </label>
-                            </div>
-                            ))}
-                          </div> */}
-                        </form>
-                      </div>
-
-                      <h3
-                        className="mt-2 text-gray-700 group-hover:underline group-hover:underline-offset-4"
-                      >
+                    <div className="absolute bottom-0 w-full bg-white bg-opacity-80 p-2">
+                      <h3 className="text-gray-700 group-hover:underline group-hover:underline-offset-4">
                         {items.name}
                       </h3>
-
                     </div>
-
                   </Link>
                 </li>
+                
                 ))}
               </ul>
             </div>

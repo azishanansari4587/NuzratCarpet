@@ -23,6 +23,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import withAuth from '@/lib/withAuth'
 
 
 
@@ -201,4 +202,4 @@ const Enquiry = () => {
   )
 }
 
-export default Enquiry
+export default withAuth(Enquiry, [1]);

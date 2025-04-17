@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import React from 'react'
 
 import {Swiper, SwiperSlide} from 'swiper/react';
@@ -7,9 +7,10 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination'
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import Image from 'next/image';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -57,63 +58,64 @@ const Banner = () => {
   
     if (!product) return;
 
+    const slidesRef = useRef([]);
+
+    const handleSlideChange = (swiper) => {
+      slidesRef.current.forEach((el) => {
+        if (el) el.classList.remove('zoom-animation');
+      });
+      const current = slidesRef.current[swiper.realIndex];
+      if (current) {
+        void current.offsetWidth; // force reflow
+        current.classList.add('zoom-animation');
+      }
+    };
+
 
   return (
-    <div className='w-full'> 
+    <section className='relative'> 
     { isLoading ? ( <Spinner/>) : (
-      <Swiper navigation={ 
-        {
-            nextEl: ".button-next-slide",
-            prevEl: ".button-prev-slide",
-        }
-    } 
-    loop={true}
-    pagination={{
-      clickable: true,
-      el: '.swiper-pagination',
-      // type: 'bullets'
-    }}
-    modules={[Pagination,Navigation]}>
-       {product.map((items)=>(
-         items.tags.includes('Banner') ? (
-
-         
-          <SwiperSlide key={items.id} className="relative text-center bg-white font-medium flex justify-center items-center">
-            <Image
-              src={items.images[0]}
-              alt={items.name}
-              width={1600}
-              height={500}
-              className="aspect-[4/3] w-full rounded-lg object-cover lg:aspect-auto lg:h-[700px] lg:object-center"
-            />
-            <div className="absolute inset-0 flex flex-col justify-center items-center opacity-0 transition-opacity duration-300 hover:opacity-100  bg-opacity-50">
-              <h3 className="lg:text-2xl text-white text-center">Designed by Shah Alam</h3>
-              <h2 className="py-3 lg:text-8xl text-white text-center">{items.name}</h2>
-              <Link href={`/products/${items.slug}`} className="text-white border-b-2 lg:px-10 lg:py-2 hover:bg-black lg:m-2">
-                Explore Now
-              </Link>
+      <Swiper
+      effect="fade"
+      speed={2000} // 2 seconds fade transition
+      loop={true}
+      autoplay={{ delay: 5000 }}
+      pagination={{
+        clickable: true,
+        el: '.swiper-pagination',
+      }}
+      navigation={{
+        nextEl: ".button-next-slide",
+        prevEl: ".button-prev-slide",
+      }}
+      modules={[Pagination, Navigation, Autoplay, EffectFade]}
+      onSlideChange={handleSlideChange}
+      onSwiper={(swiper) => handleSlideChange(swiper)} // apply zoom on first slide
+      className="w-full h-[80vh]"
+    >
+      {product
+        .filter(item => item.tags.includes('Banner'))
+        .map((item, index) => (
+          <SwiperSlide key={item.id}>
+            <div
+              ref={(el) => (slidesRef.current[index] = el)}
+              className="relative w-full h-[80vh]"
+            >
+              <Image
+                src={`${item.images[0]}?height=1080&width=1920`}
+                alt={item.name}
+                fill
+                className="object-cover"
+                priority
+              />
             </div>
           </SwiperSlide>
-           
-        ): (
-          ''
-        )
-        ))} 
-
-
-        <div className='top-[50%] absolute z-10 border border-black button-prev-slide left-5 text-black w-[40px] h-[40px] hover:text-white  hover:bg-black grid place-items-center'>
-          <ChevronLeft />
-        </div>
-        {/* <div className='swiper-pagination swiper-pagination-bullets absolute z-10 '>
-          
-        </div> */}
-        <div className='top-[50%] absolute z-10 border border-black button-next-slide right-5 text-black w-[40px] h-[40px] hover:text-white hover:bg-black grid place-items-center'> 
-          <ChevronRight />
-        </div>
-    </Swiper>
+        ))}
+      </Swiper>
     )}
+    
         
-    </div>
+    </section>
   )
 }
 

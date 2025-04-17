@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useParams, useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import withAuth from "@/lib/withAuth";
 
 const colors = [
     { name: 'Red', value: 'bg-red-500' },
@@ -437,4 +438,4 @@ const EditProduct = ({}) => {
   );
 };
 
-export default EditProduct;
+export default withAuth(EditProduct, [1]);

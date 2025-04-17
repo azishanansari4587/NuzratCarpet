@@ -31,6 +31,7 @@ import {
 import { Button } from "@/components/ui/button"
 import Spinner from '@/components/Spinner';
 import { ProductDelete } from '@/components/ProductDelete'
+import withAuth from '@/lib/withAuth'
 
 
 
@@ -174,4 +175,4 @@ const Products = () => {
   )
 }
 
-export default Products
+export default withAuth(Products, [1]);

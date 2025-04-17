@@ -96,6 +96,42 @@ export async function GET() {
 }
 
 
+// export async function GET() {
+//   try {
+//     const { searchParams } = new URL(request.url);
+//     const collectionSlug = searchParams.get("collectionSlug");
+
+//     if (!collectionSlug) {
+//       return NextResponse.json({ error: 'Collection slug is required' }, { status: 400 });
+//     }
+
+//     // Fetch collection by slug
+//     const [collection] = await connection.execute(
+//       'SELECT id FROM collection WHERE slug = ? AND status = ?',
+//       [collectionSlug, 'active']
+//     );
+
+//     if (collection.length === 0) {
+//       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
+//     }
+
+//     const collectionId = collection[0].id;
+
+//     // Fetch products of that collection
+//     const [products] = await connection.execute(
+//       'SELECT * FROM product WHERE collectionId = ?',
+//       [collectionId]
+//     );
+
+//     return NextResponse.json(products, { status: 200 });
+//   } catch (error) {
+//     console.error('Error fetching products:', error);
+//     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+//   }
+// }
+
+
+
 //* Delete a Product
 export async function DELETE(request) {
   try {

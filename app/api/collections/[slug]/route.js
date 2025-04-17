@@ -3,10 +3,10 @@ import connection from "@/lib/db";
 
 
 export async function GET(request, { params }) {
-  const { id } = params;
+  const { slug } = params;
 
   try {
-    const [rows] = await connection.query('SELECT * FROM collections WHERE id = ?', [id]);
+    const [rows] = await connection.query('SELECT * FROM collections WHERE slug = ?', [slug]);
 
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Collections not found' }, { status: 404 });
@@ -19,13 +19,13 @@ export async function GET(request, { params }) {
 
 
 export async function PUT(request, { params }) {
-    const { id } = params;
+    const { slug } = params;
     const { name, status } = await request.json();
   
     try {
       const [result] = await connection.execute(
-        'UPDATE collections SET name = ?, status = ? WHERE id = ?',
-        [name, status, id]
+        'UPDATE collections SET name = ?, status = ?, description = ?, image = ? WHERE slug = ?',
+        [name, status, description, image, slug]
       );
   
       if (result.affectedRows === 0) {

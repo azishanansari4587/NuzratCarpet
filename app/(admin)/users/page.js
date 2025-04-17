@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Spinner from '@/components/Spinner';
 import Image from 'next/image';
+import withAuth from '@/lib/withAuth';
 
 
 
@@ -169,4 +170,4 @@ const Users = () =>  {
   )
 }
 
-export default Users
+export default withAuth(Users, [1]);

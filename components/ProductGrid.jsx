@@ -4,6 +4,14 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Spinner from '@/components/Spinner'
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 
 
@@ -51,34 +59,43 @@ const ProductGrid = () => {
 
 
   return (
-    <section>
-        <div className="mx-auto px-4 py-8 sm:px-12 sm:py-12 lg:px-8">
-        { isLoading ? ( <Spinner/>) : (
-            <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                {product.map((item) => (
-                  item.tags.includes('New') ? (
-                    <li key={item.id}>
-                        <Link href={`/products/${item.slug}`} className="group block overflow-hidden">
-                            
-                              <img
-                              src={item.images[0]}
-                              alt={item.image_path[0]}
-                              className="h-[500px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[450px]"
+    <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-2xl font-light mb-12 text-center">NEW ARRIVALS</h2>
+          { isLoading ? ( <Spinner/>) : (
+              <Carousel
+              opts={{ align: "start" }}
+              className="w-full max-w-7xl mx-auto"
+            >
+              <CarouselContent>
+                {product.map((item) =>
+                  item.tags.includes("New") ? (
+                    <CarouselItem
+                      key={item.id}
+                      className="basis-1/2 md:basis-1/3 lg:basis-1/4 px-2"
+                    >
+                      <Link href={`/products/${item.slug}`} className="group block">
+                        <div className="w-full aspect-square relative overflow-hidden rounded-md bg-white">
+                          <Image
+                            src={`${item.images[0]}?width=500&height=500`}
+                            alt={item.image_path[0]}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
-                             {/* })}  */}
-                            
-
-                            <div className="relative bg-white pt-3">
-                                <h3 className="text-gray-900 group-hover:underline group-hover:underline-offset-4">
-                                    {item.name}
-                                </h3>
-                            </div>
-                        </Link>
-                    </li> ) : ( "" ) 
-                 ))} 
-                  
-            </ul>
-        )}    
+                        </div>
+                        <h3 className="mt-2 text-sm font-medium text-center text-gray-800">
+                          {item.name}
+                        </h3>
+                      </Link>
+                    </CarouselItem>
+                  ) : null
+                )}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+            
+          )}    
         </div>
     </section>
   )

@@ -28,6 +28,11 @@ import { Separator } from '@/components/ui/separator'
 import MultiText from '@/components/MultiText';
 import { useRouter } from 'next/navigation'
 import { Checkbox } from "@/components/ui/checkbox";
+import TiptapEditor from '@/components/TipTapEditor'
+import withAuth from '@/lib/withAuth'
+
+
+
 
 const colors = [
   { name: 'Red', value: 'bg-red-500' },
@@ -225,14 +230,16 @@ const AddProduct = () => {
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="description">Description</Label>
-                          <Textarea
+                          {/* <Wysimark value={description} onChange={setDescription}/> */}
+                          <TiptapEditor value={description} onChange={setDescription} />
+                          {/* <Textarea
                             id="description"
                             placeholder="Product Description"
                             className="min-h-32"
                             value = {description}
                             onChange= {(e) => setDescription(e.target.value)}
                             required
-                          />
+                          /> */}
                         </div>
                         <div className="grid gap-3">
                           <Label htmlFor="info">Information</Label>
@@ -467,4 +474,7 @@ const AddProduct = () => {
   )
 }
 
-export default AddProduct
+
+
+
+export default withAuth(AddProduct, [1]);

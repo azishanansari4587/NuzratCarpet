@@ -1,117 +1,139 @@
+"use client"
+import { useState, useEffect } from 'react'
 import React from 'react'
-import {ShoppingBasket, User, User2 } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import {
   Home,
-  LineChart,
-  Package,
   Phone,
   PanelLeft,
   Search,
   Store,
-  Users2,
   BriefcaseBusiness,
-  FileChartColumnIncreasing
+  FileChartColumnIncreasing,
+  ShoppingCart, User,
+  ShoppingBasket, Users2, 
+  MenuIcon
 } from "lucide-react"
 import Link from 'next/link';
+import { useCartStore } from '@/components/useCartStore';
 
 import Logo from '@/public/47.jpg'
 import Logo1 from '@/public/48.jpg'
 
 const Header = () => {
+  const totalItems = useCartStore(
+    (state) => state.cart.reduce((sum, item) => sum + item.quantity, 0)
+  );
+
+  console.log('Header re-rendered, totalItems:', totalItems);
+
+
+  // const [cartCount, setCartCount] = useState(0);
+
+  //   useEffect(() => {
+  //       const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  //       setCartCount(cart.reduce((total, item) => total + item.quantity, 0)); // Summing quantities
+  //   }, []);
+
   return (
-    <header className='bg-white shadow-2xl'>
-        <div className='mx-auto max-w-screen-xl p-4 sm:px-6 lg:px-8'>
-          <div className='flex h-16 items-center justify-between '>
+    <header className='sticky top-0 z-40 w-full bg-white py-4 border-b border-gray-100'>
+        <div className='container mx-auto px-4 md:px-6'>
+          <div className='flex items-center justify-between'>
+            {/* Logo */}
             <div className='md:flex md: items-center md:gap-12'>
-              <a href="#" className='block text-teal-600'>
+              <Link href={"/"} className='block text-teal-600'>
                 <div className='flex flex-col items-center gap-2'>
                 <Image src={Logo1} alt='' width={30} />
                 <Image src={Logo} alt="" width={250}/>
                 </div>
-              </a>
+              </Link>
             </div>
+            {/* Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+            <Link href={"/"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
+              Home
+            </Link>
+            <Link href={"/shop"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
+              Shop
+            </Link>
+            <Link href={"/professionals"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
+              Professional
+            </Link>
+            <Link href={"/about"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
+              About
+            </Link>
+            <Link href={"/contact"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
+              Contact
+            </Link>
 
-            <div className='hidden md:block'>
-               <nav>
-                <ul className='flex items-center gap-6 text-sm'>
-                  <li>
-                    <a href="/" className='text-black transition hover:text-gray-600'>Home</a>
-                  </li>
-                  <li>
-                    <a href="/shop" className='text-black transition hover:text-gray-600'>Shop</a>
-                  </li>
-                  <li>
-                    <a href="#" className='text-black transition hover:text-gray-600'>Professionals</a>
-                  </li>
-                  <li>
-                    <a href="/about" className='text-black transition hover:text-gray-600'>About</a>
-                  </li>
-                  <li>
-                    <a href="/contact" className='text-black transition hover:text-gray-600'>Contact</a>
-                  </li>
-                  {/* <li>
-                    <a href="/signin" className='text-black transition hover:text-gray-600'>SignIn</a>
-                  </li>
-                  <li>
-                    <a href="/signup" className='text-black transition hover:text-gray-600'>SignUp</a>
-                  </li>
-
-                  <li>
-                    <a href="/dashboard" className='text-black transition hover:text-gray-600'>Dashboard</a>
-                  </li> */}
-                </ul>
-               </nav>
-            </div>
+            {/* <ul className='flex items-center gap-6 text-sm'>
+              <li>
+                <a href="/" className='text-black transition hover:text-gray-600'>Home</a>
+              </li>
+              <li>
+                <a href="/shop" className='text-black transition hover:text-gray-600'>Shop</a>
+              </li>
+              <li>
+                <a href="#" className='text-black transition hover:text-gray-600'>Professionals</a>
+              </li>
+              <li>
+                <a href="/about" className='text-black transition hover:text-gray-600'>About</a>
+              </li>
+              <li>
+                <a href="/contact" className='text-black transition hover:text-gray-600'>Contact</a>
+              </li>
+            </ul> */}
+            </nav>
             
+            {/* Actions */}
             <div className='hidden md:block'>
-            <div className='flex gap-6'>
-              <a href="/cart"><ShoppingBasket className='h-12 w-6'/></a>
-              <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="overflow-hidden rounded-full"
-              >
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback></AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
-                <DropdownMenuSeparator />
-                <Link href={"/myEnquiry"}><DropdownMenuItem>My Inquiry</DropdownMenuItem></Link>
-                <Link href={"/signin"}><DropdownMenuItem>SignIn</DropdownMenuItem></Link>
-                <Link href={"/signup"}><DropdownMenuItem>SignUp</DropdownMenuItem></Link>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-              
- 
-            </div>
-            </div>
+              <div className="flex items-center space-x-4">
+                <button aria-label="Search" className="text-neutral-800 hover:text-neutral-500">
+                  <Search className="h-4 w-4" />
+                </button>
+                <Link href={"/myEnquiry"} aria-label="My Enquiry" className="text-xs uppercase tracking-wider hover:text-neutral-500 hidden md:block">
+                  My Enquiry
+                </Link>
+                <Link href={"/signin"} aria-label="Account" className="text-xs uppercase tracking-wider hover:text-neutral-500 hidden md:block">
+                  Account
+                </Link>
+                <Link href={"/cart"} aria-label="Cart" className="flex text-neutral-800 hover:text-neutral-500">
+                  <ShoppingCart className="h-4 w-4" />
+                  {totalItems > 0 && (
+                    console.log('cart', cart),
+                    <span className="ml-1 text-xs">({totalItems})</span>
+                  )}
+                </Link>
+                <button className="md:hidden text-neutral-800">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-5 w-5"
+                  >
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>  
 
 
-            <div className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-              <Sheet>
+            <div className=" bg-[#f8f8f6] sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0  sm:px-6">
+              <Sheet >
                 <SheetTrigger asChild>
                   <Button size="icon" variant="outline" className="sm:hidden">
-                    <PanelLeft className="h-5 w-5" />
+                    <MenuIcon className="h-5 w-5" />
                     <span className="sr-only">Toggle Menu</span>
                   </Button>
                 </SheetTrigger>
@@ -136,7 +158,7 @@ const Header = () => {
                       Home
                     </Link>
                     <Link
-                      href="#"
+                      href="/shop"
                       className="flex items-center gap-4 px-2.5 text-foreground"
                     >
                       <Store className="h-5 w-5" />
@@ -150,45 +172,37 @@ const Header = () => {
                       Professional
                     </Link>
                     <Link
-                      href="#"
+                      href="/about"
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <FileChartColumnIncreasing className="h-5 w-5" />
                       About
                     </Link>
                     <Link
-                      href="#"
+                      href="/contact"
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <Phone className="h-5 w-5" />
                       Contact
                     </Link>
                     <Link
-                      href="#"
+                      href="/cart"
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <ShoppingBasket className="h-5 w-5" />
-                      Cart
+                      Cart (0)
                     </Link>
                     <Link
-                      href="#"
+                      href="/signin"
                       className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                     >
                       <User className="h-5 w-5" />
-                      SignIn
-                    </Link>
-                    <Link
-                      href="#"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <Users2 className="h-5 w-5" />
-                      SignUp
+                      Account
                     </Link>
                   </nav>
                 </SheetContent>
               </Sheet>
             </div>
-
 
           </div>
         </div>
