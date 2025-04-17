@@ -4,6 +4,7 @@ import {MapPin, Mail, Phone, Clock9} from 'lucide-react';
 
 import image1 from '@/public/47.jpg'
 import Logo1 from '@/public/48.jpg'
+import Link from 'next/link';
 const Footer = () => {
   return (
     
@@ -126,11 +127,11 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
-
+            
             <hr/>   
             <div className='my-5 text-center items-center lg:flex justify-between ' >
                 <p>Copyright © <span  className='font-medium italic '> Nuzrat Carpet Emporium</span></p>
-                <p className='py-4'>Created by <a href='' className='bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 ... p-2 rounded-lg text-white'>Mirzapur Developer</a></p>
+                <p className='py-4'>Created by <Link href={'https://zishan-dev.vercel.app/'} className='bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 ... p-2 rounded-lg text-white'>Zishan Developer</Link></p>
             </div> 
         </div>
     </footer>

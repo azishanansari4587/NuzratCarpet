@@ -12,8 +12,6 @@ import 'swiper/css/effect-fade';
 
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import Image from 'next/image';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
 import Spinner from '@/components/Spinner';
 
 
@@ -60,7 +58,7 @@ const Banner = () => {
     
 
     if (isLoading || product.length === 0) {
-      return <div>Loading...</div>; // 🌀 loader or fallback
+      return null; // 🌀 loader or fallback
     }
 
 
