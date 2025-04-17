@@ -16,11 +16,6 @@ cloudinary.v2.config({
 export async function POST(request) {
   
     try {
-        //Check if collections already exists 
-        // const [collectionExists] = await connection.execute("SELECT * FROM collections WHERE name = ?", [name]);
-        // if( collectionExists.length > 0) {
-        //     return NextResponse.json({error: "Collection already exists"}, {status: 400});
-        // }
         const formData = await request.formData();
         const name = formData.get('name');
         // const slug = formData.get('slug');
@@ -85,8 +80,12 @@ export async function POST(request) {
 export async function GET() {
     try {
       const [rows] = await connection.execute('SELECT * FROM collections');
+      if (!Array.isArray(rows)) {
+        return NextResponse.json({ error: 'Data format is incorrect' }, { status: 500 });
+      }  
       return NextResponse.json(rows, { status: 200 });
     } catch (error) {
+      console.error('GET /api/collections error:', error); 
       return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 });
     }
 }

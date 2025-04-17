@@ -3,25 +3,42 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
+import Spinner from './Spinner';
 
 const CollectionsGrid = () => {
 
   const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-      // Fetch collection from the Api
-      const fetchCollection = async () => {
-        try {
-          const res = await fetch('/api/collections');
-          const data = await res.json();
-          setCollections(data);
-          // setFilteredProducts(data);
-        } catch (error) {
-          console.error('Failed to fetch collections', error);
+    const fetchCollection = async () => {
+      try {
+        const res = await fetch('/api/collections');
+  
+        if (!res.ok) {
+          throw new Error("Failed to fetch collections");
         }
-      };
-      fetchCollection();
-    }, []);
+  
+        const data = await res.json();
+  
+        // Ensure data is an array
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid data format received");
+        }
+  
+        setCollections(data);
+      } catch (error) {
+        console.error('Failed to fetch collections:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchCollection();
+  }, []);
+  
 
   return (
     <section className="py-16 bg-white">
@@ -29,14 +46,23 @@ const CollectionsGrid = () => {
         <h2 className="text-2xl font-light mb-12 text-center">SHOP BY COLLECTION</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Add your collection cards here */}
-          {collections.map((collection) => (
-            <CategoryCard 
-              key={collection.id} 
-              title={collection.name} 
-              image={`${collection.image}?height=600&width=600&fit=crop&auto=format`}
-              slug={collection.slug}
-            />
-          ))}
+          {loading ? (
+            <Spinner />
+          ) : error ? (
+            <p className="text-red-500 text-center">{error}</p>
+          ) : collections.length === 0 ? (
+            <p className="text-gray-500 text-center">No collections found.</p>
+          ) : (
+            collections.map((collection) => (
+              <CategoryCard 
+                key={collection.id} 
+                title={collection.name} 
+                image={`${collection.image}?height=600&width=600&fit=crop&auto=format`}
+                slug={collection.slug}
+              />
+            ))
+          )}
+
         </div>
       </div>
     </section>
