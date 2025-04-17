@@ -1,7 +1,6 @@
 import React from 'react'
 // app/collections/[slug]/page.jsx
 import { notFound } from "next/navigation";
-import ProductCard from "@/components/ProductCard"; // ya jo bhi tu use karta hai
 import connection from "@/lib/db";
 import Link from 'next/link';
 import Image from 'next/image';
