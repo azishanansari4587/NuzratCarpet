@@ -1,37 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧶 Nuzrat Carpet – Premium Carpet Product Showcase Website
 
-## Getting Started
+**Nuzrat Carpet** is a clean, modern, and responsive product showcase website designed to display premium carpet collections and details beautifully. Built using **Next.js** and **Tailwind CSS**, the site provides a smooth user experience and fast performance, ideal for commercial product display and client interaction.
 
-First, run the development server:
+## 🔗 Live Preview
+
+👉 [https://nuzrat-carpet.vercel.app](https://nuzrat-carpet.vercel.app)
+
+## 🌟 Key Features
+
+- 🖼️ Clean and modern UI for premium carpet products  
+- 📱 Fully responsive across all devices  
+- ⚡ High performance and SEO-friendly  
+- 🧩 Component-based modular structure  
+- 📂 Dynamic product data rendering  
+- 🚀 Hosted on Vercel with CI/CD support
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/)  
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)  
+- **Frontend**: React.js, JSX, CSS3  
+- **State Management**: Local or global (Zustand/Context, if used)  
+- **Deployment**: Vercel  
+- **Version Control**: Git + GitHub  
+
+## 📁 Folder Structure
+
+<pre>
+  ├── /public         # Static assets (product images, icons, etc.) 
+  ├── /components     # Reusable UI components (Navbar, ProductCard, Footer, etc.) 
+  ├── /pages          # Application pages (Home, Products, Product Detail, etc.) 
+  ├── /styles         # Global and Tailwind CSS styles 
+  ├── /data           # (Optional) JSON or JS data for products/categories
+</pre>
+
+
+## 🧾 Getting Started
+
+To run the project locally:
 
 ```bash
+git clone https://github.com/your-username/nuzrat-carpet.git
+cd nuzrat-carpet
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+📸 Screenshots
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![NuzratCarpet_Screenshot1](https://github.com/user-attachments/assets/e6b0106e-5e54-45ed-9584-7fed6217b390)
+![NuzratCarpet_ScreenShot4](https://github.com/user-attachments/assets/79bd3bbf-452b-468c-b8f2-1ce745b00ed4)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+🛠️ Possible Future Enhancements
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+🌍 Multi-language support
 
-## Learn More
+💬 Chatbot or live support feature
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# NuzratCarpet
