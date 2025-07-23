@@ -18,11 +18,10 @@ export async function POST(request) {
     try {
         const formData = await request.formData();
         const name = formData.get('name');
-        // const slug = formData.get('slug');
         const status = formData.get('status');
         const description = formData.get('description');
         const imageFile = formData.get('image');
-        // const { name, status } = await request.json();
+
         const slugify = (str) => {
           if (!str) return Date.now().toString(); // Use a unique timestamp if name is empty
           return str
@@ -53,7 +52,7 @@ export async function POST(request) {
         const imageUrl = uploadResponse.secure_url;
 
         // Check if slug already exists
-      const [existing] = await connection.query(
+      const [existing] = await connection.execute(
         'SELECT id FROM collections WHERE slug = ?',
         [slug]
       );
@@ -78,15 +77,21 @@ export async function POST(request) {
 
 
 export async function GET() {
+  let connectionClient;
     try {
-      const [rows] = await connection.execute('SELECT * FROM collections');
-      if (!Array.isArray(rows)) {
-        return NextResponse.json({ error: 'Data format is incorrect' }, { status: 500 });
-      }  
+      connectionClient = await connection.getConnection();
+      const [rows] = await connectionClient.execute('SELECT * FROM collections');
+      // if (!Array.isArray(rows)) {
+      //   return NextResponse.json({ error: 'Data format is incorrect' }, { status: 500 });
+      // }  
       return NextResponse.json(rows, { status: 200 });
     } catch (error) {
       console.error('GET /api/collections error:', error); 
       return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 });
+    }finally {
+      if (connectionClient) {
+        connectionClient.release();
+      }
     }
 }
 

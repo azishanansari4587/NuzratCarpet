@@ -5,8 +5,8 @@ import bcrypt from "bcryptjs";
 export async function POST(request) {
     const { email, password } = await request.json();
 
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
+    const trimmedEmail = email?.trim();
+    const trimmedPassword = password?.trim();
 
     if(!trimmedEmail || !trimmedPassword) {
         return NextResponse.json({error: "Please fill in all fields"}, {status: 400});
@@ -18,6 +18,14 @@ export async function POST(request) {
         if(user.length === 0) {
             return NextResponse.json({error: "User not found"}, {status: 404});
         }
+
+        const users = user[0];
+
+        // Check if verified
+        if (users.is_verified !== 1) {
+          return NextResponse.json({ error: "Please verify your email before logging in." }, { status: 403 });
+        }
+    
 
         // Compare the provided password with the stored hash password //
         const isPasswordValid = await bcrypt.compare(trimmedPassword, user[0].password);

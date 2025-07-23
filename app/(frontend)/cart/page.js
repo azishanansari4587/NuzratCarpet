@@ -139,10 +139,6 @@ const Cart = () => {
                                         <Trash size={16} />
                                         <span>Remove</span>
                                     </button>
-                                    {/* <button type="button" className="flex items-center space-x-2 px-2 py-1">
-                                        <ShoppingCart size={16} />
-                                        <span>Add to Cart</span>
-                                    </button> */}
                                     </div>
                                 </div> 
                                 </div>
@@ -154,7 +150,6 @@ const Cart = () => {
                         {cartItems.length > 0 && (
                             <div className="mt-6">
                                 <h3 className="text-lg font-semibold">Order Summary</h3>
-                                {/* <p className="text-lg font-medium">Total: ${calculateTotal()}</p> */}
                                 <span>{`Total Cart Item : ${cartItems.length} ${
                                 cartItems.length > 1 ? "items" : "item"
                                 }`}</span>

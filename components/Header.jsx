@@ -1,185 +1,127 @@
 "use client"
-import React from 'react'
-import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import {
-  Home,
-  Phone,
-  PanelLeft,
-  Search,
-  Store,
-  BriefcaseBusiness,
-  FileChartColumnIncreasing,
-  ShoppingCart, User,
-  ShoppingBasket, Users2, 
-  MenuIcon
-} from "lucide-react"
-import Link from 'next/link';
-import { useCartStore } from '@/components/useCartStore';
 
+import { useState } from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react"
+import Image from 'next/image';
 import Logo from '@/public/47.jpg'
 import Logo1 from '@/public/48.jpg'
+import { usePathname } from "next/navigation";
 
-const Header = () => {
-  const totalItems = useCartStore(
-    (state) => state.cart.reduce((sum, item) => sum + item.quantity, 0)
-  );
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/rugs", label: "Rugs" },
+    { href: "/outdoor", label: "Outdoor" },
+    { href: "/collection", label: "Collections" },
+    { href: "/about", label: "About Us" },
+    { href: "/customizeInquiry", label: "Customize" },
+    { href: "/contact", label: "Contact Us" },
+  ];
 
 
   return (
-    <header className='sticky top-0 z-40 w-full bg-white py-4 border-b border-gray-100'>
-        <div className='container mx-auto px-4 md:px-6'>
-          <div className='flex items-center justify-between'>
-            {/* Logo */}
-            <div className='md:flex md: items-center md:gap-12'>
-              <Link href={"/"} className='block text-teal-600'>
-                <div className='flex flex-col items-center gap-2'>
-                <Image src={Logo1} alt='' width={30} />
-                <Image src={Logo} alt="" width={250}/>
-                </div>
-              </Link>
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Main header */}
+        <div className="flex items-center justify-between py-4">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <div className='flex flex-col items-center gap-2'>
+              <Image src={Logo1} alt='' width={30} />
+              <Image src={Logo} alt="" width={250}/>
             </div>
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-            <Link href={"/"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
-              Home
-            </Link>
-            <Link href={"/shop"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
-              Shop
-            </Link>
-            <Link href={"/professionals"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
-              Professional
-            </Link>
-            <Link href={"/about"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
-              About
-            </Link>
-            <Link href={"/contact"} className="text-xs uppercase tracking-wider hover:text-neutral-500">
-              Contact
-            </Link>
+          </Link>
 
-            </nav>
-            
-            {/* Actions */}
-            <div className='hidden md:block'>
-              <div className="flex items-center space-x-4">
-                <button aria-label="Search" className="text-neutral-800 hover:text-neutral-500">
-                  <Search className="h-4 w-4" />
-                </button>
-                <Link href={"/myEnquiry"} aria-label="My Enquiry" className="text-xs uppercase tracking-wider hover:text-neutral-500 hidden md:block">
-                  My Enquiry
-                </Link>
-                <Link href={"/signin"} aria-label="Account" className="text-xs uppercase tracking-wider hover:text-neutral-500 hidden md:block">
-                  Account
-                </Link>
-                <Link href={"/cart"} aria-label="Cart" className="flex text-neutral-800 hover:text-neutral-500">
-                  <ShoppingCart className="h-4 w-4" />
-                  {totalItems > 0 && (
-                    console.log('cart', cart),
-                    <span className="ml-1 text-xs">({totalItems})</span>
-                  )}
-                </Link>
-                <button className="md:hidden text-neutral-800">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
-            </div>  
-
-
-            <div className=" sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0  sm:px-6">
-              <Sheet >
-                <SheetTrigger asChild>
-                  <Button size="icon" variant="outline" className="sm:hidden">
-                    <MenuIcon className="h-5 w-5" />
-                    <span className="sr-only">Toggle Menu</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetTitle></SheetTitle>
-                <SheetContent side="left" className="sm:max-w-xs bg-white">
-                  <nav className="grid gap-6 text-lg font-medium">
-                    <div
-                      className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                    >
-                      <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback></AvatarFallback>
-                      </Avatar>
-
-                    </div>
-                    <Link
-                      href={"/"}
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <Home className="h-5 w-5" />
-                      Home
-                    </Link>
-                    <Link
-                      href={"/shop"}
-                      className="flex items-center gap-4 px-2.5 text-foreground"
-                    >
-                      <Store className="h-5 w-5" />
-                      Shop
-                    </Link>
-                    <Link
-                      href="#"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <BriefcaseBusiness className="h-5 w-5" />
-                      Professional
-                    </Link>
-                    <Link
-                      href={"/about"}
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <FileChartColumnIncreasing className="h-5 w-5" />
-                      About
-                    </Link>
-                    <Link
-                      href={"/contact"}
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <Phone className="h-5 w-5" />
-                      Contact
-                    </Link>
-                    <Link
-                      href={"/cart"}
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <ShoppingBasket className="h-5 w-5" />
-                      Cart
-                    </Link>
-                    <Link
-                      href={"/signin"}
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                    >
-                      <User className="h-5 w-5" />
-                      Account
-                    </Link>
-                  </nav>
-                </SheetContent>
-              </Sheet>
+          {/* Search bar */}
+          <div className="hidden md:flex flex-1 max-w-lg mx-8">
+            <div className="relative w-full">
+              <Input type="text" placeholder="Search for rugs, patterns, colors..." className="pl-10 pr-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             </div>
+          </div>
 
+          {/* Navigation icons */}
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="sm" className="hidden md:flex">
+              <User className="w-5 h-5" />
+            </Button>
+
+            <Link href="/wishlist">
+              <Button variant="ghost" size="sm" className="relative">
+                <Heart className="w-5 h-5" />
+                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  2
+                </Badge>
+              </Button>
+            </Link>
+
+            <Link href="/cart">
+              <Button variant="ghost" size="sm" className="relative">
+                <ShoppingCart className="w-5 h-5" />
+                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  3
+                </Badge>
+              </Button>
+            </Link>
+
+            <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
           </div>
         </div>
+
+        {/* Navigation menu */}
+
+        <nav className="hidden md:flex items-center justify-center space-x-8 py-4 border-t">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`font-medium ${
+                pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t">
+            <div className="flex flex-col space-y-4">
+              <Input type="text" placeholder="Search rugs..." className="mb-4" />
+              <Link href="/" className="text-gray-700 hover:text-amber-600 font-medium">
+                Home
+              </Link>
+              <Link href="/shop" className="text-gray-700 hover:text-amber-600 font-medium">
+                Shop All
+              </Link>
+              <Link href="/shop?category=Persian" className="text-gray-700 hover:text-amber-600 font-medium">
+                Persian Rugs
+              </Link>
+              <Link href="/shop?category=Modern" className="text-gray-700 hover:text-amber-600 font-medium">
+                Modern
+              </Link>
+              <Link href="/customize" className="text-amber-600 hover:text-amber-700 font-medium">
+                Custom Rugs
+              </Link>
+              <Link href="/contact" className="text-gray-700 hover:text-amber-600 font-medium">
+                Contact
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   )
 }
-
-export default Header

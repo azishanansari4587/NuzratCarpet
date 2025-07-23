@@ -1,18 +1,22 @@
 import { NextResponse } from "next/server";
 import connection from "@/lib/db";
 import bcrypt from 'bcryptjs';
+import crypto from "crypto";
+import { sendVerificationEmail } from "@/lib/email";
 
 
 export async function POST(request) {
-    const { name, email, password, contact, address } = await request.json();
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
-
-    if (!name || !trimmedEmail ||!trimmedPassword || !contact || !address ) {
-        return NextResponse.json({ error: 'Please fill in all fields'}, {status: 400});
-    }
+    
 
     try {
+        const { first_name, last_name, email, password, contact } = await request.json();
+        const trimmedEmail = email?.trim();
+        const trimmedPassword = password?.trim();
+
+        if (!first_name || !last_name || !trimmedEmail ||!trimmedPassword || !contact ) {
+            return NextResponse.json({ error: 'Please fill in all fields'}, {status: 400});
+        }
+
         //Check if already exists 
         const [userExists] = await connection.execute("SELECT * FROM users WHERE email = ?", [trimmedEmail]);
         if( userExists.length > 0) {
@@ -20,13 +24,20 @@ export async function POST(request) {
         }
 
         //Hash the Password //
-        const hasedPassword = await bcrypt.hash(trimmedPassword, 10);
+        const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
+
+        // Generate Email Verification Token
+        const verificationToken = crypto.randomBytes(32).toString("hex");
 
         //Insert the new user into the database 
         await connection.execute(
-            "INSERT INTO users (name, email, password, contact, address) VALUES (?, ?, ?, ?, ?)",
-            [name, trimmedEmail, hasedPassword, contact, address]
+            "INSERT INTO users (first_name, last_name, email, password, contact, role, is_verified, verification_token, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [first_name, last_name, trimmedEmail, hashedPassword, contact, 0, 0, verificationToken, null, null]
         );
+
+
+        // Send Verification Email
+        await sendVerificationEmail(trimmedEmail, verificationToken);
 
         return NextResponse.json({message: 'User registered successfully'}, {status: 201});
 

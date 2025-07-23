@@ -197,27 +197,7 @@ const ViewProduct = () => {
                   
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                  {/* <Card x-chunk="dashboard-07-chunk-3">
-                    <CardHeader>
-                      <CardTitle>Product Status</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-6">
-                        <div className="grid gap-3">
-                          <Label htmlFor="status">Status</Label>
-                          <Select>
-                            <SelectTrigger id="status" aria-label="Select status">
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="0">Draft</SelectItem>
-                              <SelectItem value="1">Active</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card> */}
+
 
                   <Card x-chunk="dashboard-07-chunk-2">
                     <CardHeader>

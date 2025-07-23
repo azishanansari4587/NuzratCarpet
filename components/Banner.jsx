@@ -58,7 +58,7 @@ const Banner = () => {
     
 
     if (isLoading || product.length === 0) {
-      return null; // 🌀 loader or fallback
+      return <Spinner/>; // 🌀 loader or fallback
     }
 
 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -117,20 +119,51 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium;
+  }
+
+  /* Custom classes */
+  .container-custom {
+    @apply px-4 mx-auto max-w-7xl sm:px-6 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24;
   }
 }
 
 
-body {
-  font-family: var(--font-lora), serif; /* Lora for body text */
+
+/* Hover effect for product cards */
+.product-card-image {
+  transition: transform 1.5s ease;
 }
 
-h1, h2, h3 {
-  font-family: var(--font-playfair), serif; /* Playfair Display for Headings */
+.product-card:hover .product-card-image {
+  transform: scale(1.05);
 }
 
-.btn {
-  @apply px-3 py-1 rounded bg-gray-200 text-sm hover:bg-gray-300 transition;
+/* Newsletter input style */
+.newsletter-input {
+  @apply w-full p-3 bg-white border-0 focus:outline-none focus:ring-2 focus:ring-primary/50;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/40 rounded-full hover:bg-primary/60;
 }
