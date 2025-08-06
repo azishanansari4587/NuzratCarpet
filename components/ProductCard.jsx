@@ -1,0 +1,111 @@
+"use client"
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { Heart, ShoppingCart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
+
+
+
+const ProductCard = ({
+  id,
+  name,
+  image,
+  hoverImage,
+  category,
+  colors,
+  sizes,
+}) => {
+
+    const [showHoverImage, setShowHoverImage] = useState(false);
+    const hoverTimer = useRef(null);
+
+    const handleMouseEnter = () => {
+        if (!hoverImage) return; // skip if no hoverImage
+        hoverTimer.current = setTimeout(() => {
+          setShowHoverImage(true);
+        }, 500); // 5 seconds
+      };
+      
+
+    const handleMouseLeave = () => {
+    clearTimeout(hoverTimer.current);
+    setShowHoverImage(false);
+    };
+
+
+  return (
+    <div className="group product-card">
+      <div 
+        className="relative overflow-hidden rounded-md bg-secondary mb-4"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        >
+
+        {/* Product image */}
+        <Link href={`/products/${id}`}>
+          {/* <div className="aspect-square overflow-hidden">
+          <img 
+            src={hoverImage && showHoverImage ? hoverImage : image} 
+            alt={name} 
+            className="w-full h-full object-cover product-card-image transition-opacity duration-50"
+            />
+
+          </div> */}
+          <div className="relative aspect-square overflow-hidden">
+            <Image
+              src={(hoverImage && showHoverImage ? hoverImage : image) || "/placeholder.jpg"}
+              alt={name || "Product Image"}
+              fill
+              className="object-cover transition-opacity duration-200 product-card-image"
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          </div>
+
+        </Link>
+
+        {/* Quick actions */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-foreground/60 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <div className="flex justify-between items-center">
+            <Button size="sm" variant="secondary" className="rounded-full w-10 h-10 p-0 flex items-center justify-center">
+              <Heart size={18} className="text-foreground" />
+            </Button>
+            <Button size="sm" className="rounded-full flex items-center space-x-2 px-4">
+              <ShoppingCart size={16} />
+              <span>Add to Cart</span>
+            </Button>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Product info */}
+      <div>
+        <div className="text-sm text-muted-foreground mb-1">{category}</div>
+        <Link href={`/products/${id}`} className="block">
+          <h3 className="font-serif text-md font-medium hover:text-primary transition-colors">
+            {name}
+          </h3>
+        </Link>
+        <div className="mt-2 flex justify-between items-center">
+
+          
+          {/* Color options */}
+          <div className="flex items-center space-x-1">
+            {colors.map((color, index) => (
+              <div 
+                key={index} 
+                className="w-3 h-3 rounded-full border border-muted" 
+                style={{ backgroundColor: color }}
+                aria-label={`Color: ${color}`}
+              ></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;
