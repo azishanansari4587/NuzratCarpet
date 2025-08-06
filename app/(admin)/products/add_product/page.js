@@ -540,7 +540,7 @@ export default function AddProduct() {
     weight: "",
     quantity: "",
     collectionId: "",
-    shortDescription: "",
+    short_description: "",
     description: "",
   });
 
@@ -720,7 +720,7 @@ const handleImageUpload = async (e) => {
                       id="shortDescription"
                       name="shortDescription"
                       type="text"
-                      value={product.shortDescription}
+                      value={product.short_description}
                       onChange={handleChange}
                       placeholder="Brief description for product listings"
                       className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"

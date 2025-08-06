@@ -29,6 +29,8 @@ export async function POST(req) {
       code,
       isActive,
       isFeatured,
+      short_description,
+      description,
       images, // Base64 array
       colors, // with base64 images
       sizes,
