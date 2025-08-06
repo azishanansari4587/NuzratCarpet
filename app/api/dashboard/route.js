@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const [userRows] = await connection.query("SELECT COUNT(*) AS totalUsers FROM users");
-        const [productRows] = await connection.query("SELECT COUNT(*) AS totalProducts FROM products");
-        const [collectionRows] = await connection.query("SELECT COUNT(*) AS totalCollections FROM collections");
+        const [productRows] = await connection.query("SELECT COUNT(*) AS totalProducts FROM product");
+        const [collectionRows] = await connection.query("SELECT COUNT(*) AS totalCollections FROM collection");
         const [orderRows] = await connection.query("SELECT COUNT(*) AS totalOrders FROM cart");
         
         

@@ -78,12 +78,14 @@ export async function POST(req) {
 
     const [result] = await connection.execute(
       `INSERT INTO product 
-      (name, code, slug, isActive, isFeatured, tags, images, colors, sizes, features, specifications, inStock, sku, barcode, weight,  collectionId) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, code, slug, short_description, description, isActive, isFeatured, tags, images, colors, sizes, features, specifications, inStock, sku, barcode, weight,  collectionId) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         code,
         slug,
+        short_description,
+        description,
         isActive ? 1 : 0,
         isFeatured ? 1 : 0,
         JSON.stringify(tags),
