@@ -1,13 +1,9 @@
 "use client"
 import React, {useState, useEffect, useRef} from 'react'
-import Footer from '@/components/Footer'
-import Headers from '@/components/Header'
-
 
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import required modules
-import { Navigation } from 'swiper/modules';
 import 'swiper/css/navigation';
 import { MoveRight, MoveLeft, Minus, Plus, Info, Check } from 'lucide-react';
 import {useParams, useRouter } from 'next/navigation';
@@ -29,6 +25,8 @@ import 'lightgallery/css/lg-thumbnail.css';
 import 'lightgallery/css/lg-zoom.css';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
+import useWishlistStore from '@/store/useWishlistStore';
+import useCartStore from '@/store/cartStore';
 
 
 
@@ -59,6 +57,8 @@ const Product = () => {
   
     const isInStock = sizeObject ? sizeObject.inStock : true;
   
+    const addToWishlistLocal = useWishlistStore((state) => state.addToWishlist);
+
   
     const handleAddToCart = async () => {
       const token = localStorage.getItem("token");
@@ -89,6 +89,15 @@ const Product = () => {
       const data = await res.json();
     
       if (res.ok) {
+        useCartStore.getState().addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: currentImages[selectedImage],
+            color: currentColorObj?.name,
+            size: selectedSize,
+          });
+
         toast.success(`${quantity} x ${product.name} (${selectedSize}, ${selectedColor}) added to your cart.`);
   
       } else {
@@ -119,16 +128,15 @@ const Product = () => {
       const result = await res.json();
     
       if (res.ok) {
-        toast({
-          title: "Added to Wishlist",
-          description: result.message,
-        });
+        addToWishlistLocal(product);
+        toast.success("Added to Wishlist");
       } else {
-        toast({
-          title: "Error",
-          description: result.error,
-          variant: "destructive",
-        });
+        // If already exists
+        if (res.status === 409) {
+            toast.warning("Already in Wishlist");
+        } else {
+            toast.error( result.error);
+        }
       }
     };
     
@@ -139,10 +147,6 @@ const Product = () => {
       setSelectedImage(0); // Reset to first image when color changes
     };
 
-
-    // const [selectedSize, setSelectedSize] = useState('');
-
-    // const {addItem} = useCart();
   
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -152,13 +156,6 @@ const Product = () => {
       return () => clearTimeout(timer);
     }, []);
   
-    // Set default image once product loads
-    // useEffect(() => {
-    //     if (product?.images?.length > 0) {
-    //     setSelectedImage(product.images[0]);
-    //     }
-    // }, [product]);
-
     useEffect(() => {
         const fetchProduct = async () => {
           try {
@@ -187,55 +184,7 @@ const Product = () => {
           <Spinner/>
         );
       }
-  
-    // useEffect(() => {
-    // async function fetchProduct() {
-    //     try {
-    //     const res = await fetch(`/api/products/${slug}`);
-    //     const data = await res.json();
 
-    //     // Ensure images field is correctly parsed
-
-    //     const parsedProduct = {
-    //         ...data,
-    //         images: Array.isArray(data.images) ? data.images : JSON.parse(data.images),
-    //         imagePath: Array.isArray(data.image_path) ? data.image_path : JSON.parse(data.image_path),
-    //         tags: Array.isArray(data.tags) ? data.tags : JSON.parse(data.tags),
-    //         sizes: Array.isArray(data.sizes) ? data.sizes : JSON.parse(data.sizes),
-    //     };
-
-        
-    //     setProduct(parsedProduct);
-    //     setSelectedSize(parsedProduct.size);
-    //     setIsLoading(false);
-    //     } catch (error) {
-    //     console.error('Error fetching products:', error);
-    //     }
-    // }
-
-    // async function fetchRelatedProducts() {
-    // try {
-    //     const res = await fetch(`/api/products/${slug}/related`);
-    //     const data = await res.json();
-    //     const parsedData = data.map(item => ({
-    //     ...item,
-    //     images: Array.isArray(item.images) ? item.images : JSON.parse(item.images),
-    //     imagePath: Array.isArray(item.image_path) ? item.image_path : JSON.parse(item.image_path)
-    //     }));
-    //     if (res.ok) {
-    //     setRelatedProducts(parsedData);
-    //     setIsLoading(false);
-    //     } else {
-    //     setError(parsedData.message);
-    //     }
-    // } catch (err) {
-    //     setError('An error occurred while fetching related products.');
-    // }
-    // }
-
-    // fetchProduct();
-    // fetchRelatedProducts();
-    // }, [slug]);
 
     const increaseQuantity = () => {
         setQuantity((prevQuantity) => prevQuantity + 1);
@@ -245,57 +194,6 @@ const Product = () => {
         setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
     };
 
-
-
-     const addToCart = async () => {
-    // Fetch product details by ID
-    const response = await fetch(`/api/products/${slug}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch product details');
-    }
-    const data = await response.json();
-
-    
-    const parsedProduct = {
-        ...data,
-        images: Array.isArray(data.images) ? data.images : JSON.parse(data.images),
-        imagePath: Array.isArray(data.image_path) ? data.image_path : JSON.parse(data.image_path),
-        tags: Array.isArray(data.tags) ? data.tags : JSON.parse(data.tags),
-        sizes: Array.isArray(data.sizes) ? data.sizes : JSON.parse(data.sizes),
-    };
-    if(!selectedSize){
-        toast.error('Please select a size');
-        return;
-    }
-
-    // Construct cart item with full details
-    const cartItem = {
-        productId: product.id,
-        quantity: quantity,
-        image: parsedProduct.images[0],
-        color: product.color,
-        size: selectedSize,
-        title: parsedProduct.name,
-    };
-    console.log(cartItem);
-    
-
-    // Retrieve cart from localStorage
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existingItemIndex = cart.findIndex(item => item.productId === product.id);
-
-    if (existingItemIndex > -1) {
-        cart[existingItemIndex].quantity += quantity;
-    } else {
-        cart.push(cartItem);
-    }
-
-    // Save updated cart to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
-    toast.success('Product added to cart 🛒' );
-    router.push('/cart');
-    // alert('Product added to cart');
-};
   
     return (
         <>
@@ -339,7 +237,6 @@ const Product = () => {
                     {/* Main Image - will appear below (mobile) or right (desktop) */}
                     <div className="relative aspect-square w-full bg-stone-100 mb-4 md:mb-0 cursor-zoom-in order-1 md:order-2">
                         <LightGallery speed={500} plugins={[lgThumbnail, lgZoom]} elementClassNames="custom-wrapper">
-                        {/* {currentImages && ( */}
                             <Image
                                 src={`${currentImages[selectedImage]}?height=700&width=700`}
                                 alt="Main product"
@@ -347,7 +244,6 @@ const Product = () => {
                                 className="object-cover"
                                 priority
                             />
-                        {/* )} */}
                         </LightGallery>
                     </div>
                 </div>
@@ -374,39 +270,39 @@ const Product = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-4">
-                    {product.colors.map(color => (
-                        <button
-                        key={color.value}
-                        className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200 ${
-                            !color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'
-                        } ${
-                            selectedColor === color.value 
-                            ? 'ring-4 ring-primary ring-offset-2 scale-110 shadow-lg' 
-                            : 'ring-2 ring-border hover:ring-primary/50'
-                        }`}
-                        onClick={() => color.inStock && handleColorChange(color.value)}
-                        disabled={!color.inStock}
-                        title={color.name}
-                        aria-label={`Select color: ${color.name}`}
-                        >
-                        <Image 
-                            src={`${color.images?.[0]}?height=100&width=100 `}
-                            alt={color.name} 
-                            fill
-                            className="object-cover w-full h-full rounded-full" 
-                        />
+                        {product.colors.map(color => (
+                            <button
+                            key={color.value}
+                            className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200 ${
+                                !color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'
+                            } ${
+                                selectedColor === color.value 
+                                ? 'ring-4 ring-primary ring-offset-2 scale-110 shadow-lg' 
+                                : 'ring-2 ring-border hover:ring-primary/50'
+                            }`}
+                            onClick={() => color.inStock && handleColorChange(color.value)}
+                            disabled={!color.inStock}
+                            title={color.name}
+                            aria-label={`Select color: ${color.name}`}
+                            >
+                            <Image 
+                                src={`${color.images?.[0]}?height=100&width=100 `}
+                                alt={color.name} 
+                                fill
+                                className="object-cover w-full h-full rounded-full" 
+                            />
 
-                        {selectedColor === color.value && (
-                            <Check size={20} className="absolute inset-0 m-auto text-white drop-shadow-lg" />
-                        )}
-                        
-                        {!color.inStock && (
-                            <div className="absolute inset-0 bg-gray-400/50 rounded-full flex items-center justify-center">
-                            <div className="w-6 h-0.5 bg-red-500 rotate-45"></div>
-                            </div>
-                        )}
-                        </button>
-                    ))}
+                            {selectedColor === color.value && (
+                                <Check size={20} className="absolute inset-0 m-auto text-white drop-shadow-lg" />
+                            )}
+                            
+                            {!color.inStock && (
+                                <div className="absolute inset-0 bg-gray-400/50 rounded-full flex items-center justify-center">
+                                <div className="w-6 h-0.5 bg-red-500 rotate-45"></div>
+                                </div>
+                            )}
+                            </button>
+                        ))}
                     </div>
 
                     {/* Size Selector */}
@@ -422,6 +318,7 @@ const Product = () => {
                             </div>
                         ))}
                     </div>
+
                     <Separator/>
 
                     {/* Quantity Selector */}
@@ -440,14 +337,8 @@ const Product = () => {
 
 
                     {/* Add to Wishlist Button */}
-                    <Button variant="outline" className="w-full rounded-none h-12 border-gray-300 hover:bg-gray-50" onClick={handleAddToWishlist}>ADD TO WISHLIST</Button>
-                    {/* Inquire Button */}
+                    <Button variant="outline" className="w-full rounded-none h-12 border-gray-300 hover:bg-gray-50" onClick={() => handleAddToWishlist(product.id)}>ADD TO WISHLIST</Button>
                     
-                    {/* <Button variant="outline" className="w-full rounded-none h-12 border-gray-300 hover:bg-gray-50">
-                        <Link href={'/customizeInquiry'}>
-                            CUSTOMIZE INQUIRE
-                        </Link>
-                    </Button> */}
                     
 
                     {/* Shipping Info */}
@@ -471,7 +362,7 @@ const Product = () => {
                             <AccordionTrigger className="text-sm font-medium py-4">DESCRIPTION</AccordionTrigger>
                             <AccordionContent>
                             <div className="space-y-4 text-sm">
-                            <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product?.description }} />
+                                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product?.description }} />
                             </div>
                             </AccordionContent>
                         </AccordionItem>
@@ -480,7 +371,15 @@ const Product = () => {
                             <AccordionTrigger className="text-sm font-medium py-4">INFORMATION</AccordionTrigger>
                             <AccordionContent>
                             <div className="space-y-2 text-sm">
-                                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} />
+                                {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} /> */}
+                                {product.specifications.map((item, index) => (
+                                    <div key={index} className="border-b pb-3">
+                                    <div className="flex justify-items-stretch gap-12 px-4">
+                                        <span className="font-medium">{item.key}</span>
+                                        <span className="text-muted-foreground">{item.value}</span>
+                                    </div>
+                                    </div>
+                                ))}
                             </div>
                             </AccordionContent>
                         </AccordionItem>

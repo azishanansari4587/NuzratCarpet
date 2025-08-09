@@ -1,18 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
-import { X, FilterIcon } from 'lucide-react';
+import { X, FilterIcon, Minus, Plus } from 'lucide-react';
 
-// Mock data
-const categories = [
-  { id: 'persian', name: 'Persian', count: 48 },
-  { id: 'modern', name: 'Modern', count: 36 },
-  { id: 'traditional', name: 'Traditional', count: 52 },
-  { id: 'handmade', name: 'Handmade', count: 29 },
-  { id: 'vintage', name: 'Vintage', count: 18 },
-  { id: 'contemporary', name: 'Contemporary', count: 24 },
-];
+
 
 const colors = [
   { id: 'beige', name: 'Beige', color: '#e8d9c7' },
@@ -22,28 +13,53 @@ const colors = [
   { id: 'gray', name: 'Gray', color: '#9f9ea1' },
   { id: 'brown', name: 'Brown', color: '#8b5e46' },
   { id: 'black', name: 'Black', color: '#333333' },
+  { id: 'purple', name: 'Purple', color: '#9B177E' },
   { id: 'multicolor', name: 'Multicolor', color: 'linear-gradient(90deg, #e8d9c7, #a4c2e3, #c25e5e, #87a987)' },
 ];
 
 const sizes = [
-  { id: 'small', name: 'Small (2\'x3\')', count: 24 },
-  { id: 'medium', name: 'Medium (5\'x7\')', count: 45 },
-  { id: 'large', name: 'Large (8\'x10\')', count: 38 },
-  { id: 'xlarge', name: 'X-Large (9\'x12\')', count: 22 },
-  { id: 'runner', name: 'Runner (2\'x8\')', count: 19 },
-  { id: 'round', name: 'Round (6\' dia)', count: 15 },
+  { id: 'small', name: '2\'x3\'', count: 24 },
+  { id: 'medium', name: '5\'x7\'', count: 45 },
+  { id: 'large', name: '8\'x10\'', count: 38 },
+  { id: 'xlarge', name: '9\'x12\'', count: 22 },
+  { id: 'runner', name: '2\'x8\'', count: 19 },
+  { id: 'round', name: '6\'', count: 15 },
 ];
 
 
 
 const ProductFilter = ({ onFilterChange }) => {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-//   const [priceRange, setPriceRange] = useState([0, 3000]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
 
   const toggleMobileFilter = () => setIsMobileFilterOpen(!isMobileFilterOpen);
+
+  const [categories, setCategories] = useState([]);  // categories from backend
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     setIsLoadingCategories(true);
+  //     try {
+  //       const res = await fetch('/api/collections');  // Backend endpoint jahan categories mile
+  //       const data = await res.json();
+  //       if (res.ok) {
+  //         setCategories(data.categories); // maan ke chal rahe hain backend me categories key se milega
+  //       } else {
+  //         console.error('Failed to load categories:', data.message);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching categories:', err);
+  //     } finally {
+  //       setIsLoadingCategories(false);
+  //     }
+  //   };
+
+  //   fetchCategories();
+  // }, []);
+
 
   // const handleCategoryChange = (categoryId, checked) => {
   //   if (checked) {
@@ -53,6 +69,43 @@ const ProductFilter = ({ onFilterChange }) => {
   //   }
   // };
 
+  // ...existing states
+  const [openSections, setOpenSections] = useState({
+    categories: true,
+    colors: true,
+    sizes: true,
+  });
+
+  const toggleSection = (section) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoadingCategories(true);
+      try {
+        const res = await fetch('/api/collections');
+        const data = await res.json();
+        console.log('Fetched categories:', data);
+        if (res.ok) {
+          setCategories(data.categories || data); // fallback in case categories key missing
+        } else {
+          console.error('Failed to load categories:', data.message);
+        }
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+  
   const handleCategoryChange = (categoryId, checked) => {
     let updatedCategories;
     if (checked) {
@@ -72,53 +125,6 @@ const ProductFilter = ({ onFilterChange }) => {
     }
   };
   
-
-  // const handleColorChange = (colorId, checked) => {
-  //   if (checked) {
-  //     setSelectedColors([...selectedColors, colorId]);
-  //   } else {
-  //     setSelectedColors(selectedColors.filter(id => id !== colorId));
-  //   }
-  // };
-
-  // const handleColorChange = (colorId, checked) => {
-  //   let updatedColors;
-  //   if (checked) {
-  //     updatedColors = [...selectedColors, colorId];
-  //   } else {
-  //     updatedColors = selectedColors.filter(id => id !== colorId);
-  //   }
-  //   setSelectedColors(updatedColors);
-  
-  //   if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-  //     onFilterChange({
-  //       categories: selectedCategories,
-  //       colors: updatedColors,
-  //       sizes: selectedSizes,
-  //     });
-  //   }
-  // };
-
-  // const handleColorChange = (colorId, checked) => {
-  //   const hexCode = colors.find(c => c.id === colorId)?.color;
-  //   if (!hexCode) return;
-  
-  //   let updatedColors;
-  //   if (checked) {
-  //     updatedColors = [...selectedColors, hexCode];
-  //   } else {
-  //     updatedColors = selectedColors.filter(c => c !== hexCode);
-  //   }
-  //   setSelectedColors(updatedColors);
-  
-  //   if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-  //     onFilterChange({
-  //       categories: selectedCategories,
-  //       colors: updatedColors,
-  //       sizes: selectedSizes,
-  //     });
-  //   }
-  // };
 
   const handleColorChange = (colorId, checked) => {
     const colorName = colors.find(c => c.id === colorId)?.name;
@@ -140,17 +146,6 @@ const ProductFilter = ({ onFilterChange }) => {
       });
     }
   };
-  
-  
-  
-
-  // const handleSizeChange = (sizeId, checked) => {
-  //   if (checked) {
-  //     setSelectedSizes([...selectedSizes, sizeId]);
-  //   } else {
-  //     setSelectedSizes(selectedSizes.filter(id => id !== sizeId));
-  //   }
-  // };
 
   const handleSizeChange = (sizeId, checked) => {
     let updatedSizes;
@@ -200,58 +195,87 @@ const ProductFilter = ({ onFilterChange }) => {
     <>
       {/* Categories */}
       <div className="mb-8">
-        <h3 className="text-lg font-medium mb-4">Categories</h3>
-        <div className="space-y-2">
-          {categories.map(category => (
-            <div key={category.id} className="flex items-center">
-              <Checkbox 
-                id={`category-${category.id}`}
-                checked={selectedCategories.includes(category.id)}
-                onCheckedChange={(checked) => handleCategoryChange(category.id, checked )}
-                className="mr-2"
-              />
-              <label 
-                htmlFor={`category-${category.id}`}
-                className="text-sm flex items-center justify-between w-full cursor-pointer"
-              >
-                <span>{category.name}</span>
-                {/* <span className="text-muted-foreground">({category.count})</span> */}
-              </label>
-            </div>
+        {/* <h3 className="text-lg font-medium mb-4">Categories</h3> */}
+        <button
+          className="flex justify-between items-center w-full mb-2 font-semibold text-lg"
+          onClick={() => toggleSection('categories')}
+          aria-expanded={openSections.categories}
+          aria-controls="categories-section"
+        >
+          <span>Categories</span>
+          {openSections.categories ? <Minus size={20} /> : <Plus size={20} />}
+        </button>
+        {openSections.categories && (
+        <div id="categories-section" className="space-y-2">
+          {Array.isArray(categories) && categories.map(category => (
+              <div key={`${category.name}`} className="flex items-center">
+                <Checkbox 
+                  id={`category-${category.id}`}
+                  checked={selectedCategories.includes(category.id)}
+                  onCheckedChange={(checked) => handleCategoryChange(category.id, checked )}
+                  className="mr-2"
+                />
+                <label 
+                  htmlFor={`category-${category.id}`}
+                  className="text-sm flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span>{category.name}</span>
+                </label>
+              </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Colors */}
       <div className="mb-8">
-        <h3 className="text-lg font-medium mb-4">Colors</h3>
-        <div className="grid grid-cols-1 gap-2">
-          {colors.map(color => (
-            <div key={color.id} className="flex items-center">
-              <Checkbox 
-                id={`color-${color.id}`}
-                checked={selectedColors.includes(color.name)} 
-                onCheckedChange={(checked) => handleColorChange(color.id, checked )}
-                className="mr-2"
-              />
-              <label 
-                htmlFor={`color-${color.id}`}
-                className="text-sm flex items-center cursor-pointer"
-              >
-                <span 
-                  className="w-4 h-4 rounded-full mr-2 border"
-                  style={{ background: color.color }}
-                ></span>
-                <span>{color.name}</span>
-              </label>
-            </div>
-          ))}
-        </div>
+        <button
+          className="flex justify-between items-center w-full mb-2 font-semibold text-lg"
+          onClick={() => toggleSection('colors')}
+          aria-expanded={openSections.colors}
+          aria-controls="colors-section"
+        >
+          <span>Colors</span>
+          {openSections.colors ? <Minus size={20} /> : <Plus size={20} />}
+        </button>
+        {openSections.colors && (
+          <div id="colors-section"  className="grid grid-cols-1 gap-2">
+            {colors.map(color => (
+              <div key={color.id} className="flex items-center">
+                <Checkbox 
+                  id={`color-${color.id}`}
+                  checked={selectedColors.includes(color.name)} 
+                  onCheckedChange={(checked) => handleColorChange(color.id, checked )}
+                  className="mr-2"
+                />
+                <label 
+                  htmlFor={`color-${color.id}`}
+                  className="text-sm flex items-center cursor-pointer"
+                >
+                  <span 
+                    className="w-4 h-4 rounded-full mr-2 border"
+                    style={{ background: color.color }}
+                  ></span>
+                  <span>{color.name}</span>
+                </label>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Sizes */}
       <div className="mb-8">
-        <h3 className="text-lg font-medium mb-4">Sizes</h3>
+        <button
+            className="flex justify-between items-center w-full mb-2 font-semibold text-lg"
+            onClick={() => toggleSection('sizes')}
+            aria-expanded={openSections.sizes}
+            aria-controls="sizes-section"
+          >
+            <span>Sizes</span>
+            {openSections.sizes ? <Minus size={20} /> : <Plus size={20} />}
+          </button>
+        {openSections.sizes && (
         <div className="space-y-2">
           {sizes.map(size => (
             <div key={size.id} className="flex items-center">
@@ -266,11 +290,11 @@ const ProductFilter = ({ onFilterChange }) => {
                 className="text-sm flex items-center justify-between w-full cursor-pointer"
               >
                 <span>{size.name}</span>
-                {/* <span className="text-muted-foreground">({size.count})</span> */}
               </label>
             </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Action buttons for mobile */}

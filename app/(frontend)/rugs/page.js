@@ -1,25 +1,16 @@
 "use client"
 import { useEffect, useState } from 'react'
-import Footer from '@/components/Footer'
-import Headers from '@/components/Header'
 import React from 'react'
-import Link from 'next/link'
 import Spinner from '@/components/Spinner'
-import Image from 'next/image'
-// import { useSearchParams } from 'next/navigation';
 import ProductFilter from '@/components/ProductFilter'
 import { Button } from '@/components/ui/button'
 import { GridIcon, ListIcon } from 'lucide-react'
-import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent } from '@/components/ui/select'
 import ProductCard from '@/components/ProductCard'
 
 
 
 
 const Rugs = () => {
-
-  const [collections, setCollections] = useState([]);
-
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +34,7 @@ const Rugs = () => {
               console.error("Tag parsing error:", e);
             }
     
-            return tags.includes("New Arrival");
+            return tags.includes("Rugs");
           });
     
           setProducts(filtered);
@@ -59,29 +50,15 @@ const Rugs = () => {
   
 
   
-  const [filter, setFilter] = useState({
-    rugs: '',
-    collectionId: '',
-    color: '',
-  });
 
 
-
-
-
-
-
-
-
-
-  // const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState({
     categories: [],
     colors: [],
     sizes: [],
     // priceRange: [0, 3000]
   });
-  const [sortBy, setSortBy] = useState('featured');
+
   const [viewMode, setViewMode] = useState('grid');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
@@ -92,12 +69,11 @@ const Rugs = () => {
     // Category filter
     if (
       filters.categories.length > 0 &&
-      !filters.categories.includes(products.category?.toLowerCase())
+      !filters.categories.map(String).includes(String(product.collectionId))
     ) {
       return false;
     }
 
-        // Color filter
         // Color filter
       if (
         filters.colors.length > 0 &&
@@ -105,52 +81,32 @@ const Rugs = () => {
       ) {
         return false;
       }
-
-
-    
-    
-    // For demo purposes, we're not actually filtering by color and size since mockProducts don't have those fields
     
     return true;
-  });
-
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'price-asc':
-        return a.price - b.price;
-      case 'price-desc':
-        return b.price - a.price;
-      case 'newest':
-        return b.id.localeCompare(a.id); // Using ID as a proxy for date
-      default:
-        return 0; // Featured
-    }
   });
 
   // Pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // const handleFilterChange = (newFilters) => {
-  //   setFilters(newFilters);
-  //   setCurrentPage(1);
-  // };
-  console.log("FILTERED ON CATEGORY:", products.name, "->", products.category?.toLowerCase());
-
-  console.log('PRODUCT CATEGORY:', products.category);
   
   const handleFilterChange = (newFilters) => {
     setFilters({
       ...newFilters,
-      categories: newFilters.categories.map(cat => cat.toLowerCase()),
+      categories: newFilters.categories.map(cat => {
+        if (typeof cat === 'object' && cat !== null && 'id' in cat) return cat.id;
+        if (typeof cat === 'string' || typeof cat === 'number') return cat;
+        return '';
+      }),
+
       sizes: newFilters.sizes.map(size => size.toLowerCase()),
       // colors: newFilters.colors.map(color => color.toLowerCase())
     });
@@ -202,7 +158,7 @@ const Rugs = () => {
                   {/* Sort controls */}
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <div className="text-muted-foreground">
-                      Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, sortedProducts.length)} of {sortedProducts.length} results
+                      Showing {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} results
                     </div>
                     <div className="flex flex-wrap gap-4 sm:gap-2">
                       <div className="flex items-center">
@@ -226,17 +182,6 @@ const Rugs = () => {
                             <ListIcon size={18} />
                           </Button>
                         </div>
-                        <Select defaultValue="featured" onValueChange={handleSortChange}>
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Sort by" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="featured">Featured</SelectItem>
-                            <SelectItem value="newest">Newest</SelectItem>
-                            <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                            <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                          </SelectContent>
-                        </Select>
                       </div>
                     </div>
                   </div>
@@ -267,10 +212,10 @@ const Rugs = () => {
                         }
                         return (<ProductCard
                           key={product.id}
+                          productId={product.id}
                           id={product.slug}
                           name={product.name}
                           image={images[0]}
-                          // image={Array.isArray(product.images) ? product.images[0] : product.images}
                           hoverImage={
                             Array.isArray(product.images) && product.images[1]
                               ? product.images[1]
@@ -281,8 +226,6 @@ const Rugs = () => {
                           sizes={product.sizes || []}
                         />);
                       }
-                        
-                        // <ProductCard key={product.id} {...product} />
                         
 
                       )}
@@ -297,7 +240,6 @@ const Rugs = () => {
                         categories: [],
                         colors: [],
                         sizes: [],
-                        // priceRange: [0, 3000]
                       })}>
                         Reset Filters
                       </Button>

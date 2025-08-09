@@ -1,100 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-
-
-// const CustomizeInquiry = () => {
-//     const [formData, setFormData] = useState({
-//         name: '',
-//         productName: '',
-//         companyName: '',
-//         email: '',
-//         message: '',
-//     });
-//     const [phone, setPhone] = useState('');
-    
-//     const handleChange = (e) => {
-//         setFormData({ ...formData, [e.target.name]: e.target.value });
-//     };
-    
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         try {
-//             const res = await axios.post('/api/customize', {
-//             ...formData,
-//             phone,
-//             });
-//             toast.success('Inquiry submitted successfully!');
-//             setFormData({
-//             name: '',
-//             productName: '',
-//             companyName: '',
-//             email: '',
-//             message: '',
-//             });
-//             setPhone('');
-//         } catch (err) {
-//             console.error(err);
-//             toast.error('Something went wrong!');
-//         }
-//     };
-
-//   return (
-//     <section className='container mx-auto max-w-2xl px-4 py-12'>
-//       <h1 className="text-2xl font-medium mb-2">Customize Inquiry</h1>
-//       <p className='mb-2'>Reach out to us if you are interested in customizing this product, or would like more information.</p>
-//       <form onSubmit={handleSubmit} className='mt-6'>
-//         <div className="mb-4">
-//           <label htmlFor="name" className="block mb-1">Name <span className='text-red-500'>*</span></label>
-//           <input type="text" name="name" value={formData.name} onChange={handleChange}
-//             className="w-full p-2 border-b-2 focus:outline-none focus:border-black" required />
-//         </div>
-//         <div className="mb-4">
-//           <label htmlFor="productName" className="block mb-1">Product Name <span className='text-red-500'>*</span></label>
-//           <input type="text" name="productName" value={formData.productName} onChange={handleChange}
-//             className="w-full p-2 border-b-2 focus:outline-none focus:border-black" required />
-//         </div>
-//         <div className="mb-4">
-//           <label htmlFor="companyName" className="block mb-1">Company Name</label>
-//           <input type="text" name="companyName" value={formData.companyName} onChange={handleChange}
-//             className="w-full p-2 border-b-2 focus:outline-none focus:border-black" />
-//         </div>
-//         <div className="mb-4">
-//           <label htmlFor="email" className="block mb-1">Email Address <span className='text-red-500'>*</span></label>
-//           <input type="email" name="email" value={formData.email} onChange={handleChange}
-//             className="w-full p-2 border-b-2 focus:outline-none focus:border-black" required />
-//         </div>
-//         <div className="mb-4">
-//           <label htmlFor="phone" className="block mb-1">Phone <span className='text-red-500'>*</span></label>
-//           <PhoneInput
-//             country={'in'}
-//             value={phone}
-//             onChange={setPhone}
-//             enableSearch={true}
-//             inputStyle={{ width: '100%' }}
-//             placeholder="Enter phone number"
-//           />
-//         </div>
-//         <div className="mb-4">
-//           <label htmlFor="message" className="block mb-1">Message <span className='text-red-500'>*</span></label>
-//           <textarea name="message" value={formData.message} onChange={handleChange}
-//             className="w-full p-2 border rounded focus:outline-none focus:border-black" rows="4" required />
-//         </div>
-//         <button type="submit" className="w-full bg-black hover:bg-gray-800 text-white py-2 px-4 rounded">
-//           Submit
-//         </button>
-//       </form>
-//     </section>
-//   )
-// }
-
-
-// import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -104,13 +10,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
-// import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import PhoneNumber from "@/components/PhoneNumber";
+import { toast } from 'react-toastify';
 
 
 const CustomizeInquiry = () => {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sizeOption, setSizeOption] = useState("standard");
 
@@ -133,22 +37,6 @@ const CustomizeInquiry = () => {
     }
   });
 
-  // const onSubmit = (data) => {
-  //   setIsSubmitting(true);
-    
-  //   // Simulate API call
-  //   setTimeout(() => {
-  //     setIsSubmitting(false);
-  //     toast({
-  //       title: "Request submitted",
-  //       description: "We've received your customization request and will contact you shortly.",
-  //     });
-  //     form.reset();
-  //   }, 1500);
-    
-  //   console.log(data);
-  // };
-
   const onSubmit = async (data) => {
   setIsSubmitting(true);
 
@@ -162,24 +50,13 @@ const CustomizeInquiry = () => {
     const result = await response.json();
 
     if (result.success) {
-      toast({
-        title: "Request submitted",
-        description: "We've received your customization request and will contact you shortly.",
-      });
+      toast.success("We've received your customization request and will contact you shortly.",);
       form.reset();
     } else {
-      toast({
-        title: "Submission failed",
-        description: result.message || "Please try again.",
-        variant: "destructive",
-      });
+      toast(`${result.message || "Please try again."}`);
     }
   } catch (error) {
-    toast({
-      title: "Error",
-      description: "Something went wrong. Please try again.",
-      variant: "destructive",
-    });
+    toast.error( "Something went wrong. Please try again.");
   } finally {
     setIsSubmitting(false);
   }
@@ -187,8 +64,7 @@ const CustomizeInquiry = () => {
 
 
   return (
-    <>
-      {/* <Navbar /> */}
+
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
@@ -436,10 +312,6 @@ const CustomizeInquiry = () => {
                               className="flex flex-col space-y-2"
                             >
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="2-4 weeks" id="2-4" />
-                                <Label htmlFor="2-4">2-4 weeks (rush)</Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="4-8 weeks" id="4-8" />
                                 <Label htmlFor="4-8">4-8 weeks (standard)</Label>
                               </div>
@@ -495,7 +367,6 @@ const CustomizeInquiry = () => {
           </div>
         </div>
       </div>
-    </>
   );
 };
 

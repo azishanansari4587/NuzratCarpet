@@ -5,7 +5,7 @@ import connection from "@/lib/connection";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function DELETE(req, { params }) {
-  const { cartId } = params;
+  const { productId } = params;
   const authHeader = req.headers.get("authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -18,17 +18,20 @@ export async function DELETE(req, { params }) {
     const decoded = jwt.verify(token, JWT_SECRET);
     const userId = decoded.id;
 
+
+
     const [result] = await connection.execute(
-      `DELETE FROM cart WHERE id = ? AND userId = ?`,
-      [cartId, userId]
+      `DELETE FROM wishlist WHERE productId = ? AND userId = ?`,
+      [productId, userId]
     );
+
+    await connection.end();
 
     if (result.affectedRows === 0) {
       return NextResponse.json({ error: "Item not found or not yours." }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Item removed from cart." });
-
+    return NextResponse.json({ message: "Item removed from wishlist." });
   } catch (err) {
     console.error("Wishlist DELETE Error:", err);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });

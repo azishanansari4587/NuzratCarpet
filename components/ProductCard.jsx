@@ -5,10 +5,15 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
+import useWishlistStore from '@/store/useWishlistStore';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
 
 
 
 const ProductCard = ({
+  productId,
   id,
   name,
   image,
@@ -19,6 +24,7 @@ const ProductCard = ({
 }) => {
 
     const [showHoverImage, setShowHoverImage] = useState(false);
+    const router = useRouter();
     const hoverTimer = useRef(null);
 
     const handleMouseEnter = () => {
@@ -34,6 +40,43 @@ const ProductCard = ({
     setShowHoverImage(false);
     };
 
+
+    const addToWishlistLocal = useWishlistStore((state) => state.addToWishlist);
+
+    const handleAddToWishlist = async (productId) => {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            toast.error("Please login to add to wishlist");
+            router.push("/signin");
+            return;
+          }
+        
+          const decoded = jwtDecode(token);;// ✅ This will now work
+          const userId = decoded.id;
+        
+          const res = await fetch("/api/wishlist/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, productId }),
+          });
+        
+          const result = await res.json();
+        
+          if (res.ok) {
+            addToWishlistLocal(productId);
+            toast.success("Added to Wishlist");
+          } else {
+            // If already exists
+            if (res.status === 409) {
+                toast.warning("Already in Wishlist");
+            } else {
+                toast.error( result.error);
+            }
+          }
+        };
+    
 
   return (
     <div className="group product-card">
@@ -68,13 +111,15 @@ const ProductCard = ({
         {/* Quick actions */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-foreground/60 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300">
           <div className="flex justify-between items-center">
-            <Button size="sm" variant="secondary" className="rounded-full w-10 h-10 p-0 flex items-center justify-center">
+            <Button size="sm" variant="secondary" 
+            className="rounded-full w-10 h-10 p-0 flex items-center justify-center"
+            onClick={() => handleAddToWishlist(productId)}>
               <Heart size={18} className="text-foreground" />
             </Button>
-            <Button size="sm" className="rounded-full flex items-center space-x-2 px-4">
+            {/* <Button size="sm" className="rounded-full flex items-center space-x-2 px-4">
               <ShoppingCart size={16} />
               <span>Add to Cart</span>
-            </Button>
+            </Button> */}
           </div>
         </div>
 

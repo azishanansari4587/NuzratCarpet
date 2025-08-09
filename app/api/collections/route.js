@@ -125,17 +125,12 @@ export async function GET() {
       updatedAt: col.updated_at,
       productCount: col.productCount,
     }));
+    console.log("Fetched Collections:", formatted);
+
 
     return NextResponse.json(formatted, { status: 200 });
   } catch (error) {
     console.error("GET collection error:", error);
     return NextResponse.json({ error: "Failed to fetch collections" }, { status: 500 });
-  }
+  } 
 }
-
-
-
-
-
-
-

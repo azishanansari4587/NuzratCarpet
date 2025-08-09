@@ -5,34 +5,6 @@ import connection from "@/lib/connection";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
 
-// export async function POST(req) {
-//   try {
-//     const authHeader = req.headers.get("authorization");
-//     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-//     }
-
-//     const token = authHeader.split(" ")[1];
-//     const decoded = jwt.verify(token, JWT_SECRET);
-
-//     const body = await req.json();
-//     const { productId, quantity, color, size, image } = body;
-
-//     // Save to cart table (you must create this table in DB)
-//     await connection.execute(
-//       "INSERT INTO cart (userId, productId, quantity, color, size, image) VALUES (?, ?, ?, ?, ?, ?)",
-//       [decoded.id, productId, quantity, color, size, image]
-//     );
-
-//     return NextResponse.json({ message: "Added to cart successfully" });
-
-//   } catch (error) {
-//     console.error("Cart Error:", error);
-//     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
-//   }
-// }
-
-
 export async function POST(req) {
   try {
     const authHeader = req.headers.get("authorization");

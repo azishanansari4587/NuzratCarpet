@@ -27,62 +27,14 @@ const HeroSection = () => {
             Discover our curated collection of handcrafted rugs that blend tradition with modern aesthetics.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-                 <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-lg px-8">
-                 Shop Collection
-                 <ArrowRight className="ml-2 w-5 h-5" />
-                 </Button>
-                 <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
-                 Custom Design
-             </Button>
+              <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-lg px-8">
+              Shop Collection
+              <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
             </div>
         </div>
       </div>
     </section>
-    
-    // <section className="relative h-[85vh] bg-gradient-to-r from-amber-50 to-orange-50 overflow-hidden ">
-
-
-    //     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            
-    //     <div className="grid lg:grid-cols-2 gap-12 items-center">
-        
-        
-    //         <div>
-    //         <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">✨ New Collection 2024</Badge>
-    //         <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
-    //             Transform Your Space with
-    //             <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-    //             {" "}
-    //             Exquisite Rugs
-    //             </span>
-    //         </h1>
-    //         <p className="text-xl text-gray-600 mb-8 max-w-lg">
-    //             Discover our curated collection of premium handcrafted rugs from master artisans around the world. Each
-    //             piece tells a story of tradition, quality, and timeless beauty.
-    //         </p>
-    //         <div className="flex flex-col sm:flex-row gap-4">
-    //             <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-lg px-8">
-    //             Shop Collection
-    //             <ArrowRight className="ml-2 w-5 h-5" />
-    //             </Button>
-    //             <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
-    //             Custom Design
-    //             </Button>
-    //         </div>
-
-    //         </div>
-    //         <div className="relative">
-    //         <Image
-    //             src="https://i.pinimg.com/736x/4f/4b/4a/4f4b4a9dc15e428d0c2d7424bf66fc72.jpg"
-    //             alt="Beautiful Persian Rug"
-    //             width={600}
-    //             height={600}
-    //             className="rounded-2xl shadow-2xl"
-    //         />
-    //         </div>
-    //     </div>
-    //     </div>
-    // </section>
   )
 }
 

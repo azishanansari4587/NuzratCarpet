@@ -8,10 +8,18 @@ import { jwtDecode } from "jwt-decode";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import useWishlistStore from "@/store/useWishlistStore";
 
 export default function Wishlist() {
-  const [wishlistItems, setWishlistItems] = useState([]);
+  // const [wishlistItems, setWishlistItems] = useState([]);
+  // const [loading, setLoading] = useState(true);
+
+  // const setWishlist = useWishlistStore((state) => state.setWishlist);
+  // console.log(setWishlist);
+
+  const { wishlist: wishlistItems, setWishlist, removeFromWishlist, clearWishlist } = useWishlistStore();
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -31,7 +39,11 @@ export default function Wishlist() {
         const data = await res.json();
   
         if (res.ok) {
-          setWishlistItems(data.wishlistItems);
+          // setWishlistItems(data.wishlistItems);
+          // setWishlist(data.wishlistItems);
+          setWishlist(data.wishlistItems);
+
+
         } else {
           toast.error(data.error)
         }
@@ -60,7 +72,10 @@ export default function Wishlist() {
       const data = await res.json();
   
       if (res.ok) {
-        setWishlistItems((prev) => prev.filter((item) => item.id !== productId));
+        // setWishlist((prev) => prev.filter((item) => item.id !== productId));
+        // new
+        removeFromWishlist(productId);
+
         toast.success("Item removed from wishlist.");
       } else {
         toast.error(data.error || "Failed to remove item.");
@@ -81,7 +96,8 @@ export default function Wishlist() {
   const handleClearWishlist = () => {
     if (wishlistItems.length === 0) return;
 
-    setWishlistItems([]);
+    // new
+    clearWishlist();
     toast({
       title: "Wishlist Cleared",
       description: "All items have been removed from your wishlist.",
@@ -148,7 +164,7 @@ export default function Wishlist() {
                     </div>
 
                     <div className="p-4">
-                      <Link href={`/product/${item.slug}`} className="block mb-2 hover:text-forest-600">
+                      <Link href={`/products/${item.slug}`} className="block mb-2 hover:text-forest-600">
                       <div className="flex justify-between items-center">
                         <h3 className="font-small text-sm mb-1">{item.name}</h3>
                         <Eye/>

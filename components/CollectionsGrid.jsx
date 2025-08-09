@@ -11,25 +11,29 @@ const CollectionsGrid = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      // Fetch collection from the Api
-      const fetchCollection = async () => {
-        try {
-          const res = await fetch('/api/collections');
-          const data = await res.json();
+    const fetchCollection = async () => {
+      try {
+        const res = await fetch('/api/collections', { cache: "no-store" });
+        // const res = await fetch('/api/collections', { next: { revalidate: 60 } });
+        const data = await res.json();
+        console.log("Collection Data: ", data);
+  
+        if (Array.isArray(data)) {
           setCollections(data);
-          console.log("Collection Data: ", data);
-          
-          // setFilteredProducts(data);
-        } catch (error) {
-          console.error('Failed to fetch collections', error);
+        } else {
+          console.error("Invalid API response:", data);
+          setCollections([]);
         }
-        // finally {
-        //   setLoading(false);
-        // }
-      };
-      fetchCollection();
-    }, []);
-
+      } catch (error) {
+        console.error('Failed to fetch collections', error);
+        setCollections([]);
+      } finally {
+        setLoading(false); // ye zaroori hai
+      }
+    };
+    fetchCollection();
+  }, []);
+  
 
 
   return (
@@ -43,25 +47,16 @@ const CollectionsGrid = () => {
             find the perfect carpet for your unique space.
           </p>
         </div>
-        {/* {loading ? (
+        {loading ? (
           <Spinner />
-        ): */}
+        ):
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {collections?.map((category, index) => (
-              <div key={category.id}>
+            {Array.isArray(collections) && collections.map((category) => (
               <Link 
-
+              key={category.slug}
                 href={`/collection/${category.slug}`}
                 className="group relative overflow-hidden rounded-lg"
               >
-                {/* <div className="aspect-[4/3] overflow-hidden">
-                  <img 
-                    src={category.image} 
-                    alt={category.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent"></div>
-                </div> */}
 
                 <div className="relative aspect-[4/3] overflow-hidden group">
                   <Image
@@ -89,33 +84,13 @@ const CollectionsGrid = () => {
                   </div>
                 </div>
               </Link>
-              </div>
             ))}
           </div>
-        {/* } */}
+         }
       </div>
     </section>
   )
 }
 
-// Component for category cards
-function CategoryCard({ title, image, slug }) {
-  return (
-    <Link href={`/collection/${slug}`} className="group">
-      <div className="aspect-square relative overflow-hidden mb-4">
-        <Image
-          src={image || "/placeholder.svg"}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
-      </div>
-      {/* <div className="absolute inset-0 flex items-center justify-center"> */}
-        <h3 className="text-xl text-center font-light tracking-wider">{title}</h3>
-      {/* </div> */}
-    </Link>
-  )
-}
 
 export default CollectionsGrid

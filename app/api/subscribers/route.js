@@ -14,11 +14,27 @@ export  async function POST(request) {
         return  NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
     
-    await connection.execute(
-      "INSERT INTO subscribers (email) VALUES (?)",
-      [email]
-    );
+    // await connection.execute(
+    //   "INSERT INTO subscriber (email) VALUES (?)",
+    //   [email]
+    // );
 
+    try {
+      // Try to insert the email
+      await connection.execute(
+        "INSERT INTO subscriber (email) VALUES (?)",
+        [email]
+      );
+    } catch (dbError) {
+      // Check for duplicate entry error
+      if (dbError.code === 'ER_DUP_ENTRY') {
+        return NextResponse.json({ error: 'You are already subscribed.' }, { status: 409 });
+      }
+
+      // Other DB error
+      throw dbError;
+    }
+    
     // Configure nodemailer
 
     const transporter = nodemailer.createTransport({

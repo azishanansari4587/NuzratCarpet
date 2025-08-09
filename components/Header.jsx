@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -9,11 +9,21 @@ import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react"
 import Image from 'next/image';
 import Logo from '@/public/47.jpg'
 import Logo1 from '@/public/48.jpg'
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { jwtDecode } from 'jwt-decode';
+import useWishlistStore from "@/store/useWishlistStore"
+import  useCartStore  from "@/store/cartStore";
+import ProductPage from "./ProductPage"
+import ProductSearch from "./ProductSearch"
+
+
 
 export default function Header() {
+
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname();
+
+  
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -24,6 +34,52 @@ export default function Header() {
     { href: "/customizeInquiry", label: "Customize" },
     { href: "/contact", label: "Contact Us" },
   ];
+
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded?.id) {
+          setIsLoggedIn(true);
+        }
+      } catch (err) {
+        console.error("Invalid token");
+        setIsLoggedIn(false);
+      }
+    }
+  }, []);
+
+  const wishlist = useWishlistStore((state) => state.wishlist)
+  const cart = useCartStore((state) => state.cart)
+
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]); // empty array, undefined nahi
+  const [showResults, setShowResults] = useState(false);
+
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.trim() === "") {
+      setResults([]);
+      setShowResults(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/products/search?q=${value}`);
+      const data = await res.json();
+      setResults(data.products);
+      setShowResults(true);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  }; 
 
 
   return (
@@ -40,25 +96,71 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Search bar */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <div className="relative w-full">
-              <Input type="text" placeholder="Search for rugs, patterns, colors..." className="pl-10 pr-4" />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <div className="hidden md:flex flex-1 max-w-lg mx-8 relative">
+          <Input
+            type="text"
+            placeholder="Search for rugs, patterns, colors..."
+            value={query}
+            onChange={handleSearch}
+            onBlur={() => setTimeout(() => setShowResults(false), 200)}
+            onFocus={() => query && setShowResults(true)}
+            className="pl-10 pr-4"
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+
+          {/* Dropdown results */}
+          {showResults && Array.isArray(results) && results.length > 0 && (
+            <div className="absolute top-full left-0 w-full bg-white shadow-lg border mt-1 rounded z-50 max-h-64 overflow-auto">
+              {results.map((item) => {
+                const imageUrl = Array.isArray(item.images) && item.images.length > 0
+                  ? item.images[0]
+                  : "/placeholder.png"; // fallback image
+
+                const colorName = Array.isArray(item.colors) && item.colors.length > 0
+                  ? item.colors[0].name
+                  : "";
+
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/products/${item.slug}`}
+                    className="flex items-center gap-3 p-2 hover:bg-gray-100"
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={item.name}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                    <div>
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-sm text-gray-500">{colorName}</p>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-          </div>
+          )}
+
+        </div>
+
 
           {/* Navigation icons */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              <User className="w-5 h-5" />
-            </Button>
+            {isLoggedIn ? (
+              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={() => router.push('/profile')}>
+                <User className="w-5 h-5" />
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => router.push('/signin')}>
+                Sign In
+              </Button>
+            )}
 
             <Link href="/wishlist">
               <Button variant="ghost" size="sm" className="relative">
                 <Heart className="w-5 h-5" />
                 <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  2
+                  {wishlist?.length || 0}
                 </Badge>
               </Button>
             </Link>
@@ -67,7 +169,7 @@ export default function Header() {
               <Button variant="ghost" size="sm" className="relative">
                 <ShoppingCart className="w-5 h-5" />
                 <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  3
+                  {cart.reduce((total, item) => total + item.quantity, 0)}
                 </Badge>
               </Button>
             </Link>
@@ -99,7 +201,54 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
-              <Input type="text" placeholder="Search rugs..." className="mb-4" />
+              {/* <Input type="text" placeholder="Search rugs..." className="mb-4" /> */}
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Search for rugs, patterns, colors..."
+                  value={query}
+                  onChange={handleSearch}
+                  onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                  onFocus={() => query && setShowResults(true)}
+                  className="pl-10 pr-4"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+
+                {/* Dropdown results */}
+                {showResults && Array.isArray(results) && results.length > 0 && (
+                  <div className="absolute top-full left-0 w-full bg-white shadow-lg border mt-1 rounded z-50 max-h-64 overflow-auto">
+                    {results.map((item) => {
+                      const imageUrl = Array.isArray(item.images) && item.images.length > 0
+                        ? item.images[0]
+                        : "/placeholder.png"; // fallback image
+
+                      const colorName = Array.isArray(item.colors) && item.colors.length > 0
+                        ? item.colors[0].name
+                        : "";
+
+                      return (
+                        <Link
+                          key={item.id}
+                          href={`/products/${item.slug}`}
+                          className="flex items-center gap-3 p-2 hover:bg-gray-100"
+                        >
+                          <img
+                            src={imageUrl}
+                            alt={item.name}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                          <div>
+                            <p className="font-medium">{item.name}</p>
+                            <p className="text-sm text-gray-500">{colorName}</p>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+
+              </div>
+
               <Link href="/" className="text-gray-700 hover:text-amber-600 font-medium">
                 Home
               </Link>

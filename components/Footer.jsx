@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, {useState, useEffect} from 'react'
 import Image from 'next/image'
 import {MapPin, Mail, Phone, Clock9, Youtube, Twitter, Instagram, Facebook} from 'lucide-react';
 
@@ -7,7 +8,39 @@ import Logo1 from '@/public/48.png'
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { toast } from 'react-toastify';
+
+
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  
+  
+      const handleSubscribe = async(e)=> {
+          e.preventDefault();
+          try {
+            const response = await fetch('api/subscribers', {
+              method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+              body: JSON.stringify({ email }),
+            });
+  
+            const data = await response.json();
+            console.log(data);
+            
+            if(response.ok) {
+              toast.success("Thanks for subscribing!");
+              setEmail('');
+  
+            }else {
+              toast.error(data.error);
+            }
+          } catch (error) {
+            
+            toast.error(error.message);
+          }
+      }
   return (
 
     <footer className="bg-sand-50">
@@ -128,10 +161,15 @@ const Footer = () => {
             <div>
               <h4 className="font-medium mb-2">Newsletter</h4>
               <p className="text-sm text-gray-400 mb-3">Subscribe for exclusive offers and new arrivals</p>
+              <form onSubmit={handleSubscribe}>
               <div className="flex gap-2">
-                <Input type="email" placeholder="Your email" className="bg-gray-800 border-gray-700 text-white" />
-                <Button className="bg-amber-600 hover:bg-amber-700">Subscribe</Button>
+                <Input type="email" 
+                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)} className="bg-gray-800 border-gray-700 text-white" />
+                <Button type="submit" className="bg-amber-600 hover:bg-amber-700">Subscribe</Button>
               </div>
+              </form>
             </div>
           </div>
         </div>
@@ -139,13 +177,13 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Nuzrat Carpet Emporium. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link href="/privacy" className="text-gray-400 hover:text-black text-sm transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link href="/terms" className="text-gray-400 hover:text-black text-sm transition-colors">
               Terms of Service
             </Link>
-            <Link href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link href="/cookies" className="text-gray-400 hover:text-black text-sm transition-colors">
               Cookie Policy
             </Link>
           </div>

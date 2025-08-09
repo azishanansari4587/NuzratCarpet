@@ -7,15 +7,18 @@ import { Minus, Plus, X, ShoppingBag, ArrowRight, Heart, Trash2 } from "lucide-r
 import Link from "next/link";
 import Spinner from "@/components/Spinner";
 import Image from "next/image";
+import useCartStore from "@/store/cartStore";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
+  // const [cartItems, setCartItems] = useState([]);
+  // const setCart = useCartStore(state => state.setCart); 
   const [loading, setLoading] = useState(true);
+
+  const { cart: cartItems, setCart, addToCart, removeFromCart, increment, decrement, clearCart } = useCartStore();
+
 
   const fetchCart = async () => {
     try {
-      // const token = localStorage.getItem("token");
-      // if (!token) return;
 
       const token = localStorage.getItem("token");
       console.log(token);
@@ -30,7 +33,9 @@ const Cart = () => {
       console.log(data);
       
       if (res.ok) {
-        setCartItems(data.cartItems);
+        // setCartItems(data.cartItems);
+        setCart(data.cartItems); // ✅ Zustand update
+
       } else {
         toast({ title: "Error", description: data.error, variant: "destructive" });
       }
@@ -61,9 +66,11 @@ const Cart = () => {
       const data = await res.json();
   
       if (res.ok) {
-        setCartItems((prev) => prev.filter((item) => item.id !== productId));
+        // setCartItems((prev) => prev.filter((item) => item.id !== productId));
+        removeFromCart(productId); // ✅ Zustand update
         toast.success("Item removed from wishlist.");
-        window.location.reload();
+  
+       
       } else {
         toast.error(data.error || "Failed to remove item.");
       }
@@ -71,8 +78,12 @@ const Cart = () => {
       toast.error("Something went wrong.");
     }
   };
-
   
+
+  const handleClearCart = () => {
+    clearCart(); // ✅ Zustand clear
+    toast.success("Cart cleared.");
+  };
   
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -86,7 +97,7 @@ const Cart = () => {
         <h1 className="text-3xl font-serif font-semibold mb-6">Your Cart</h1>
         <div className="border-b border-forest-200 pb-4 mb-4">
           <h2 className="text-lg font-medium text-forest-800 mb-1">
-            Cart Items ({cartItems.reduce((total, item) => total + item.quantity, 0)})
+          Cart Items ({cartItems.reduce((total, item) => total + item.quantity, 0)})
           </h2>
           <p className="text-sm text-forest-600">Review your items before checkout</p>
         </div>

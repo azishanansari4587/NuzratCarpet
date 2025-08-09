@@ -1,5 +1,6 @@
 "use client" 
 import React, {useState} from 'react'
+import { toast } from 'react-toastify';
 
 const Newsletter = () => {
     const [email, setEmail] = useState('');
@@ -21,15 +22,15 @@ const Newsletter = () => {
           console.log(data);
           
           if(response.ok) {
-            setMessage("Thanks for subscribing!");
+            toast.success("Thanks for subscribing!");
             setEmail('');
+
           }else {
-            setMessage(data.error);
+            toast.error(data.error);
           }
         } catch (error) {
-          console.log(error);
           
-          setMessage(error.message);
+          toast.error(error.message);
         }
     }
     
@@ -85,7 +86,6 @@ const Newsletter = () => {
                     />
                 </svg>
                 </button>
-                {message && <p className="text-red-500">{message}</p>}
               </form>
             </div>
         </div>
