@@ -370,7 +370,7 @@ const handleEditClick = (collection) => {
           <DialogHeader>
             <DialogTitle>Delete Collection</DialogTitle>
           </DialogHeader>
-          <p>Are you sure you want to delete "{selectedCollection?.name}"?</p>
+          <p>Are you sure you want to delete &quot;{selectedCollection?.name}&quot;?</p>
           <DialogFooter>
             <Button variant="destructive" onClick={handleDelete}>Delete</Button>
           </DialogFooter>
