@@ -16,7 +16,6 @@ const CollectionsGrid = () => {
         const res = await fetch('/api/collections', { cache: "no-store" });
         // const res = await fetch('/api/collections', { next: { revalidate: 60 } });
         const data = await res.json();
-        console.log("Collection Data: ", data);
   
         if (Array.isArray(data)) {
           setCollections(data);

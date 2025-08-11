@@ -713,12 +713,12 @@ const handleImageUpload = async (e) => {
                   
                   
                   <div className="space-y-2">
-                    <label htmlFor="shortDescription" className="block text-sm font-medium text-forest-800">
+                    <label htmlFor="short_description" className="block text-sm font-medium text-forest-800">
                       Short Description <span className="text-red-500">*</span>
                     </label>
                     <input
-                      id="shortDescription"
-                      name="shortDescription"
+                      id="short_description"
+                      name="short_description"
                       type="text"
                       value={product.short_description}
                       onChange={handleChange}

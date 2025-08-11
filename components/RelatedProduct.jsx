@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import { useParams } from 'next/navigation';
+import React, {useState, useEffect} from 'react'
+
 
 const RelatedProduct = () => {
     const [relatedProducts, setRelatedProducts] = useState([]);
@@ -14,7 +16,7 @@ const RelatedProduct = () => {
         try {
             const res = await fetch(`/api/products/related/${slug}`);
             const data = await res.json();
-            setRelated(data.relatedProducts || []);
+            setRelatedProducts(data.relatedProducts || []);
         } catch (err) {
             console.error("Failed to fetch related products:", err);
         }
@@ -31,7 +33,7 @@ const RelatedProduct = () => {
                 <div className="w-full aspect-square relative overflow-hidden rounded-md bg-white">
                     <Image
                     src={`${product.images[0]}?width=500&height=500`}
-                    alt={product.image_path[0]}
+                    alt={product.images[0]}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />

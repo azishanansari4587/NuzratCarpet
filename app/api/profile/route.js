@@ -60,18 +60,18 @@ export async function PUT(req) {
     const [result] = await connection.execute(
       `
       UPDATE users 
-      SET name = ?, phone = ?, address = ?, city = ?, state = ?, zipCode = ?, country = ?
+      SET first_name = ?, last_name = ?,  contact = ?, address = ?, city = ?, state = ?, zipCode = ?, country = ?
       WHERE id = ?
       `,
       [
-        body.name,
-        body.phone,
-        body.address,
-        body.city,
-        body.state,
-        body.zipCode,
-        body.country,
-        userId,
+        body.first_name || "",
+        body.last_name || "",
+        body.contact || "",
+        body.address || "",
+        body.city || "",
+        body.state || "",
+        body.zipCode || "",
+        body.country || "",
       ]
     );
 

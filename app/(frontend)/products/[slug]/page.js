@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 import useWishlistStore from '@/store/useWishlistStore';
 import useCartStore from '@/store/cartStore';
+import RelatedProduct from '@/components/RelatedProduct';
 
 
 
@@ -457,7 +458,7 @@ const Product = () => {
             <div className="container mx-auto px-4 md:px-6">
                 
                 <h2 className="text-2xl font-light mb-12 text-center">YOU MAY ALSO LIKE</h2>
-                
+                <RelatedProduct/>
             </div>    
         </section>
 

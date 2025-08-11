@@ -326,7 +326,7 @@ const handleProfileSubmit = async (e) => {
                             className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
                           /> */}
                           <PhoneNumber value={profileData.contact} onChange={(e) =>
-                            setProfileData((prev) => ({ ...prev, phone: e.target.value }))
+                            setProfileData((prev) => ({ ...prev, contact: e.target.value }))
                           } />
                         </div>
                       </div>

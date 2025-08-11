@@ -45,22 +45,89 @@ export async function GET(req, { params }) {
 }
 
 
-export async function PUT(request, { params }) {
+// 📌 PUT update collection
+export async function PUT(req, { params }) {
   const { slug } = params;
-  const { name, status, description, image } = await request.json();
+
+  try {
+    const formData = await req.formData();
+
+    const name = formData.get("name");
+    const description = formData.get("description");
+    const isActive = formData.get("isActive") === "true";
+    const isFeatured = formData.get("isFeatured") === "true";
+    const imageFile = formData.get("image");
+    const bannerImageFile = formData.get("bannerImage");
+
+    // Check if collection exists
+    const [existing] = await connection.execute(
+      `SELECT * FROM collection WHERE slug = ?`,
+      [slug]
+    );
+
+    if (existing.length === 0) {
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+
+    let imageUrl = existing[0].image;
+    let bannerImageUrl = existing[0].bannerImage;
+
+    // Upload to Cloudinary if new files are provided
+    async function uploadToCloudinary(file, folder) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(buffer);
+      });
+      return result.secure_url;
+    }
+
+    if (imageFile && imageFile.size > 0) {
+      imageUrl = await uploadToCloudinary(imageFile, "Nuzrat/collections/thumbnails");
+    }
+
+    if (bannerImageFile && bannerImageFile.size > 0) {
+      bannerImageUrl = await uploadToCloudinary(bannerImageFile, "Nuzrat/collections/banners");
+    }
+
+    await connection.execute(
+      `UPDATE collection 
+       SET name = ?, description = ?, isActive = ?, isFeatured = ?, image = ?, bannerImage = ?
+       WHERE slug = ?`,
+      [name, description, isActive, isFeatured, imageUrl, bannerImageUrl, slug]
+    );
+
+    return NextResponse.json({ message: "Collection updated successfully" }, { status: 200 });
+
+  } catch (error) {
+    console.error("PUT collection error:", error);
+    return NextResponse.json({ error: "Failed to update collection" }, { status: 500 });
+  }
+}
+
+// 📌 DELETE collection
+export async function DELETE(req, { params }) {
+  const { slug } = params;
 
   try {
     const [result] = await connection.execute(
-      'UPDATE collection SET name = ?, status = ?, description = ?, image = ? WHERE slug = ?',
-      [name, status, description, image, slug]
+      `DELETE FROM collection WHERE slug = ?`,
+      [slug]
     );
 
     if (result.affectedRows === 0) {
-      return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: 'Collection updated successfully' }, { status: 200 });
+    return NextResponse.json({ message: "Collection deleted successfully" }, { status: 200 });
+
   } catch (error) {
-    return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 });
+    console.error("DELETE collection error:", error);
+    return NextResponse.json({ error: "Failed to delete collection" }, { status: 500 });
   }
 }
