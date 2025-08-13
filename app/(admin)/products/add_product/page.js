@@ -205,18 +205,69 @@ const getBase64 = (file) =>
     }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   // Send data to API route
+  //   const res = await fetch("/api/products", {
+  //     method: "POST",
+  //     body: JSON.stringify(product),
+  //     headers: { "Content-Type": "application/json" }
+  //   });
+
+  //   const result = await res.json();
+  //   console.log(result);
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Send data to API route
+  
+    const formData = new FormData();
+    formData.append("name", product.name);
+    formData.append("code", product.code);
+    formData.append("isActive", product.isActive);
+    formData.append("isFeatured", product.isFeatured);
+    formData.append("short_description", product.short_description);
+    formData.append("description", product.description);
+    formData.append("inStock", product.inStock);
+    formData.append("sku", product.sku);
+    formData.append("barcode", product.barcode);
+    formData.append("weight", product.weight);
+    formData.append("collectionId", product.collectionId);
+  
+    // Tags & Sizes as JSON
+    formData.append("tags", JSON.stringify(product.tags));
+    formData.append("sizes", JSON.stringify(product.sizes));
+    formData.append("features", JSON.stringify(product.features));
+    formData.append("specifications", JSON.stringify(product.specifications));
+  
+    // Main images
+    product.images.forEach((file) => {
+      formData.append("images", file);
+    });
+  
+    // Color images
+    formData.append("colors", JSON.stringify(
+      product.colors.map((color) => ({
+        ...color,
+        images: [] // We'll send actual files separately
+      }))
+    ));
+  
+    product.colors.forEach((color, colorIndex) => {
+      color.images.forEach((file) => {
+        formData.append(`colorImage_${colorIndex}`, file);
+      });
+    });
+  
     const res = await fetch("/api/products", {
       method: "POST",
-      body: JSON.stringify(product),
-      headers: { "Content-Type": "application/json" }
+      body: formData
     });
-
+  
     const result = await res.json();
     console.log(result);
   };
+  
 
   return (
     <>
