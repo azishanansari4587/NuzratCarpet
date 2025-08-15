@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import PhoneNumber from "@/components/PhoneNumber";
 import { toast } from 'react-toastify';
 
@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 const CustomizeInquiry = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sizeOption, setSizeOption] = useState("standard");
+  const [images, setImages] = useState([]); // image files preview state
 
   const form = useForm({
     defaultValues: {
@@ -33,34 +34,94 @@ const CustomizeInquiry = () => {
       colors: "",
       pattern: "",
       timeline: "4-8 weeks",
-      additionalInfo: ""
+      additionalInfo: "",
+      uploadedImages: [] // backend ko bhejne ke liye
     }
   });
 
-  const onSubmit = async (data) => {
-  setIsSubmitting(true);
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setImages((prev) => [...prev, ...files]);
+  };
 
-  try {
-    const response = await fetch("/api/customize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+  const removeImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
-    const result = await response.json();
+  const uploadImagesToCloudinary = async () => {
+    let urls = [];
+    for (let img of images) {
+      const formData = new FormData();
+      formData.append("file", img);
+      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET); // Cloudinary preset
 
-    if (result.success) {
-      toast.success("We've received your customization request and will contact you shortly.",);
-      form.reset();
-    } else {
-      toast(`${result.message || "Please try again."}`);
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        { method: "POST", body: formData }
+      );
+      const data = await res.json();
+      urls.push(data.secure_url);
     }
-  } catch (error) {
-    toast.error( "Something went wrong. Please try again.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    return urls;
+  };
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+
+    try {
+      let uploadedUrls = [];
+      if (images.length > 0) {
+        uploadedUrls = await uploadImagesToCloudinary();
+      }
+
+      const finalData = { ...data, uploadedImages: uploadedUrls };
+
+      const response = await fetch("/api/customize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("We've received your customization request and will contact you shortly.");
+        form.reset();
+        setImages([]);
+      } else {
+        toast.error(result.message || "Please try again.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+//   const onSubmit = async (data) => {
+//   setIsSubmitting(true);
+
+//   try {
+//     const response = await fetch("/api/customize", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(data),
+//     });
+
+//     const result = await response.json();
+
+//     if (result.success) {
+//       toast.success("We've received your customization request and will contact you shortly.",);
+//       form.reset();
+//     } else {
+//       toast(`${result.message || "Please try again."}`);
+//     }
+//   } catch (error) {
+//     toast.error( "Something went wrong. Please try again.");
+//   } finally {
+//     setIsSubmitting(false);
+//   }
+// };
 
 
   return (
@@ -290,6 +351,47 @@ const CustomizeInquiry = () => {
                       )}
                     />
                   </div>
+                </div>
+
+
+                {/* Image Upload */}
+                <div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">
+                  <Upload className="h-8 w-8 mx-auto text-forest-400 mb-2" />
+                  <p className="text-forest-700 mb-2">Drag and drop images here or click to upload</p>
+                  <p className="text-sm text-forest-600 mb-4">PNG, JPG, GIF up to 5MB</p>
+
+                  <div className="relative inline-block overflow-hidden">
+                    <Button variant="outline" className="border-forest-300">Select Files</Button>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Preview */}
+                  {images.length > 0 && (
+                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {images.map((img, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={URL.createObjectURL(img)}
+                            alt="preview"
+                            className="w-full h-24 object-cover rounded-md"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs opacity-0 group-hover:opacity-100 transition"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 
                 <Separator />

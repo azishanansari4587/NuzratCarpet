@@ -10,21 +10,16 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
-import { ArrowLeft, Eye, FolderOpen, Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, FolderOpen, Pencil, Plus, Trash2 } from "lucide-react";
 import Spinner from '@/components/Spinner';
 import Image from 'next/image';
 import { Dialog, DialogOverlay, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import EditCollectionDialog from '@/components/EditCollection';
+import { toast } from 'react-toastify';
 
 
 export default function ViewCollections() {
-  const { toast } = useToast();
   
   // Mock collections data
   const [collections, setCollections] = useState([]);
@@ -77,19 +72,15 @@ export default function ViewCollections() {
         ? "The collection has been hidden from your store." 
         : "The collection is now visible in your store.";
       
-      toast({
-        title: currentValue ? "Collection Deactivated" : "Collection Activated",
-        description: message,
-      });
+      toast.success( currentValue ? "Collection Deactivated" : "Collection Activated");
     } else {
       message = currentValue 
         ? "The collection has been removed from featured." 
         : "The collection is now featured on your store.";
       
-      toast({
-        title: currentValue ? "Collection Unfeatured" : "Collection Featured",
-        description: message,
-      });
+      toast.error(
+        currentValue ? "Collection Unfeatured" : "Collection Featured",
+        );
     }
   };
 
@@ -108,9 +99,6 @@ export default function ViewCollections() {
      image: null
    });
 
-
-  //  const [selectedCollection, setSelectedCollection] = useState(null);
-
 const handleEditClick = (collection) => {
   setSelectedCollection(collection);
   setEditDialogOpen(true);
@@ -125,7 +113,7 @@ const handleEditClick = (collection) => {
       setSelectedCollection(data.collection);
       setViewDialogOpen(true);
     } catch {
-      toast({ title: "Error", description: "Failed to load collection", variant: "destructive" });
+      toast.error("Failed to load collection");
     }
   };
 

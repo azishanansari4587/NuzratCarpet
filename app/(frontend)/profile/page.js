@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { data } from "autoprefixer";
 import Spinner from "@/components/Spinner";
+import Image from "next/image";
 
 
 export default function Profile() {
@@ -28,30 +29,7 @@ export default function Profile() {
     country: "",
   });
   
-  // Mock order data
-  const orders = [
-    {
-      id: "ORD-12345",
-      date: "2025-04-26",
-      total: 1299.99,
-      status: "Delivered",
-      items: 3
-    },
-    {
-      id: "ORD-12346",
-      date: "2025-04-10",
-      total: 799.50,
-      status: "Shipped",
-      items: 2
-    },
-    {
-      id: "ORD-12347",
-      date: "2025-03-15",
-      total: 349.99,
-      status: "Processing",
-      items: 1
-    }
-  ];
+
 
 
   const handleProfileChange = (e) => {
@@ -60,35 +38,6 @@ export default function Profile() {
   };
 
 
-//   const fetchProfile = async () => {
-//     setIsProfileLoading(true);
-//     try {
-//       const token = localStorage.getItem("token");
-//       console.log(token);
-      
-//       const res = await fetch("/api/profile", {
-//         method: "GET",
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-
-//       const data = await res.json();
-//       console.log(data);
-      
-//       if (res.ok) {
-//         // setProfileData(data);
-//         setProfileData(data.user);
-        
-//       } else {
-//         toast.error(data.message);
-//       }
-//     } catch (error) {
-//       toast.error("Error loading profile");
-//     } finally {
-//       setIsProfileLoading(false);
-//     }
-//   };
 
 const fetchProfile = async () => {
     setIsProfileLoading(true);
@@ -122,39 +71,8 @@ const fetchProfile = async () => {
   };
   
 
-//   const handleProfileSubmit = async (e) => {
-//     e.preventDefault();
-//     setIsLoading(true);
-  
-//     try {
-//       const token = localStorage.getItem("token"); // ya cookies se lo agar wahan store kiya ho
-//   console.log(token);
-  
-//       const res = await fetch("/api/profile", {
-//         method: "PUT",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`, // token bhej rahe hain
-//         },
-//         body: JSON.stringify(profileData),
-//       });
-  
-//       const data = await res.json();
-  
-//       if (res.ok) {
-//         toast.success("Profile Update Successfully");
-//         // optionally: refresh user data ya navigate
-//       } else {
-//         toast.error(data.message);
-//       }
-//     } catch (err) {
-//       toast.error(data.message || "Something went wrong");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
 
-const handleProfileSubmit = async (e) => {
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
   
@@ -213,8 +131,36 @@ const handleProfileSubmit = async (e) => {
     toast.warning("Logged Out");
 
     // Redirect to login page
-    router.push("/login");
+    router.push("/signin");
   };
+
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/myEnquiry", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setOrders(data);
+        } else {
+          console.error(data.error || "Failed to fetch orders");
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -256,7 +202,7 @@ const handleProfileSubmit = async (e) => {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Link href="/user" className="flex items-center gap-2 p-2 rounded-md bg-forest-100 text-forest-800">
                     <User className="h-4 w-4" /> Profile
                   </Link>
@@ -266,7 +212,7 @@ const handleProfileSubmit = async (e) => {
                   <Link href="/" className="flex items-center gap-2 p-2 rounded-md hover:bg-sand-100 text-forest-700">
                     <Home className="h-4 w-4" /> Back to Home
                   </Link>
-                </div>
+                </div> */}
               </div>
             </CardContent>
           </Card>
@@ -274,7 +220,7 @@ const handleProfileSubmit = async (e) => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-white">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
                 <TabsTrigger value="orders">Orders</TabsTrigger>
               </TabsList>
@@ -286,14 +232,28 @@ const handleProfileSubmit = async (e) => {
                     <form onSubmit={handleProfileSubmit} className="space-y-4">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label htmlFor="fullName" className="text-sm font-medium text-forest-800">
-                            Full Name
+                          <label htmlFor="first_name" className="text-sm font-medium text-forest-800">
+                            First Name
                           </label>
                           <input
-                            id="fullName"
-                            name="fullName"
+                            id="first_name"
+                            name="first_name"
                             type="text"
-                            value={profileData.name}
+                            value={profileData.first_name}
+                            onChange={handleProfileChange}
+                            className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="first_name" className="text-sm font-medium text-forest-800">
+                            Last Name
+                          </label>
+                          <input
+                            id="last_name"
+                            name="last_name"
+                            type="text"
+                            value={profileData.last_name}
                             onChange={handleProfileChange}
                             className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
                           />
@@ -417,7 +377,6 @@ const handleProfileSubmit = async (e) => {
                     </form>
                   </CardContent>
                 </Card>
-                
               </TabsContent>
               
               <TabsContent value="orders">
@@ -428,37 +387,40 @@ const handleProfileSubmit = async (e) => {
                     {orders.length > 0 ? (
                       <div className="space-y-4">
                         {orders.map((order) => (
-                          <div key={order.id} className="border border-forest-200 rounded-md p-4">
-                            <div className="flex flex-wrap items-center justify-between mb-3">
-                              <div>
-                                <h4 className="font-medium text-forest-800">Order #{order.id}</h4>
-                                <p className="text-sm text-forest-600">Placed on {order.date}</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="font-medium text-forest-800">${order.total.toFixed(2)}</p>
-                                <p className="text-sm">
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium
-                                    ${order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
-                                      order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' : 
-                                      'bg-yellow-100 text-yellow-800'}`}>
-                                    {order.status}
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <p className="text-sm text-forest-700">{order.items} item{order.items !== 1 ? 's' : ''}</p>
-                              <div className="space-x-2">
-                                <Button size="sm" variant="outline" asChild>
-                                  <Link href={`/orders/${order.id}`}>View Order</Link>
-                                </Button>
-                                {order.status === 'Delivered' && (
-                                  <Button size="sm" variant="outline">
-                                    Write Review
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
+                          <div
+                            key={order.id}
+                            className="border rounded-lg shadow p-4 bg-white"
+                          >
+                            <p className="text-sm text-gray-500 mb-2">
+                              Reference: <b>{order.id}</b> 
+                            </p>
+                            <p className="text-sm text-gray-500 mb-2">
+                              Date: {new Date(order.created_at).toLocaleDateString("en-US", {
+                                day: "2-digit",
+                                month: "long", // August, September etc.
+                                year: "numeric"
+                              })}
+                            </p>
+
+                            <ul className="space-y-2">
+                              {order.cartItems.map((item, index) => (
+                                <li
+                                  key={index}
+                                  className="flex justify-between border-b pb-2"
+                                >
+                                  <div>
+                                    <p className="font-medium">{item.name}</p>
+                                    <p className="text-sm text-gray-500">
+                                      Size: {item.size}
+                                    </p>
+                                    <p className="text-sm text-gray-500">Color: {item.color} </p>
+                                    <p className="text-sm text-gray-500">Qty:{" "}
+                                    {item.quantity}</p>
+                                  </div>
+                                  <Image src={item.image} alt={item.name} width={100} height={100}/>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         ))}
                       </div>

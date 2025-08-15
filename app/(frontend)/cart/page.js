@@ -8,11 +8,11 @@ import Link from "next/link";
 import Spinner from "@/components/Spinner";
 import Image from "next/image";
 import useCartStore from "@/store/cartStore";
+import { useRouter } from "next/navigation";
 
 const Cart = () => {
-  // const [cartItems, setCartItems] = useState([]);
-  // const setCart = useCartStore(state => state.setCart); 
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const { cart: cartItems, setCart, addToCart, removeFromCart, increment, decrement, clearCart } = useCartStore();
 
@@ -66,7 +66,6 @@ const Cart = () => {
       const data = await res.json();
   
       if (res.ok) {
-        // setCartItems((prev) => prev.filter((item) => item.id !== productId));
         removeFromCart(productId); // ✅ Zustand update
         toast.success("Item removed from wishlist.");
   
@@ -86,10 +85,46 @@ const Cart = () => {
   };
   
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingCost = subtotal > 0 ? 15.99 : 0;
-  const taxAmount = subtotal * 0.07;
-  const total = subtotal + shippingCost + taxAmount;
+  const handleProceedToEnquiry = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login to proceed");
+        return;
+      }
+  
+      if (!cartItems.length) {
+        toast.error("Your cart is empty");
+        return;
+      }
+  
+      const res = await fetch("/api/myEnquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          items: cartItems,
+          total: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        toast.success("Enquiry sent successfully!");
+        clearCart(); // ✅ Zustand cart clear
+        router.push(`/enquirySuccess?ref=${data.enquiryId}`);
+      } else {
+        toast.error(data.error || "Failed to send enquiry");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  };
+
+
 
   return (
 
@@ -166,10 +201,8 @@ const Cart = () => {
           <div className="max-w-7xl mx-auto mt-8 ">
             <h3 className="text-md font-bold space-x-3 m-2">Order Summary</h3>
             <h4 className="text-md  space-x-3 m-2">Total Cart Items : {cartItems.length} Items</h4>
-            <Button className="w-full text-lg" asChild>
-              <Link href="/enquiry">
+            <Button className="w-full text-lg" onClick={handleProceedToEnquiry}>
                 Proceed to Enquiry
-              </Link>
             </Button>
           </div>
         </>

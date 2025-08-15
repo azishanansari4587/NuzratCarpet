@@ -3,13 +3,6 @@ import { NextResponse } from 'next/server';
 import  cloudinary  from '@/lib/cloudinary';
 
 
-// async function uploadToCloudinary(base64Image) {
-//   const result = await cloudinary.uploader.upload(base64Image, {
-//     folder: 'NurzatProducts',
-//   });
-//   return result.secure_url;
-// }
-
 
 function generateSlug(name) {
   return name
@@ -57,7 +50,23 @@ export async function POST(req) {
     const specifications = JSON.parse(formData.get("specifications") || "[]");
     const collectionId = formData.get("collectionId");
 
-    const slug = generateSlug(name);
+    // Generate slug
+    let slug = generateSlug(name);
+
+    // Check for existing name or slug
+    let uniqueSlug = slug;
+    let counter = 1;
+
+    while (true) {
+      const [existing] = await connection.execute(
+        `SELECT id FROM product WHERE name = ? OR slug = ? LIMIT 1`,
+        [name, uniqueSlug]
+      );
+      if (existing.length === 0) break; // Unique
+      uniqueSlug = `${slug}-${counter++}`;
+    }
+
+    slug = uniqueSlug;
 
     // Multiple product images
     const imageFiles = formData.getAll("images"); // multiple <input name="images" />
@@ -71,9 +80,10 @@ export async function POST(req) {
 
     // Colors with images
     const colors = JSON.parse(formData.get("colors") || "[]");
+
     const updatedColors = await Promise.all(
       colors.map(async (color, idx) => {
-        const colorFiles = formData.getAll(`color_images_${idx}`);
+        const colorFiles = formData.getAll(`colorImage_${idx}[]`); // ✅ key fix
         const uploadedColorImages = await Promise.all(
           colorFiles.map(file =>
             file.size > 0
@@ -81,9 +91,10 @@ export async function POST(req) {
               : null
           )
         );
-        return { ...color, images: uploadedColorImages };
+        return { ...color, images: uploadedColorImages.filter(Boolean) }; // remove nulls
       })
     );
+    
 
     // Save to DB
     const [result] = await connection.execute(
@@ -123,99 +134,6 @@ export async function POST(req) {
   }
 }
 
-
-// export async function POST(req) {
-//   try {
-//     const body = await req.json();
-
-//     let {
-//       name,
-//       code,
-//       isActive,
-//       isFeatured,
-//       short_description,
-//       description,
-//       images, // Base64 array
-//       colors, // with base64 images
-//       sizes,
-//       features,
-//       specifications,
-//       inStock,
-//       sku,
-//       barcode,
-//       weight,
-//       tags,
-//       // quantity,
-//       collectionId,
-//     } = body;
-
-//     const slug = generateSlug(name);
-
-
-//     // ✅ Upload main product images to Cloudinary
-
-
-//     const uploadedProductImages = await Promise.all(
-//       images.map(async (img) => {
-//         if (img.startsWith("data:")) {
-//           return await uploadToCloudinary(img);
-//         }
-//         return img; // already uploaded
-//       })
-//     );
-    
-
-
-//     const updatedColors = await Promise.all(
-//       colors.map(async (color) => {
-//         const updatedImages = await Promise.all(
-//           color.images.map(async (img) => {
-//             if (img.startsWith("data:")) {
-//               return await uploadToCloudinary(img);
-//             }
-//             return img;
-//           })
-//         );
-//         return { ...color, images: updatedImages };
-//       })
-//     );
-    
-
-
-//     const [result] = await connection.execute(
-//       `INSERT INTO product 
-//       (name, code, slug, short_description, description, isActive, isFeatured, tags, images, colors, sizes, features, specifications, inStock, sku, barcode, weight,  collectionId) 
-//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-//       [
-//         name,
-//         code,
-//         slug,
-//         short_description,
-//         description,
-//         isActive ? 1 : 0,
-//         isFeatured ? 1 : 0,
-//         JSON.stringify(tags),
-//         JSON.stringify(uploadedProductImages),
-//         JSON.stringify(updatedColors),
-//         JSON.stringify(sizes),
-//         // JSON.stringify(categories),
-//         JSON.stringify(features),
-//         JSON.stringify(specifications),
-//         inStock ? 1 : 0,
-//         sku,
-//         barcode,
-//         weight,
-//         collectionId,
-//       ]
-//     );
-
-//     return NextResponse.json({ message: 'Product saved with Cloudinary images!' }, { status: 201 });
-
-//   } catch (err) {
-//     console.error('Product Save Error:', err);
-//     return NextResponse.json({ error: err.message }, { status: 500 });
-//   }
-// }
 
 
 export async function GET() {

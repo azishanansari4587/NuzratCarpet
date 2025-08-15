@@ -1,21 +1,20 @@
 "use client"
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+
 import Link from "next/link";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {Select,   SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 export default function AddProduct() {
-
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,8 +37,7 @@ export default function AddProduct() {
     fetchCollections();
   }, []);
 
-
-  const [product, setProduct] = useState({
+  const initialProductState = {
     id: "",
     name: "",
     code: "",
@@ -60,7 +58,32 @@ export default function AddProduct() {
     collectionId: "",
     short_description: "",
     description: "",
-  });
+  };
+
+  // const [product, setProduct] = useState({
+  //   id: "",
+  //   name: "",
+  //   code: "",
+  //   isActive: true,
+  //   isFeatured: false,
+  //   tags: [], // ✅ empty array instead of [""]
+  //   images: [], // ✅ empty array instead of [""]
+  //   imageUrls: [], // ✅ correct
+  //   colors: [], // ✅ initially empty or [{ name: "", value: "", inStock: true, images: [] }] if you're binding a single item
+  //   sizes: [], // ✅ empty array instead of [""]
+  //   features: [], // ✅ empty array instead of [""]
+  //   specifications: [], // ✅ empty array instead of [{ key: "", value: "" }]
+  //   inStock: true,
+  //   sku: "",
+  //   barcode: "",
+  //   weight: "",
+  //   quantity: "",
+  //   collectionId: "",
+  //   short_description: "",
+  //   description: "",
+  // });
+
+  const [product, setProduct] = useState(initialProductState);
 
 
   const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Pillow"];
@@ -77,49 +100,7 @@ export default function AddProduct() {
   };
 
 
-//  const handleImageUpload = (e) => {
-//     const files = Array.from(e.target.files);
-//     const urls = files.map((file) => URL.createObjectURL(file));
-//     setProduct({ ...product, images: [...product.images, ...urls] });
-//   };
 
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-
-// const handleImageUpload = async (e) => {
-//   const files = Array.from(e.target.files);
-//   const base64Images = await Promise.all(files.map(getBase64));
-//   setProduct({ ...product, images: [...product.images, ...base64Images] });
-// };
-
-
-//   const handleRemoveImage = (index) => {
-//     const imgs = [...product.images];
-//     imgs.splice(index, 1);
-//     setProduct({ ...product, images: imgs });
-//   };
-
-
-  // const handleColorImageUpload = (e, colorIndex) => {
-  //   const files = Array.from(e.target.files);
-  //   const imageUrls = files.map(file => URL.createObjectURL(file));
-
-  //   const updatedColors = [...product.colors];
-
-  //   if (!updatedColors[colorIndex]) return; // Safety check
-
-  //   if (!Array.isArray(updatedColors[colorIndex].images)) {
-  //     updatedColors[colorIndex].images = []; // Initialize if undefined
-  //   }
-
-  //   updatedColors[colorIndex].images.push(...imageUrls);
-  //   setProduct({ ...product, colors: updatedColors });
-  // };
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -158,34 +139,6 @@ const getBase64 = (file) =>
   };
   
 
-  // const handleColorImageUpload = async (e, colorIndex) => {
-  //   const files = Array.from(e.target.files);
-  //   const base64Images = await Promise.all(files.map(getBase64)); // 🔥 Convert to Base64
-  
-  //   const updatedColors = [...product.colors];
-  
-  //   if (!updatedColors[colorIndex]) return;
-  
-  //   if (!Array.isArray(updatedColors[colorIndex].images)) {
-  //     updatedColors[colorIndex].images = [];
-  //   }
-  
-  //   updatedColors[colorIndex].images.push(...base64Images); // ✅ store Base64 for Cloudinary
-  //   setProduct({ ...product, colors: updatedColors });
-  // };
-  
-
-  // const handleRemoveColorImage = (colorIndex, imageIndex) => {
-  //   const updatedColors = [...product.colors];
-  //   if (
-  //     updatedColors[colorIndex] &&
-  //     Array.isArray(updatedColors[colorIndex].images)
-  //   ) {
-  //     updatedColors[colorIndex].images.splice(imageIndex, 1);
-  //     setProduct({ ...product, colors: updatedColors });
-  //   }
-  // };
-
 
   const handleTagChange = (tag, checked) => {
     setProduct(prev => ({
@@ -205,18 +158,6 @@ const getBase64 = (file) =>
     }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   // Send data to API route
-  //   const res = await fetch("/api/products", {
-  //     method: "POST",
-  //     body: JSON.stringify(product),
-  //     headers: { "Content-Type": "application/json" }
-  //   });
-
-  //   const result = await res.json();
-  //   console.log(result);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -255,22 +196,34 @@ const getBase64 = (file) =>
   
     product.colors.forEach((color, colorIndex) => {
       color.images.forEach((file) => {
-        formData.append(`colorImage_${colorIndex}`, file);
+        formData.append(`colorImage_${colorIndex}[]`, file);
       });
     });
   
-    const res = await fetch("/api/products", {
-      method: "POST",
-      body: formData
-    });
+    try {
+      const res = await fetch("/api/products", {
+        method: "POST",
+        body: formData
+      });
   
-    const result = await res.json();
-    console.log(result);
+      const result = await res.json();
+  
+      if (res.ok) {
+        toast.success("✅ Product saved successfully!");
+        console.log(result);
+        // Reset form after successful submit
+        setProduct(initialProductState);
+      } else {
+        toast.error(`❌ Error: ${result.message || "Failed to save product"}`);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(`❌ Error: ${err.message || "Something went wrong"}`);
+    }
   };
-  
+
 
   return (
-    <>
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
 
@@ -447,53 +400,6 @@ const getBase64 = (file) =>
                 <h2 className="text-xl font-medium mb-4 text-forest-800">Organization</h2>
                 
                 <div className="grid gap-6">
-                  {/* <div className="space-y-2">
-                    <label className="block text-sm font-medium text-forest-800">
-                      Collections
-                    </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {collections.map((collection) => (
-                        <div key={collection.id} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`collection-${collection.id}`} 
-                            checked={product.collections.includes(collection.id)}
-                            onCheckedChange={(checked) => handleCategoryChange(collection.id, checked === true)}
-                          />
-                          <label
-                            htmlFor={`collection-${collection.id}`}
-                            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-forest-800"
-                          >
-                            {collection.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div> */}
-
-
-                  {/* <div className="space-y-2">
-                    <label className="block text-sm font-medium text-forest-800">
-                      Available Category
-                    </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {availableCategories.map((category) => (
-                        <div key={category} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`category-${category}`} 
-                            checked={product.categories.includes(category)}
-                            onCheckedChange={(checked) => handleCategoryChange(category, checked === true)}
-                          />
-                          <label
-                            htmlFor={`category-${category}`}
-                            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-forest-800"
-                          >
-                            {category}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </div> */}
-
 
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-forest-800">
@@ -644,8 +550,8 @@ const getBase64 = (file) =>
                               {color.images.map((img, i) => {
                                 if (!img) return null; // ✅ skip empty strings or undefined
 
+                                
                                 const imageUrl = typeof img === "string" ? img : URL.createObjectURL(img);
-
                                 return (
                                   <div key={i} className="relative group">
                                     <img
@@ -669,9 +575,7 @@ const getBase64 = (file) =>
                         </div>
                       </div>
                     ))}
-                    {/* <Button type="button" onClick={() => setProduct({ ...product, colors: [...product.colors, { name: "", value: "#000000", inStock: true, images: [""] }] })}>
-                      + Add Color
-                    </Button> */}
+
                     <Button
                       type="button"
                       onClick={() =>
@@ -734,89 +638,10 @@ const getBase64 = (file) =>
                     </div>
                   </div>
 
-                  {/* <div className="grid gap-3">
-                    <Label htmlFor="tags">Tags</Label>
-                    <Select>
-                      <SelectTrigger id="tags">
-                        <SelectValue placeholder={product.tags.length ? product.tags.join(", ") : "Select Tags"} />
-                    </SelectTrigger>
-                      <SelectContent className="p-2 border rounded-lg bg-white shadow-md">
-                        {availableTags.map((tag, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100 rounded"
-                            onClick={() => handleTagChange(tag)}
-                          >
-                            <Checkbox checked={product.tags.includes(tag)} />
-                            <span>{tag}</span>
-                          </div>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <div className="mt-4">
-                      <h3 className="font-medium">Selected Tags:</h3>
-                      <p className="text-gray-700">{product.tags.length ? product.tags.join(", ") : "None"}</p>
-                    </div>
-                  </div> */}
-
 
                 </div>
               </CardContent>
             </Card>
-            
-            {/* <Card>
-              <CardContent className="pt-6">
-                <h2 className="text-xl font-medium mb-4 text-forest-800">Inventory</h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label htmlFor="sku" className="block text-sm font-medium text-forest-800">
-                      SKU (Stock Keeping Unit)
-                    </label>
-                    <input
-                      id="sku"
-                      name="sku"
-                      type="text"
-                      value={product.sku}
-                      onChange={handleChange}
-                      placeholder="e.g., CP-123-BLU"
-                      className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label htmlFor="barcode" className="block text-sm font-medium text-forest-800">
-                      Barcode (UPC, EAN)
-                    </label>
-                    <input
-                      id="barcode"
-                      name="barcode"
-                      type="text"
-                      value={product.barcode}
-                      onChange={handleChange}
-                      placeholder="e.g., 123456789012"
-                      className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label htmlFor="weight" className="block text-sm font-medium text-forest-800">
-                      Weight (lbs)
-                    </label>
-                    <input
-                      id="weight"
-                      name="weight"
-                      type="number"
-                      min="0"
-                      step="0.1"
-                      value={product.weight}
-                      onChange={handleChange}
-                      placeholder="0.0"
-                      className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card> */}
             
             <div className="flex justify-end space-x-4">
               <Button type="button" variant="outline" className="border-forest-300" asChild>
@@ -835,6 +660,5 @@ const getBase64 = (file) =>
 
         </div>
       </div>
-    </>
   );
 }

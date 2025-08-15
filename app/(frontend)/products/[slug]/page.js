@@ -72,7 +72,7 @@ const Product = () => {
     
       const cartItem = {
         productId: product.id,
-        quantity: 1,
+        quantity: quantity,
         color: currentColorObj?.name,
         size: selectedSize,
         image: currentImages[selectedImage], // 🟢 send this too

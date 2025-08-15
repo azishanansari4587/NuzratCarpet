@@ -17,14 +17,14 @@ const colors = [
   { id: 'multicolor', name: 'Multicolor', color: 'linear-gradient(90deg, #e8d9c7, #a4c2e3, #c25e5e, #87a987)' },
 ];
 
-const sizes = [
-  { id: 'small', name: '2\'x3\'', count: 24 },
-  { id: 'medium', name: '5\'x7\'', count: 45 },
-  { id: 'large', name: '8\'x10\'', count: 38 },
-  { id: 'xlarge', name: '9\'x12\'', count: 22 },
-  { id: 'runner', name: '2\'x8\'', count: 19 },
-  { id: 'round', name: '6\'', count: 15 },
-];
+// const sizes = [
+//   { id: 'small', name: '2\'x3\'', count: 24 },
+//   { id: 'medium', name: '5\'x7\'', count: 45 },
+//   { id: 'large', name: '8\'x10\'', count: 38 },
+//   { id: 'xlarge', name: '9\'x12\'', count: 22 },
+//   { id: 'runner', name: '2\'x8\'', count: 19 },
+//   { id: 'round', name: '6\'', count: 15 },
+// ];
 
 
 
@@ -265,7 +265,7 @@ const ProductFilter = ({ onFilterChange }) => {
       </div>
 
       {/* Sizes */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <button
             className="flex justify-between items-center w-full mb-2 font-semibold text-lg"
             onClick={() => toggleSection('sizes')}
@@ -295,7 +295,7 @@ const ProductFilter = ({ onFilterChange }) => {
           ))}
         </div>
         )}
-      </div>
+      </div> */}
 
       {/* Action buttons for mobile */}
       <div className="mt-8 space-y-3 lg:hidden">
