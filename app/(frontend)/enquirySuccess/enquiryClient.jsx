@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import Image from "next/image";
 
-const enquiryClient = () => {
+const EnquiryClient = () => {
     const searchParams = useSearchParams();
     const ref = searchParams.get("ref");
     const [loading, setLoading] = useState(true);
@@ -91,4 +91,4 @@ const enquiryClient = () => {
     );
 }
 
-export default enquiryClient
+export default EnquiryClient
