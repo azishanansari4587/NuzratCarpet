@@ -462,7 +462,8 @@ export default function AddProduct() {
                           /> */}
                           <div className="relative w-full h-32 rounded-md border border-forest-200 overflow-hidden">
                             <Image
-                              src={URL.createObjectURL(url)}// fallback if url is missing
+                              // src={URL.createObjectURL(url)}// fallback if url is missing
+                              src={url}
                               alt={`Product preview ${index + 1}`}
                               fill
                               className="object-cover rounded-md"
