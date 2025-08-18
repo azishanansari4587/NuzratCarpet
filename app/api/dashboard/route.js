@@ -7,15 +7,15 @@ export async function GET() {
         const [userRows] = await connection.query("SELECT COUNT(*) AS totalUsers FROM users");
         const [productRows] = await connection.query("SELECT COUNT(*) AS totalProducts FROM product");
         const [collectionRows] = await connection.query("SELECT COUNT(*) AS totalCollections FROM collection");
-        const [orderRows] = await connection.query("SELECT COUNT(*) AS totalOrders FROM cart");
+        const [orderRows] = await connection.query("SELECT COUNT(*) AS totalOrders FROM enquiries");
         
         
         // Fetch order counts for this month and last month
         const [currentMonth] = await connection.execute(
-            `SELECT COUNT(*) AS count FROM cart WHERE MONTH(created_at) = MONTH(CURRENT_DATE())`
+            `SELECT COUNT(*) AS count FROM enquiries WHERE MONTH(created_at) = MONTH(CURRENT_DATE())`
         );
         const [lastMonth] = await connection.execute(
-            `SELECT COUNT(*) AS count FROM cart WHERE MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)`
+            `SELECT COUNT(*) AS count FROM enquiries WHERE MONTH(created_at) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)`
         );
 
 

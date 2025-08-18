@@ -11,14 +11,28 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
-import { ArrowLeft, Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import Spinner from '@/components/Spinner';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+
 
 export default function ViewProducts() {
-  const { toast } = useToast();
   
   // State for search and filtering
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,36 +57,35 @@ useEffect(() => {
   fetchCollections();
 }, []);
 
-  
+const fetchProducts = async () => {
+  try {
+    const res = await fetch("/api/products");
+    const data = await res.json();
+
+    if (res.ok) {
+      // Convert to expected shape
+      const formatted = data.products.map(p => ({
+        id: p.id,
+        name: p.name,
+        image: p.images?.[0] || "/placeholder.svg", // First image or fallback
+        // category: p.category,
+        collectionId: p.collectionId, 
+        stock: p.stock,
+        active: p.active === 1, // assuming active is TINYINT(1)
+      }));
+
+      setProducts(formatted);
+    } else {
+      console.error("Failed to fetch products:", data.error);
+    }
+  } catch (err) {
+    console.error("Error fetching products:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-  
-        if (res.ok) {
-          // Convert to expected shape
-          const formatted = data.products.map(p => ({
-            id: p.id,
-            name: p.name,
-            image: p.images?.[0] || "/placeholder.svg", // First image or fallback
-            // category: p.category,
-            collectionId: p.collectionId, 
-            stock: p.stock,
-            active: p.active === 1, // assuming active is TINYINT(1)
-          }));
-  
-          setProducts(formatted);
-        } else {
-          console.error("Failed to fetch products:", data.error);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
     fetchProducts();
   }, []);
 
@@ -95,15 +108,72 @@ useEffect(() => {
   });
 
 
-  const handleDeleteProduct = (id, name) => {
-    // In a real app, would call API to delete
-    setProducts(products.filter(product => product.id !== id));
+  // const handleDeleteProduct = (id, name) => {
+  //   // In a real app, would call API to delete
+  //   setProducts(products.filter(product => product.id !== id));
     
-    toast({
-      title: "Product Deleted",
-      description: `${name} has been removed from your inventory.`,
-    });
+  //   toast({
+  //     title: "Product Deleted",
+  //     description: `${name} has been removed from your inventory.`,
+  //   });
+  // };
+
+  // const handleDeleteProduct = async () => {
+  //     try {
+  //       const res = await fetch(`/api/products/${setProducts.slug}`, { method: "DELETE" });
+  //       if (!res.ok) throw new Error("Delete failed");
+  
+  //       toast.success("Product deleted successfully");
+  //       setDeleteDialogOpen(false);
+  //       fetchProducts();
+  //     } catch (err) {
+  //       toast.error(err.message);
+  //     }
+  //   };
+
+  // const handleDeleteProduct = async (id, name) => {
+  //   try {
+  //     const res = await fetch(`/api/products?id=${id}`, {
+  //       method: "DELETE",
+  //     });
+  
+  //     if (res.ok) {
+  //       setProducts(products.filter(product => product.id !== id));
+  
+  //       toast.success(`Product Deleted ${name} has been removed from your inventory.`);
+  //     } else {
+  //       const data = await res.json();
+  //       toast.error( data.error || "Failed to delete product.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Delete error:", error);
+  //     toast.error("Something went wrong while deleting the product.");
+  //   }
+  // };
+
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const res = await fetch(`/api/products?id=${id}`, {
+        method: "DELETE",
+      });
+  
+      if (res.ok) {
+        setProducts(products.filter(product => product.id !== id));
+        toast.success("Product deleted successfully");
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to delete product.");
+      }
+    } catch (err) {
+      toast.error("Something went wrong while deleting the product.");
+    }
   };
+
+  const [deleteProduct, setDeleteProduct] = useState(null);
+
+  
+  
 
   const handleToggleActive = (id, currentState) => {
     // In a real app, would call API to update
@@ -257,15 +327,47 @@ useEffect(() => {
                               <Pencil className="h-4 w-4" />
                             </Link>
                           </Button>
-                          <Button
+                          {/* <Button
                             size="sm"
                             variant="ghost"
                             className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={() => handleDeleteProduct(product.id, product.name)}
+                            onClick={() => handleDeleteProduct()}
                           >
                             <span className="sr-only">Delete</span>
                             <Trash2 className="h-4 w-4" />
-                          </Button>
+                          </Button> */}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                onClick={() => setDeleteProduct(product)}
+                              >
+                                <span className="sr-only">Delete</span>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-white text-black rounded-lg shadow-lg">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete <b>{deleteProduct?.name}</b>?  
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteProduct(deleteProduct?.id)}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+
                         </div>
                       </TableCell>
                     </TableRow>

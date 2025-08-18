@@ -163,3 +163,35 @@ export async function GET() {
   }
 }
 
+// ** DELETE METHOD
+export async function DELETE(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Delete query
+    const [result] = await connection.execute(
+      "DELETE FROM product WHERE id = ?",
+      [id]
+    );
+
+    return NextResponse.json({
+      message: "Product deleted successfully",
+      result,
+    });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 }
+    );
+  }
+}
+

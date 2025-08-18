@@ -33,3 +33,25 @@ export async function GET(req, context) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+
+export async function DELETE(req, { params }) {
+  const { slug } = params;
+
+  try {
+    const [result] = await connection.execute(
+      `DELETE FROM product WHERE slug = ?`,
+      [slug]
+    );
+
+    if (result.affectedRows === 0) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Product deleted successfully" }, { status: 200 });
+
+  } catch (error) {
+    console.error("DELETE product error:", error);
+    return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
+  }
+}
