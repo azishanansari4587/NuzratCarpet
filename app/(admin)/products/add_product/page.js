@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import {Select,   SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { uploadToCloudinary } from "@/lib/uploadCloudinary";
 
 export default function AddProduct() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -102,30 +103,73 @@ export default function AddProduct() {
 
 
 
-  const handleImageUpload = (e) => {
+  // const handleImageUpload = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   setProduct({ ...product, images: [...product.images, ...files] }); // Store File objects
+  // };
+
+  const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
-    setProduct({ ...product, images: [...product.images, ...files] }); // Store File objects
+  
+    try {
+      const uploaded = await Promise.all(
+        files.map(file => uploadToCloudinary(file, "NurzatProducts"))
+      );
+  
+      setProduct(prev => ({
+        ...prev,
+        images: [...prev.images, ...uploaded.map(img => img.secure_url)] // Store URLs only
+      }));
+    } catch (err) {
+      console.error("Image upload error:", err);
+      toast.error("❌ Failed to upload image");
+    }
   };
   
+  
+
   const handleRemoveImage = (index) => {
     const imgs = [...product.images];
     imgs.splice(index, 1);
     setProduct({ ...product, images: imgs });
   };
   
-  const handleColorImageUpload = (e, colorIndex) => {
+  // const handleColorImageUpload = (e, colorIndex) => {
+  //   const files = Array.from(e.target.files);
+  //   const updatedColors = [...product.colors];
+  
+  //   if (!updatedColors[colorIndex]) return;
+  
+  //   if (!Array.isArray(updatedColors[colorIndex].images)) {
+  //     updatedColors[colorIndex].images = [];
+  //   }
+  
+  //   updatedColors[colorIndex].images.push(...files); // Store File objects
+  //   setProduct({ ...product, colors: updatedColors });
+  // };
+
+  const handleColorImageUpload = async (e, colorIndex) => {
     const files = Array.from(e.target.files);
     const updatedColors = [...product.colors];
   
-    if (!updatedColors[colorIndex]) return;
+    try {
+      const uploaded = await Promise.all(
+        files.map(file => uploadToCloudinary(file, "NurzatProducts/colors"))
+      );
   
-    if (!Array.isArray(updatedColors[colorIndex].images)) {
-      updatedColors[colorIndex].images = [];
+      if (!Array.isArray(updatedColors[colorIndex].images)) {
+        updatedColors[colorIndex].images = [];
+      }
+  
+      updatedColors[colorIndex].images.push(...uploaded.map(img => img.secure_url));
+  
+      setProduct({ ...product, colors: updatedColors });
+    } catch (err) {
+      console.error("Color image upload error:", err);
+      toast.error("❌ Failed to upload color image");
     }
-  
-    updatedColors[colorIndex].images.push(...files); // Store File objects
-    setProduct({ ...product, colors: updatedColors });
   };
+  
   
   const handleRemoveColorImage = (colorIndex, imageIndex) => {
     const updatedColors = [...product.colors];
@@ -158,7 +202,6 @@ export default function AddProduct() {
     }));
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -175,30 +218,15 @@ export default function AddProduct() {
     formData.append("weight", product.weight);
     formData.append("collectionId", product.collectionId);
   
-    // Tags & Sizes as JSON
+    // Tags, Sizes, Features, Specs
     formData.append("tags", JSON.stringify(product.tags));
     formData.append("sizes", JSON.stringify(product.sizes));
     formData.append("features", JSON.stringify(product.features));
     formData.append("specifications", JSON.stringify(product.specifications));
   
-    // Main images
-    product.images.forEach((file) => {
-      formData.append("images", file);
-    });
-  
-    // Color images
-    formData.append("colors", JSON.stringify(
-      product.colors.map((color) => ({
-        ...color,
-        images: [] // We'll send actual files separately
-      }))
-    ));
-  
-    product.colors.forEach((color, colorIndex) => {
-      color.images.forEach((file) => {
-        formData.append(`colorImage_${colorIndex}[]`, file);
-      });
-    });
+    // ✅ Ab sirf URLs bhejne hain
+    formData.append("images", JSON.stringify(product.images)); // Already Cloudinary URLs
+    formData.append("colors", JSON.stringify(product.colors)); // Each color has images URLs
   
     try {
       const res = await fetch("/api/products", {
@@ -211,7 +239,6 @@ export default function AddProduct() {
       if (res.ok) {
         toast.success("✅ Product saved successfully!");
         console.log(result);
-        // Reset form after successful submit
         setProduct(initialProductState);
       } else {
         toast.error(`❌ Error: ${result.message || "Failed to save product"}`);
@@ -221,6 +248,70 @@ export default function AddProduct() {
       toast.error(`❌ Error: ${err.message || "Something went wrong"}`);
     }
   };
+  
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  
+  //   const formData = new FormData();
+  //   formData.append("name", product.name);
+  //   formData.append("code", product.code);
+  //   formData.append("isActive", product.isActive);
+  //   formData.append("isFeatured", product.isFeatured);
+  //   formData.append("short_description", product.short_description);
+  //   formData.append("description", product.description);
+  //   formData.append("inStock", product.inStock);
+  //   formData.append("sku", product.sku);
+  //   formData.append("barcode", product.barcode);
+  //   formData.append("weight", product.weight);
+  //   formData.append("collectionId", product.collectionId);
+  
+  //   // Tags & Sizes as JSON
+  //   formData.append("tags", JSON.stringify(product.tags));
+  //   formData.append("sizes", JSON.stringify(product.sizes));
+  //   formData.append("features", JSON.stringify(product.features));
+  //   formData.append("specifications", JSON.stringify(product.specifications));
+  
+  //   // Main images
+  //   product.images.forEach((file) => {
+  //     formData.append("images", file);
+  //   });
+  
+  //   // Color images
+  //   formData.append("colors", JSON.stringify(
+  //     product.colors.map((color) => ({
+  //       ...color,
+  //       images: [] // We'll send actual files separately
+  //     }))
+  //   ));
+  
+  //   product.colors.forEach((color, colorIndex) => {
+  //     color.images.forEach((file) => {
+  //       formData.append(`colorImage_${colorIndex}[]`, file);
+  //     });
+  //   });
+  
+  //   try {
+  //     const res = await fetch("/api/products", {
+  //       method: "POST",
+  //       body: formData
+  //     });
+  
+  //     const result = await res.json();
+  
+  //     if (res.ok) {
+  //       toast.success("✅ Product saved successfully!");
+  //       console.log(result);
+  //       // Reset form after successful submit
+  //       setProduct(initialProductState);
+  //     } else {
+  //       toast.error(`❌ Error: ${result.message || "Failed to save product"}`);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error(`❌ Error: ${err.message || "Something went wrong"}`);
+  //   }
+  // };
 
 
   return (

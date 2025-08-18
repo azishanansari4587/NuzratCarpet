@@ -5,46 +5,6 @@ import nodemailer from "nodemailer";
 // Ensure you import your DB connection
 
 
-// export async function GET(req) {
-//   try {
-//     const { searchParams } = new URL(req.url);
-//     const userId = searchParams.get("user_id"); // Get user_id from frontend request
-
-//     let query = `
-//     SELECT 
-//         cart.id,
-//         users.name AS user_name,
-//         users.email AS user_email,
-//         products.name AS product_name,
-//         products.images AS product_images,
-//         products.rugs,
-//         cart.quantity,
-//         cart.size,
-//         cart.color,
-//         DATE_FORMAT(cart.created_at, '%Y-%m-%d') AS formatted_date,
-//         TIME_FORMAT(cart.created_at, '%h:%i %p') AS formatted_time
-//     FROM cart
-//     JOIN users ON cart.user_id = users.id
-//     JOIN products ON cart.product_id = products.id
-//   `;
-
-//   let values = [];
-
-//   if (userId) {
-//     // Fetch cart items for a specific user
-//     query += ` WHERE cart.user_id = ?`;
-//     values.push(userId);
-//   }
-
-//   const [rows] = await connection.execute(query, values);
-
-
-//     return NextResponse.json(rows, { status: 200 });
-//   } catch (error) {
-//     return NextResponse.json({ error: "Database error: " + error.message }, { status: 500 });
-//   }
-// }
-
 
 // app/api/myEnquiries/route.js
 
@@ -58,7 +18,7 @@ export async function GET(req) {
     }
 
     const token = authHeader.split(" ")[1];
-    // const userId = getUserIdFromToken(token); // tu yaha apna JWT decode karega
+   
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
@@ -179,70 +139,3 @@ export async function POST(req) {
     return NextResponse.json({ error: "Error processing enquiry" }, { status: 500 });
   }
 }
-
-
-// export async function POST(req) {
-//   try {
-//     const token = req.headers.get("authorization")?.split(" ")[1];
-//     if (!token) {
-//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-//     }
-
-//     // Verify token
-//     let decoded;
-//     try {
-//       decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     } catch (err) {
-//       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-//     }
-
-//     const userId = decoded.id;
-
-//     // Fetch user from DB
-//     // const pool = getPool();
-//     const [users] = await connection.execute(
-//       "SELECT first_name, last_name, email, contact FROM users WHERE id = ?",
-//       [userId]
-//     );
-
-//     if (!users.length) {
-//       return NextResponse.json({ error: "User not found" }, { status: 404 });
-//     }
-
-//     const user = users[0];
-
-//     // Get items from request
-//     const { items, total } = await req.json();
-//     if (!items?.length) {
-//       return NextResponse.json({ error: "No items in enquiry" }, { status: 400 });
-//     }
-
-//     // Insert enquiry
-//     const [result] = await connection.execute(
-//       "INSERT INTO enquiries (user_name, user_email, user_phone, items) VALUES (?, ?, ?, ?)",
-//       [user.first_name, user.email, user.contact, JSON.stringify(items)]
-//     );
-
-//     const enquiryId = result.insertId;
-
-//     // Send mail to admin
-//     await sendMail({
-//       to: process.env.EMAIL_ADDRESS,
-//       subject: `New Enquiry #${enquiryId}`,
-//       html: `
-//         <h3>New Enquiry Received</h3>
-//         <p>Name: ${user.first_name}</p>
-//         <p>Email: ${user.email}</p>
-//         <p>Phone: ${user.contact}</p>
-//         <h4>Items:</h4>
-//         <pre>${JSON.stringify(items, null, 2)}</pre>
-//         <p>Total: ${total}</p>
-//       `,
-//     });
-
-//     return NextResponse.json({ ok: true, enquiryId });
-//   } catch (err) {
-//     console.error(err);
-//     return NextResponse.json({ error: "Server error" }, { status: 500 });
-//   }
-// }

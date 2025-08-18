@@ -3,6 +3,16 @@ import { NextResponse } from 'next/server';
 import  cloudinary  from '@/lib/cloudinary';
 
 
+// pages/api/products.js OR app/api/products/route.js (agar app router use kar raha h)
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb', // default 1mb hai
+    },
+  },
+};
+
+
 
 function generateSlug(name) {
   return name
@@ -50,6 +60,10 @@ export async function POST(req) {
     const specifications = JSON.parse(formData.get("specifications") || "[]");
     const collectionId = formData.get("collectionId");
 
+    // ✅ Images & Colors are already Cloudinary URLs from frontend
+    const images = JSON.parse(formData.get("images") || "[]"); 
+    const colors = JSON.parse(formData.get("colors") || "[]");
+
     // Generate slug
     let slug = generateSlug(name);
 
@@ -69,31 +83,31 @@ export async function POST(req) {
     slug = uniqueSlug;
 
     // Multiple product images
-    const imageFiles = formData.getAll("images"); // multiple <input name="images" />
-    const uploadedProductImages = await Promise.all(
-      imageFiles.map(file =>
-        file.size > 0
-          ? uploadToCloudinary(file, "NurzatProducts")
-          : null
-      )
-    );
+    // const imageFiles = formData.getAll("images"); // multiple <input name="images" />
+    // const uploadedProductImages = await Promise.all(
+    //   imageFiles.map(file =>
+    //     file.size > 0
+    //       ? uploadToCloudinary(file, "NurzatProducts")
+    //       : null
+    //   )
+    // );
 
     // Colors with images
-    const colors = JSON.parse(formData.get("colors") || "[]");
+    // const colors = JSON.parse(formData.get("colors") || "[]");
 
-    const updatedColors = await Promise.all(
-      colors.map(async (color, idx) => {
-        const colorFiles = formData.getAll(`colorImage_${idx}[]`); // ✅ key fix
-        const uploadedColorImages = await Promise.all(
-          colorFiles.map(file =>
-            file.size > 0
-              ? uploadToCloudinary(file, "NurzatProducts/colors")
-              : null
-          )
-        );
-        return { ...color, images: uploadedColorImages.filter(Boolean) }; // remove nulls
-      })
-    );
+    // const updatedColors = await Promise.all(
+    //   colors.map(async (color, idx) => {
+    //     const colorFiles = formData.getAll(`colorImage_${idx}[]`); // ✅ key fix
+    //     const uploadedColorImages = await Promise.all(
+    //       colorFiles.map(file =>
+    //         file.size > 0
+    //           ? uploadToCloudinary(file, "NurzatProducts/colors")
+    //           : null
+    //       )
+    //     );
+    //     return { ...color, images: uploadedColorImages.filter(Boolean) }; // remove nulls
+    //   })
+    // );
     
 
     // Save to DB
@@ -110,8 +124,11 @@ export async function POST(req) {
         isActive ? 1 : 0,
         isFeatured ? 1 : 0,
         JSON.stringify(tags),
-        JSON.stringify(uploadedProductImages.filter(Boolean)),
-        JSON.stringify(updatedColors),
+        // JSON.stringify(uploadedProductImages.filter(Boolean)),
+        // JSON.stringify(updatedColors),
+        JSON.stringify(images),   // ✅ Already URLs
+        JSON.stringify(colors),   // ✅ Each color already has images[] URLs
+
         JSON.stringify(sizes),
         JSON.stringify(features),
         JSON.stringify(specifications),
