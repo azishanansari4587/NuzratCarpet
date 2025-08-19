@@ -273,7 +273,7 @@ const Product = () => {
                     <div className="flex flex-wrap gap-4">
                         {product.colors.map(color => (
                             <button
-                            key={color.value}
+                            key={color.name}
                             className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200 ${
                                 !color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'
                             } ${
@@ -334,7 +334,7 @@ const Product = () => {
                     </div>
 
                     {/* Add to Cart Button */}
-                    <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none h-12" onClick={handleAddToCart}>ADD TO CART</Button>
+                    <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none h-12" onClick={handleAddToCart}>Add to Quote Request</Button>
 
 
                     {/* Add to Wishlist Button */}
