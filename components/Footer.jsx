@@ -43,7 +43,7 @@ const Footer = () => {
       }
   return (
 
-    <footer className="bg-sand-50">
+    <footer className="bg-[#DED3C4]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -53,7 +53,7 @@ const Footer = () => {
                 <Image src={Logo1} alt='' width={30}/>
                 <Image src={image1} alt='' width={300}/>
             </div>
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-500 mb-4">
               Discover the finest collection of handcrafted rugs and carpets from around the world. Quality, beauty, and
               tradition in every piece.
             </p>
@@ -76,7 +76,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-gray-500">
               <li>
                 <Link href="/shop" className="hover:text-black transition-colors">
                   Shop All Rugs
@@ -108,13 +108,24 @@ const Footer = () => {
           {/* Customer Service */}
           <div>
             <h3 className="font-semibold mb-4">Customer Service</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-gray-500">
+              <li>
+                <Link href="/about" className="hover:text-black transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-black transition-colors">
+                  Customize
+                </Link>
+              </li>
               <li>
                 <Link href="/contact" className="hover:text-black transition-colors">
                   Contact Us
                 </Link>
               </li>
-              <li>
+              
+              {/* <li>
                 <Link href="/shipping" className="hover:text-black transition-colors">
                   Shipping Info
                 </Link>
@@ -133,14 +144,14 @@ const Footer = () => {
                 <Link href="/faq" className="hover:text-black transition-colors">
                   FAQ
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
           {/* Contact & Newsletter */}
           <div>
             <h3 className="font-semibold mb-4">Get in Touch</h3>
-            <div className="space-y-3 text-gray-400 mb-6">
+            <div className="space-y-3 text-gray-500 mb-6">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
                 <span>+91 9876543210</span>
@@ -160,7 +171,7 @@ const Footer = () => {
 
             <div>
               <h4 className="font-medium mb-2">Newsletter</h4>
-              <p className="text-sm text-gray-400 mb-3">Subscribe for exclusive offers and new arrivals</p>
+              <p className="text-sm text-gray-500 mb-3">Subscribe for exclusive offers and new arrivals</p>
               <form onSubmit={handleSubscribe}>
               <div className="flex gap-2">
                 <Input type="email" 
@@ -176,7 +187,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Nuzrat Carpet Emporium. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          {/* <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-gray-400 hover:text-black text-sm transition-colors">
               Privacy Policy
             </Link>
@@ -186,7 +197,7 @@ const Footer = () => {
             <Link href="/cookies" className="text-gray-400 hover:text-black text-sm transition-colors">
               Cookie Policy
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

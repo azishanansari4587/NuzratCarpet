@@ -343,7 +343,7 @@ const Product = () => {
                     
 
                     {/* Shipping Info */}
-                    <div className="space-y-2 pt-4">
+                    {/* <div className="space-y-2 pt-4">
                         <p className='text-sm text-wrap text-green-500'>In Stock</p>   
                         <div className="flex items-center text-sm">
                             <span>Ships in 3-4 Weeks</span>
@@ -353,6 +353,10 @@ const Product = () => {
                             <span>Non-refundable</span>
                             <Info className="h-4 w-4 ml-1" />
                         </div>
+                    </div> */}
+
+                    <div className="space-y-4 text-md text-gray-500">
+                        <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product?.description }} />
                     </div>
 
                     <Separator />
@@ -360,17 +364,21 @@ const Product = () => {
                     {/* Product Description */}
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="description" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">DESCRIPTION</AccordionTrigger>
+                            <AccordionTrigger className="text-sm font-medium py-4">DETAILS</AccordionTrigger>
                             <AccordionContent>
-                            <div className="space-y-4 text-sm">
-                                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product?.description }} />
+                            <div className="space-y-2 text-sm">
+                                {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} /> */}
+                                {product.features.map((feature, index) => (
+                                    <div key={index} className="border-b pb-3">
+                                        <span className="font-medium">{feature}</span>
+                                        {/* <div className="flex justify-items-stretch gap-12 px-4">
+                                            <span className="font-medium">{feature}</span>
+                                            <span className="text-muted-foreground">{item.value}</span>
+                                        </div> */}
+                                    </div>
+                                ))}
                             </div>
-                            </AccordionContent>
-                        </AccordionItem>
 
-                        <AccordionItem value="dimensions" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">INFORMATION</AccordionTrigger>
-                            <AccordionContent>
                             <div className="space-y-2 text-sm">
                                 {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} /> */}
                                 {product.specifications.map((item, index) => (
@@ -385,8 +393,15 @@ const Product = () => {
                             </AccordionContent>
                         </AccordionItem>
 
+                        <AccordionItem value="dimensions" className="border-b">
+                            <AccordionTrigger className="text-sm font-medium py-4">INFORMATION</AccordionTrigger>
+                            <AccordionContent>
+                            
+                            </AccordionContent>
+                        </AccordionItem>
+
                         <AccordionItem value="materials" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">MATERIALS</AccordionTrigger>
+                            <AccordionTrigger className="text-sm font-medium py-4">Certification</AccordionTrigger>
                             <AccordionContent>
                             <div className="space-y-2 text-sm">
                                 <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.quality }} />
