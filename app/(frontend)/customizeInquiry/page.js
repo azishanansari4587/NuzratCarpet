@@ -26,6 +26,8 @@ const CustomizeInquiry = () => {
       phone: "",
       rugType: "",
       size: "",
+      businessType: "",
+      companyWebsite: "",
       customSize: {
         width: "",
         length: ""
@@ -184,10 +186,51 @@ const CustomizeInquiry = () => {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name="companyWebsite"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Website</FormLabel>
+                          <FormControl>
+                            <Input type="text" placeholder="www.carpet.com" {...field} required />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
                 
                 <Separator />
+                
+                <FormField
+                      control={form.control}
+                      name="bussinessType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Business Type</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select bussiness type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="architect">Architect</SelectItem>
+                                <SelectItem value="interior-designer">Interior Designer</SelectItem>
+                                <SelectItem value="retailer">Retailer</SelectItem>
+                                <SelectItem value="whole-seller">Whole Seller</SelectItem>
+                                <SelectItem value="hotel-owner">Hotel Owner</SelectItem>
+                                <SelectItem value="store">Store</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                 
                 {/* Rug Specifications */}
                 <div>
@@ -353,6 +396,7 @@ const CustomizeInquiry = () => {
                   </div>
                 </div>
 
+                
 
                 {/* Image Upload */}
                 <div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">

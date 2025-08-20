@@ -58,16 +58,16 @@ const Footer = () => {
               tradition in every piece.
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-black p-2">
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-black p-2">
                 <Facebook className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-black p-2">
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-black p-2">
                 <Instagram className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-black p-2">
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-black p-2">
                 <Twitter className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-black p-2">
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-black p-2">
                 <Youtube className="w-4 h-4" />
               </Button>
             </div>
@@ -186,7 +186,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Nuzrat Carpet Emporium. All rights reserved.</p>
+          <p className="text-gray-600 text-sm">© {new Date().getFullYear()} Nuzrat Carpet Emporium. All rights reserved.</p>
           {/* <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-gray-400 hover:text-black text-sm transition-colors">
               Privacy Policy

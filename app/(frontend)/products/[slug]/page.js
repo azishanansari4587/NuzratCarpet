@@ -50,7 +50,7 @@ const Product = () => {
     const router = useRouter();
 
 
-    const currentColorObj = product?.colors?.find(c => c.value === selectedColor) || product?.colors?.[0] || null;
+    const currentColorObj = product?.colors?.find(c => c.name === selectedColor) || product?.colors?.[0] || null;
 
     const currentImages = currentColorObj?.images || [];
   
@@ -97,10 +97,10 @@ const Product = () => {
             image: currentImages[selectedImage],
             color: currentColorObj?.name,
             size: selectedSize,
-          });
+        });
 
         toast.success(`${quantity} x ${product.name} (${selectedSize}, ${selectedColor}) added to your cart.`);
-  
+
       } else {
         toast.error(data.error);
       }
@@ -143,8 +143,8 @@ const Product = () => {
     
   
   
-     const handleColorChange = (colorValue) => {
-      setSelectedColor(colorValue);
+     const handleColorChange = (colorName) => {
+      setSelectedColor(colorName);
       setSelectedImage(0); // Reset to first image when color changes
     };
 
@@ -266,22 +266,22 @@ const Product = () => {
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-semibold">Color</h3>
                         <span className="text-primary font-medium bg-primary/10 px-3 py-1 rounded-full">
-                            {currentColorObj.name}
+                            {currentColorObj?.name}
                         </span>
                     </div>
 
                     <div className="flex flex-wrap gap-4">
-                        {product.colors.map(color => (
+                        {product?.colors?.map(color => (
                             <button
                             key={color.name}
                             className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200 ${
                                 !color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'
                             } ${
-                                selectedColor === color.value 
+                                selectedColor === color.name 
                                 ? 'ring-4 ring-primary ring-offset-2 scale-110 shadow-lg' 
                                 : 'ring-2 ring-border hover:ring-primary/50'
                             }`}
-                            onClick={() => color.inStock && handleColorChange(color.value)}
+                            onClick={() => color.inStock && handleColorChange(color.name)}
                             disabled={!color.inStock}
                             title={color.name}
                             aria-label={`Select color: ${color.name}`}
@@ -293,7 +293,7 @@ const Product = () => {
                                 className="object-cover w-full h-full rounded-full" 
                             />
 
-                            {selectedColor === color.value && (
+                            {selectedColor === color.name && (
                                 <Check size={20} className="absolute inset-0 m-auto text-white drop-shadow-lg" />
                             )}
                             
@@ -334,7 +334,7 @@ const Product = () => {
                     </div>
 
                     {/* Add to Cart Button */}
-                    <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none h-12" onClick={handleAddToCart}>Add to Quote Request</Button>
+                    <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none h-12" onClick={handleAddToCart}>ADD TO QUOTE REQUEST</Button>
 
 
                     {/* Add to Wishlist Button */}
@@ -368,40 +368,28 @@ const Product = () => {
                             <AccordionContent>
                             <div className="space-y-2 text-sm">
                                 {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} /> */}
-                                {product.features.map((feature, index) => (
-                                    <div key={index} className="border-b pb-3">
-                                        <span className="font-medium">{feature}</span>
-                                        {/* <div className="flex justify-items-stretch gap-12 px-4">
-                                            <span className="font-medium">{feature}</span>
-                                            <span className="text-muted-foreground">{item.value}</span>
-                                        </div> */}
+                                {product?.features?.map((feature, index) => (
+                                    <div key={index} className="pb-3">
+                                        <span className="font-medium text-gray-500">{feature}</span>
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="space-y-2 text-sm">
-                                {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} /> */}
-                                {product.specifications.map((item, index) => (
-                                    <div key={index} className="border-b pb-3">
-                                    <div className="flex justify-items-stretch gap-12 px-4">
-                                        <span className="font-medium">{item.key}</span>
-                                        <span className="text-muted-foreground">{item.value}</span>
-                                    </div>
+                            <div className="space-y-2 text-sm pb-6">
+                                {product?.specifications?.map((item, index) => (
+                                    <div key={index}>
+                                        <div className="flex gap-x-6 ">
+                                            <span className="font-medium text-gray-500">{item.key} :</span>
+                                            <span className="text-muted-foreground text-gray-500">{item.value}</span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
-                            </AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="dimensions" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">INFORMATION</AccordionTrigger>
-                            <AccordionContent>
-                            
                             </AccordionContent>
                         </AccordionItem>
 
                         <AccordionItem value="materials" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">Certification</AccordionTrigger>
+                            <AccordionTrigger className="text-sm font-medium py-4">CERTIFICATION</AccordionTrigger>
                             <AccordionContent>
                             <div className="space-y-2 text-sm">
                                 <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.quality }} />
@@ -463,6 +451,49 @@ const Product = () => {
                 </div>
             </div>
             
+        </section>
+
+        {/* Benefits Section */}
+        <section className="py-16 ">
+          <div className="container-custom">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-secondary rounded-lg p-6 text-center shadow-sm">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-serif font-medium mb-2">Free Shipping</h3>
+                <p className="text-muted-foreground">
+                  Free shipping on all orders over $199 within the continental United States.
+                </p>
+              </div>
+              
+              <div className="bg-secondary rounded-lg p-6 text-center shadow-sm">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-serif font-medium mb-2">Quality Guarantee</h3>
+                <p className="text-muted-foreground">
+                  Crafted with premium materials and backed by our satisfaction guarantee.
+                </p>
+              </div>
+              
+              <div className="bg-secondary rounded-lg p-6 text-center shadow-sm">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9.75h4.875a2.625 2.625 0 010 5.25H12M8.25 9.75L10.5 7.5M8.25 9.75L10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-serif font-medium mb-2">Expert Guidance</h3>
+                <p className="text-muted-foreground">
+                  Personal design consultations to help you find the perfect carpet for your space.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <Separator className="h-[2px] border-black mt-12"/>
