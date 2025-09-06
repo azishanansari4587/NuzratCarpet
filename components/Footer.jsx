@@ -3,8 +3,8 @@ import React, {useState, useEffect} from 'react'
 import Image from 'next/image'
 import {MapPin, Mail, Phone, Clock9, Youtube, Twitter, Instagram, Facebook} from 'lucide-react';
 
-import image1 from '@/public/Logo2.png'
-import Logo1 from '@/public/Logo1.png'
+import image1 from '@/public/LOGO2.png'
+import Logo1 from '@/public/LOGO1.png'
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -50,8 +50,8 @@ const Footer = () => {
           <div>
 
             <div className='flex flex-col items-center gap-2 space-y-2 mb-4'>
-                <Image src={Logo1} alt='' width={30}/>
-                <Image src={image1} alt='' width={300}/>
+                <Image src={Logo1} alt='Logo1' width={30}/>
+                <Image src={image1} alt='Logo2' width={300}/>
             </div>
             <p className="text-gray-700 mb-4">
               Discover the finest collection of handcrafted rugs and carpets from around the world. Quality, beauty, and

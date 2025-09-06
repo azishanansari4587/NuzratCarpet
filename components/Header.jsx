@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react"
 import Image from 'next/image';
-import Logo from '@/public/47.jpg'
-import Logo1 from '@/public/48.jpg'
+import Logo from '@/public/LOGO2.png'
+import Logo1 from '@/public/LOGO1.png'
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from 'jwt-decode';
 import useWishlistStore from "@/store/useWishlistStore"
