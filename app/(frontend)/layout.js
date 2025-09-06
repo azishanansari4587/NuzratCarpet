@@ -1,4 +1,4 @@
-import {Playfair_Display, Lora, Inter } from "next/font/google";
+import {Playfair_Display, Lora, Inter, Barlow } from "next/font/google";
 import "../globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Header from "@/components/Header";
@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 // const inter = Inter({ subsets: ["latin"] });
-const playfair = Playfair_Display({
+const playfair = Barlow({
   subsets: ["latin"],
   weight: ["400", "700"], // Regular & Bold
   display: "swap",

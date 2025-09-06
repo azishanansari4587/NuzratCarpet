@@ -30,8 +30,9 @@ export default function Header() {
     { href: "/rugs", label: "Rugs" },
     { href: "/outdoor", label: "Outdoor" },
     { href: "/collection", label: "Collections" },
-    { href: "/about", label: "About Us" },
+    { href: "/designers", label: "Designers" },
     { href: "/customizeInquiry", label: "Customize" },
+    { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact Us" },
   ];
 

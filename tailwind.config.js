@@ -137,8 +137,8 @@ module.exports = {
 				'zoom-in': 'zoom-in 8s ease-out'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				serif: ['Playfair Display', 'serif']
+				sans: ['Barlow', 'sans-serif'],
+				serif: ['Arial', 'serif']
 			}
 		}
 	},

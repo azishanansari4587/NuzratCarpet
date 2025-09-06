@@ -3,8 +3,8 @@ import React, {useState, useEffect} from 'react'
 import Image from 'next/image'
 import {MapPin, Mail, Phone, Clock9, Youtube, Twitter, Instagram, Facebook} from 'lucide-react';
 
-import image1 from '@/public/47.png'
-import Logo1 from '@/public/48.png'
+import image1 from '@/public/Logo2.png'
+import Logo1 from '@/public/Logo1.png'
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -53,7 +53,7 @@ const Footer = () => {
                 <Image src={Logo1} alt='' width={30}/>
                 <Image src={image1} alt='' width={300}/>
             </div>
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-700 mb-4">
               Discover the finest collection of handcrafted rugs and carpets from around the world. Quality, beauty, and
               tradition in every piece.
             </p>
@@ -76,7 +76,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-gray-500">
+            <ul className="space-y-2 text-gray-700">
               <li>
                 <Link href="/shop" className="hover:text-black transition-colors">
                   Shop All Rugs
@@ -108,7 +108,7 @@ const Footer = () => {
           {/* Customer Service */}
           <div>
             <h3 className="font-semibold mb-4">Customer Service</h3>
-            <ul className="space-y-2 text-gray-500">
+            <ul className="space-y-2 text-gray-700">
               <li>
                 <Link href="/about" className="hover:text-black transition-colors">
                   About Us
@@ -124,34 +124,13 @@ const Footer = () => {
                   Contact Us
                 </Link>
               </li>
-              
-              {/* <li>
-                <Link href="/shipping" className="hover:text-black transition-colors">
-                  Shipping Info
-                </Link>
-              </li>
-              <li>
-                <Link href="/returns" className="hover:text-black transition-colors">
-                  Returns & Exchanges
-                </Link>
-              </li>
-              <li>
-                <Link href="/size-guide" className="hover:text-black transition-colors">
-                  Size Guide
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="hover:text-black transition-colors">
-                  FAQ
-                </Link>
-              </li> */}
             </ul>
           </div>
 
           {/* Contact & Newsletter */}
           <div>
             <h3 className="font-semibold mb-4">Get in Touch</h3>
-            <div className="space-y-3 text-gray-500 mb-6">
+            <div className="space-y-3 text-gray-700 mb-6">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
                 <span>+91 9876543210</span>
@@ -171,7 +150,7 @@ const Footer = () => {
 
             <div>
               <h4 className="font-medium mb-2">Newsletter</h4>
-              <p className="text-sm text-gray-500 mb-3">Subscribe for exclusive offers and new arrivals</p>
+              <p className="text-sm text-gray-700 mb-3">Subscribe for exclusive offers and new arrivals</p>
               <form onSubmit={handleSubscribe}>
               <div className="flex gap-2">
                 <Input type="email" 
@@ -186,18 +165,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-600 text-sm">© {new Date().getFullYear()} Nuzrat Carpet Emporium. All rights reserved.</p>
-          {/* <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-gray-400 hover:text-black text-sm transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-gray-400 hover:text-black text-sm transition-colors">
-              Terms of Service
-            </Link>
-            <Link href="/cookies" className="text-gray-400 hover:text-black text-sm transition-colors">
-              Cookie Policy
-            </Link>
-          </div> */}
+          <p className="text-gray-700 text-sm">© {new Date().getFullYear()} Nuzrat Carpet Emporium. All rights reserved.</p>
         </div>
       </div>
     </footer>

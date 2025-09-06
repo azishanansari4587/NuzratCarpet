@@ -17,14 +17,11 @@ const colors = [
   { id: 'multicolor', name: 'Multicolor', color: 'linear-gradient(90deg, #e8d9c7, #a4c2e3, #c25e5e, #87a987)' },
 ];
 
-// const sizes = [
-//   { id: 'small', name: '2\'x3\'', count: 24 },
-//   { id: 'medium', name: '5\'x7\'', count: 45 },
-//   { id: 'large', name: '8\'x10\'', count: 38 },
-//   { id: 'xlarge', name: '9\'x12\'', count: 22 },
-//   { id: 'runner', name: '2\'x8\'', count: 19 },
-//   { id: 'round', name: '6\'', count: 15 },
-// ];
+
+const designers = [
+  { id: 'KarimRashid', name: 'Karim Rshid' },
+  { id: 'IngridKulper', name: 'Ingrid Kulper' },
+]
 
 
 
@@ -33,47 +30,21 @@ const ProductFilter = ({ onFilterChange }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedDesigners, setSelectedDesigners] = useState([]);
 
   const toggleMobileFilter = () => setIsMobileFilterOpen(!isMobileFilterOpen);
 
   const [categories, setCategories] = useState([]);  // categories from backend
   const [isLoadingCategories, setIsLoadingCategories] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     setIsLoadingCategories(true);
-  //     try {
-  //       const res = await fetch('/api/collections');  // Backend endpoint jahan categories mile
-  //       const data = await res.json();
-  //       if (res.ok) {
-  //         setCategories(data.categories); // maan ke chal rahe hain backend me categories key se milega
-  //       } else {
-  //         console.error('Failed to load categories:', data.message);
-  //       }
-  //     } catch (err) {
-  //       console.error('Error fetching categories:', err);
-  //     } finally {
-  //       setIsLoadingCategories(false);
-  //     }
-  //   };
 
-  //   fetchCategories();
-  // }, []);
-
-
-  // const handleCategoryChange = (categoryId, checked) => {
-  //   if (checked) {
-  //     setSelectedCategories([...selectedCategories, categoryId]);
-  //   } else {
-  //     setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
-  //   }
-  // };
 
   // ...existing states
   const [openSections, setOpenSections] = useState({
     categories: true,
     colors: true,
     sizes: true,
+    designers: true
   });
 
   const toggleSection = (section) => {
@@ -165,6 +136,26 @@ const ProductFilter = ({ onFilterChange }) => {
     }
   };
 
+  const handleDesignerChange = (designerId, checked) => {
+    let updatedDesigners;
+    if (checked) {
+      updatedDesigners = [...selectedSizes, designerId];
+    } else {
+      updatedDesigners = selectedDesigners.filter(id => id !== designerId);
+    }
+    setSelectedDesigners(updatedDesigners);
+  
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      onFilterChange({
+        categories: selectedCategories,
+        colors: selectedColors,
+        sizes: selectedSizes,
+        designers: updatedDesigners
+      });
+    }
+  };
+
+
   
 
   const applyFilters = () => {
@@ -172,6 +163,7 @@ const ProductFilter = ({ onFilterChange }) => {
       categories: selectedCategories,
       colors: selectedColors,
       sizes: selectedSizes,
+      designers: selectedDesigners
       // priceRange
     });
     setIsMobileFilterOpen(false);
@@ -186,6 +178,7 @@ const ProductFilter = ({ onFilterChange }) => {
       categories: [],
       colors: [],
       sizes: [],
+      designers: [],
       priceRange: [0, 3000]
     });
   };
@@ -222,6 +215,39 @@ const ProductFilter = ({ onFilterChange }) => {
                   <span>{category.name}</span>
                 </label>
               </div>
+          ))}
+        </div>
+        )}
+      </div>
+
+      {/* Designers */}
+       <div className="mb-8">
+        <button
+            className="flex justify-between items-center w-full mb-2 font-semibold text-lg"
+            onClick={() => toggleSection('designers')}
+            aria-expanded={openSections.designers}
+            aria-controls="designers-section"
+          >
+            <span>Designers</span>
+            {openSections.designers ? <Minus size={20} /> : <Plus size={20} />}
+          </button>
+        {openSections.designers && (
+        <div className="space-y-2">
+          {designers.map(designer => (
+            <div key={designer.id} className="flex items-center">
+              <Checkbox 
+                id={`designer-${designer.id}`}
+                checked={selectedDesigners.includes(designer.id)}
+                onCheckedChange={(checked) => handleDesignerChange(designer.id, checked )}
+                className="mr-2"
+              />
+              <label 
+                htmlFor={`designer-${designer.id}`}
+                className="text-sm flex items-center justify-between w-full cursor-pointer"
+              >
+                <span>{designer.name}</span>
+              </label>
+            </div>
           ))}
         </div>
         )}

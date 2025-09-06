@@ -24,7 +24,9 @@ const Rugs = () => {
     
           const products = data?.products || []; // ✅ safe fallback
           const filtered = products.filter((product) => {
+            let designers = [];
             let tags = [];
+            
     
             try {
               tags = Array.isArray(product.tags)
@@ -33,9 +35,22 @@ const Rugs = () => {
             } catch (e) {
               console.error("Tag parsing error:", e);
             }
+
+            try {
+              designers = Array.isArray(product.designers)
+                ? product.designers
+                : JSON.parse(product.designers || "[]");
+            } catch (e) {
+              console.error("Designer parsing error:", e);
+            }
     
             return tags.includes("Rugs");
-          });
+          }).map(product => ({
+            ...product,
+            designers: Array.isArray(product.designers)
+              ? product.designers
+              : JSON.parse(product.designers || "[]")
+          }));
     
           setProducts(filtered);
         } catch (error) {
@@ -56,6 +71,7 @@ const Rugs = () => {
     categories: [],
     colors: [],
     sizes: [],
+    // designers: [],
     // priceRange: [0, 3000]
   });
 
@@ -81,6 +97,14 @@ const Rugs = () => {
       ) {
         return false;
       }
+
+      // Designer filter
+      // if (
+      //   filters.designers.length > 0 &&
+      //   !product.designers.some(designer => filters.designers.includes(designer))
+      // ) {
+      //   return false;
+      // }
     
     return true;
   });
@@ -108,7 +132,8 @@ const Rugs = () => {
       }),
 
       sizes: newFilters.sizes.map(size => size.toLowerCase()),
-      // colors: newFilters.colors.map(color => color.toLowerCase())
+      // designers: newFilters.designers.map(designer => designer.name.toLowerCase()),
+      // colors: newFilters.colors.map(color => color.name.toLowerCase())
     });
     
     setCurrentPage(1);

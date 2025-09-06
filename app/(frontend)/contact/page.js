@@ -3,6 +3,7 @@ import Headers from '@/components/Header'
 import Image from 'next/image'
 import React from 'react'
 
+import first from '@/public/LOGO1.png'
 const Contact = () => {
   return (
     <div>
@@ -16,7 +17,7 @@ const Contact = () => {
                         <div className="relative h-64 sm:h-80 lg:h-full">
                             <Image
                                 alt=""
-                                src="/48.jpg"
+                                src={first}
                                 fill
                                 className="object-contain"
                                 sizes="(min-width: 1024px) 100vw, (min-width: 640px) 100vw, 100vw"
@@ -37,16 +38,16 @@ const Contact = () => {
                             </h2>
 
                             <h4 className='mt-5'>Head Office, Showroom & Warehouses</h4>
-                            <address className="mt-4 text-gray-600">  
+                            <address className="mt-4 text-gray-700">  
                                 Hayat Nagar Mirzapur,<br/>
                                 231001<br/>
                                 Uttar Pradesh,<br/> 
                                 India.
                             </address>
 
-                            <p className='mt-4 text-gray-600'>Work Time: 9:00 A.M To 10:00 P.M</p>
-                            <p className='mt-4 text-gray-600'>Telephone: +91 9876543210</p>
-                            <p className='mt-4 text-gray-600'>Email: nuzratcarpet@gmail.com</p>
+                            <p className='mt-4 text-gray-700'>Work Time: 9:00 A.M To 10:00 P.M</p>
+                            <p className='mt-4 text-gray-700'>Telephone: +91 9876543210</p>
+                            <p className='mt-4 text-gray-700'>Email: nuzratcarpet@gmail.com</p>
 
                             <a
                                 href="#"
