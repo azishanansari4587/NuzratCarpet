@@ -19,7 +19,7 @@ const colors = [
 
 
 const designers = [
-  { id: 'KarimRashid', name: 'Karim Rshid' },
+  { id: 'KarimRashid', name: 'Karim Rashid' },
   { id: 'IngridKulper', name: 'Ingrid Kulper' },
 ]
 
@@ -92,6 +92,7 @@ const ProductFilter = ({ onFilterChange }) => {
         categories: updatedCategories,
         colors: selectedColors,
         sizes: selectedSizes,
+        designers: selectedDesigners
       });
     }
   };
@@ -114,6 +115,7 @@ const ProductFilter = ({ onFilterChange }) => {
         categories: selectedCategories,
         colors: updatedColors, // Now contains names instead of hex codes
         sizes: selectedSizes,
+        designers: selectedDesigners
       });
     }
   };
@@ -139,7 +141,7 @@ const ProductFilter = ({ onFilterChange }) => {
   const handleDesignerChange = (designerId, checked) => {
     let updatedDesigners;
     if (checked) {
-      updatedDesigners = [...selectedSizes, designerId];
+      updatedDesigners = [...selectedDesigners, designerId];
     } else {
       updatedDesigners = selectedDesigners.filter(id => id !== designerId);
     }

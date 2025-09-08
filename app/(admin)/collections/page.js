@@ -203,11 +203,7 @@ const handleEditClick = (collection) => {
                 {collections.map((collection) => (
                   <TableRow key={collection.id}>
                     <TableCell>
-                      {/* <img
-                        src={collection.image}
-                        alt={collection.name}
-                        className="w-12 h-12 object-cover rounded"
-                      /> */}
+
                       <div className="relative w-12 h-12">
                         <Image
                           src={collection.image || "/placeholder.jpg"} // fallback in case image is missing
@@ -245,46 +241,8 @@ const handleEditClick = (collection) => {
                         {collection.isFeatured ? 'Featured' : 'Not Featured'}
                       </button>
                     </TableCell>
-                    {/* <TableCell className="text-right">
-                      <div className="flex justify-end items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                          asChild
-                        >
-                          <Link href={`/collections/${collection.id}`}>
-                            <span className="sr-only">View</span>
-                            <Eye className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                          asChild
-                        >
-                          <Link href={`/admin/collections/edit/${collection.id}`}>
-                            <span className="sr-only">Edit</span>
-                            <Pencil className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeleteCollection(collection.id, collection.name)}
-                        >
-                          <span className="sr-only">Delete</span>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell> */}
 
                     <TableCell className="text-right flex gap-2 justify-end">
-                      <Button variant="ghost" size="sm" onClick={() => handleView(collection.slug)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
                       <Button variant="ghost" size="sm" onClick={() => handleEditOpen(collection)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -327,21 +285,7 @@ const handleEditClick = (collection) => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Dialog */}
-      {/* <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogOverlay className="bg-black/50 backdrop-blur-sm fixed inset-0" />
-        <DialogContent className="bg-white rounded-lg shadow-lg w-full max-w-7xl max-h-[80vh] p-6 overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Collection</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            
-          </div>
-          <DialogFooter>
-            <Button onClick={handleEditSubmit}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> */}
+
       {selectedCollection && (
       <EditCollectionDialog
         open={editDialogOpen}

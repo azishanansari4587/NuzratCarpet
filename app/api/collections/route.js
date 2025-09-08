@@ -125,7 +125,6 @@ export async function GET() {
       updatedAt: col.updated_at,
       productCount: col.productCount,
     }));
-    console.log("Fetched Collections:", formatted);
 
 
     return NextResponse.json(formatted, { status: 200 });

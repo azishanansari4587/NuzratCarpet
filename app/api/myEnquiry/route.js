@@ -12,20 +12,31 @@ import nodemailer from "nodemailer";
 export async function GET(req) {
   try {
     // 🛡️ Token se user ka ID nikalna (JWT decode ya session)
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    
+    // const authHeader = req.headers.get("authorization");
+    // if (!authHeader) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
-    const token = authHeader.split(" ")[1];
+    // const token = authHeader.split(" ")[1];
    
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.id;
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // const userId = decoded.id;
 
     const [rows] = await connection.execute(
       // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC",
-      "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC;",
-      [userId]
+      // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC;",
+      // [userId]
+      `SELECT e.id, 
+       e.cartItems, 
+       e.created_at,
+       u.id as user_id, 
+       CONCAT(u.first_name, ' ', u.last_name) as user_name, 
+       u.email as user_email
+FROM enquiries e
+LEFT JOIN users u ON e.userId = u.id
+ORDER BY e.created_at DESC;
+`
     );
 
     // cartItems ko JSON parse karke bhejna

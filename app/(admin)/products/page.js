@@ -57,6 +57,19 @@ useEffect(() => {
   fetchCollections();
 }, []);
 
+// ** Safe Parse ** //
+const safeParse = (value, fallback = []) => {
+  try {
+    if (!value) return fallback;
+    if (typeof value === "string") return JSON.parse(value);
+    if (Array.isArray(value)) return value;
+    return fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+
 const fetchProducts = async () => {
   try {
     const res = await fetch("/api/products");
@@ -71,6 +84,9 @@ const fetchProducts = async () => {
         // category: p.category,
         collectionId: p.collectionId, 
         stock: p.stock,
+        tags: safeParse(p.tags, []),
+        sizes: safeParse(p.sizes, []),
+        designers: safeParse(p.designers, []),
         active: p.active === 1, // assuming active is TINYINT(1)
       }));
 
@@ -89,17 +105,9 @@ const fetchProducts = async () => {
     fetchProducts();
   }, []);
 
-  // Unique categories for the filter dropdown
-  // const categories = ["all", ...new Set(products.map(product => product.category))];
-
   const collectionOptions = [...collections];
 
-  // Filter products based on search term and category
-  // const filteredProducts = products.filter(product => {
-  //   const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-  //   const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
-  //   return matchesSearch && matchesCategory;
-  // });
+
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -108,48 +116,7 @@ const fetchProducts = async () => {
   });
 
 
-  // const handleDeleteProduct = (id, name) => {
-  //   // In a real app, would call API to delete
-  //   setProducts(products.filter(product => product.id !== id));
-    
-  //   toast({
-  //     title: "Product Deleted",
-  //     description: `${name} has been removed from your inventory.`,
-  //   });
-  // };
-
-  // const handleDeleteProduct = async () => {
-  //     try {
-  //       const res = await fetch(`/api/products/${setProducts.slug}`, { method: "DELETE" });
-  //       if (!res.ok) throw new Error("Delete failed");
-  
-  //       toast.success("Product deleted successfully");
-  //       setDeleteDialogOpen(false);
-  //       fetchProducts();
-  //     } catch (err) {
-  //       toast.error(err.message);
-  //     }
-  //   };
-
-  // const handleDeleteProduct = async (id, name) => {
-  //   try {
-  //     const res = await fetch(`/api/products?id=${id}`, {
-  //       method: "DELETE",
-  //     });
-  
-  //     if (res.ok) {
-  //       setProducts(products.filter(product => product.id !== id));
-  
-  //       toast.success(`Product Deleted ${name} has been removed from your inventory.`);
-  //     } else {
-  //       const data = await res.json();
-  //       toast.error( data.error || "Failed to delete product.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Delete error:", error);
-  //     toast.error("Something went wrong while deleting the product.");
-  //   }
-  // };
+ 
 
 
   const handleDeleteProduct = async (id) => {
@@ -258,7 +225,9 @@ const fetchProducts = async () => {
                   <TableHead className="w-[80px]">Image</TableHead>
                   <TableHead>Product Name</TableHead>
                   <TableHead>Collection Name</TableHead>
-                  <TableHead className="text-center">Stock</TableHead>
+                  <TableHead className="text-center">Tags</TableHead>
+                  <TableHead className="text-center">Sizes</TableHead>
+                  <TableHead className="text-center">Designers</TableHead>
                   <TableHead className="text-center">Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -268,11 +237,7 @@ const fetchProducts = async () => {
                   filteredProducts.map((product) => (
                     <TableRow key={product.id}>
                       <TableCell>
-                        {/* <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded"
-                        /> */}
+
                         <div className="relative w-12 h-12 rounded overflow-hidden">
                           <Image
                             src={product.image || "/placeholder.jpg"}  // fallback if image is missing
@@ -285,12 +250,10 @@ const fetchProducts = async () => {
                       </TableCell>
                       <TableCell className="font-medium">{product.name}</TableCell>
                       <TableCell>{collections.find((col) => col.id === product.collectionId)?.name || "N/A"}</TableCell>
-                      
-                      <TableCell className="text-center">
-                        <span className={product.stock === 0 ? 'text-red-500' : 'text-forest-800'}>
-                          {product.stock}
-                        </span>
-                      </TableCell>
+                      <TableCell className="text-center"> {product.tags.map((tag, index) => ( <span key={index} className="px-2 py-1 gap-4 text-xs font-medium rounded-full bg-gray-200 text-gray-700" > {tag} </span> ))} </TableCell>
+                      <TableCell className="text-center"> {product.sizes.map((size, index) => ( <span key={index} className="px-2 py-1 gap-4 text-xs font-medium rounded-full bg-gray-200 text-gray-700" > {size} </span> ))} </TableCell>
+                      <TableCell className="text-center"> {product.designers.map((designer, index) => ( <span key={index} className="px-2 py-1 gap-4 text-xs font-medium rounded-full bg-gray-200 text-gray-700" > {designer} </span> ))} </TableCell>
+
                       <TableCell className="text-center">
                         <button
                           onClick={() => handleToggleActive(product.id, product.active)}
@@ -305,17 +268,7 @@ const fetchProducts = async () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 p-0"
-                            asChild
-                          >
-                            <Link href={`/products/${product.id}`}>
-                              <span className="sr-only">View</span>
-                              <Eye className="h-4 w-4" />
-                            </Link>
-                          </Button>
+
                           <Button
                             size="sm"
                             variant="ghost"
@@ -327,15 +280,7 @@ const fetchProducts = async () => {
                               <Pencil className="h-4 w-4" />
                             </Link>
                           </Button>
-                          {/* <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={() => handleDeleteProduct()}
-                          >
-                            <span className="sr-only">Delete</span>
-                            <Trash2 className="h-4 w-4" />
-                          </Button> */}
+
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button
@@ -347,6 +292,8 @@ const fetchProducts = async () => {
                                 <span className="sr-only">Delete</span>
                                 <Trash2 className="h-4 w-4" />
                               </Button>
+
+
                             </AlertDialogTrigger>
                             <AlertDialogContent className="bg-white text-black rounded-lg shadow-lg">
                               <AlertDialogHeader>

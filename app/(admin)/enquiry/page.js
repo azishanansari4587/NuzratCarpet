@@ -24,74 +24,47 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import withAuth from '@/lib/withAuth'
+import Spinner from '@/components/Spinner'
 
 
 
 
 
 const Enquiry = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const [orders, setOrders] = useState([]); 
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await fetch("/api/myEnquiry");
-        const data = await response.json();
-        setCartItems(data);
-        console.log(data);
-        
-      } catch (error) {
-        console.error("Error fetching cart items:", error);
+  const fetchOrders = async () => {
+    try {
+      setIsLoading(true); // ✅ yaha loading start
+      const res = await fetch("/api/myEnquiry");
+      const data = await res.json();
+      if (res.ok) {
+        setOrders(data);
+      } else {
+        console.error(data.error || "Failed to fetch orders");
       }
-    };
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false); // ✅ yaha loading khatam
+    }
+  };
 
-    fetchCartItems();
-  }, []);
+  fetchOrders();
+}, []);
+
 
 
 
   return (
     <>
-      
+      {isLoading ? (
+        <Spinner />
+      ) : (
       <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
-          <div className="flex items-center">
-            {/* <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 gap-1">
-                    <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Filter
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>
-                    Active
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>
-                    Archived
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button size="sm" variant="outline" className="h-8 gap-1">
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Export
-                </span>
-              </Button>
-              <Button size="sm" className="h-8 gap-1">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add Product
-                </span>
-              </Button>
-            </div> */}
-          </div>
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
@@ -101,7 +74,7 @@ const Enquiry = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-              {cartItems.length === 0 ? (
+              {orders.length === 0 ? (
                   <p className="text-center text-gray-500">No Cart Items Found.</p>
                 ) : (
                 <Table>
@@ -121,7 +94,7 @@ const Enquiry = () => {
                       </TableHead>
 
                       <TableHead className="hidden md:table-cell">
-                        Rugs
+                        Color
                       </TableHead>
 
                       <TableHead className="hidden md:table-cell">
@@ -135,30 +108,20 @@ const Enquiry = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                  {cartItems.map((item) => {
-                    const images = JSON.parse(item.product_images || "[]");
-                    const firstImage = images.length > 0 ? images[0] : "/placeholder.jpg";
-                    return (
-                    <TableRow key={item.id}>
+                  {orders.map((order) => order.cartItems?.map((item, index) => (
+                    // return (
+                    <TableRow key={`${order.id}-${index}`}>
                       <TableCell className="hidden sm:table-cell">
-                      {images.length > 0 && (
-                        <Image
-                          alt="Product image"
-                          className="aspect-square rounded-md object-cover"
-                          height="100"
-                          src={firstImage}
-                          width="100"
-                        />
-                      )}  
+                        <Image src={item.image} alt={item.name} width={100} height={100}/>
                       </TableCell>
 
                       <TableCell className="font-medium">
-                        {item.product_name}
+                        {item.name}
                       </TableCell>
 
                       <TableCell className="font-small">
-                        <p>{item.user_name}</p>
-                        {item.user_email}
+                        <p>{order.user_name}</p>
+                        {order.user_email}
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
@@ -170,11 +133,15 @@ const Enquiry = () => {
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
-                        {item.rugs}
+                        {item.color}
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
-                        {item.formatted_date}
+                      {new Date(order.created_at).toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "long", // August, September etc.
+                        year: "numeric"
+                      })}
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
@@ -182,8 +149,8 @@ const Enquiry = () => {
                       </TableCell>
 
                     </TableRow>
-                    );
-                  })}  
+
+                  )))}
                   </TableBody>
                 </Table> 
               )}
@@ -198,6 +165,7 @@ const Enquiry = () => {
           </TabsContent>
         </Tabs>
       </div>
+      )}
     </>
   )
 }

@@ -88,14 +88,7 @@ const ProductCard = ({
 
         {/* Product image */}
         <Link href={`/products/${id}`}>
-          {/* <div className="aspect-square overflow-hidden">
-          <img 
-            src={hoverImage && showHoverImage ? hoverImage : image} 
-            alt={name} 
-            className="w-full h-full object-cover product-card-image transition-opacity duration-50"
-            />
 
-          </div> */}
           <div className="relative aspect-square overflow-hidden">
             <Image
               src={(hoverImage && showHoverImage ? hoverImage : image) || "/placeholder.jpg"}
@@ -116,10 +109,7 @@ const ProductCard = ({
             onClick={() => handleAddToWishlist(productId)}>
               <Heart size={18} className="text-foreground" />
             </Button>
-            {/* <Button size="sm" className="rounded-full flex items-center space-x-2 px-4">
-              <ShoppingCart size={16} />
-              <span>Add to Cart</span>
-            </Button> */}
+
           </div>
         </div>
 

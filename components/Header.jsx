@@ -13,8 +13,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from 'jwt-decode';
 import useWishlistStore from "@/store/useWishlistStore"
 import  useCartStore  from "@/store/cartStore";
-import ProductPage from "./ProductPage"
-import ProductSearch from "./ProductSearch"
 
 
 
@@ -170,7 +168,8 @@ export default function Header() {
               <Button variant="ghost" size="sm" className="relative">
                 <ShoppingCart className="w-5 h-5" />
                 <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  {cart.reduce((total, item) => total + item.quantity, 0)}
+                  {/* {cart.reduce((total, item) => total + item.quantity, 0)} */}
+                  {cart.length}
                 </Badge>
               </Button>
             </Link>

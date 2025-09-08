@@ -1,6 +1,11 @@
 import React from 'react'
-import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe  } from 'lucide-react'
+import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe, Mail  } from 'lucide-react'
 import Link from 'next/link'
+import Logo1 from '@/public/LOGO1.png'
+import Logo2 from '@/public/LOGO2.png'
+import Image from 'next/image'
+
+
 const sideMenu =[
     {
         title: 'Dashboard',
@@ -22,6 +27,11 @@ const sideMenu =[
         icon: <ShoppingBag className="h-5 w-5" aria-hidden="true"/>,
         path: '/enquiry',
     },
+    {
+        title: 'Custom Rugs',
+        icon: <Users className="h-5 w-5" aria-hidden="true"/>,
+        path: '/customRugs',
+    },
     
     {
         title: 'Users',
@@ -29,22 +39,23 @@ const sideMenu =[
         path: '/users',
     },
     {
+        title: 'Subscribers',
+        icon: <Mail className="h-5 w-5" aria-hidden="true"/>,
+        path: '/subscribers',
+    },
+    {
         title: 'Website',
         icon: <Globe className="h-5 w-5" aria-hidden="true"/>,
         path: '/link',
     },
-    {
-        title: 'Setting',
-        icon: <Settings className="h-5 w-5" aria-hidden="true"/>,
-        path: '/link',
-    },
+
 ]
 const SideMenu = () => {
   return (
     <aside className="hidden lg:flex w-64 flex-col overflow-y-auto border-r bg-white px-5 py-8">
       <Link href="#" className='text-center'>
-        <img src="/48.jpg"  className='w-12 py-4 item-center' alt="" />
-        <img src="/47.jpg" alt="" />
+        <Image src={Logo1}  className='w-12 py-4 item-center' alt="Logo1" />
+        <Image src={Logo2} alt="Logo2" priority />
       </Link>
       <hr className='mt-4 font-bold text-black'/>
       <div className="mt-6 flex flex-1 flex-col justify-between">
@@ -68,9 +79,9 @@ const SideMenu = () => {
                 href="#"
                 className="flex justify-between transform items-center rounded-lg px-3 py-2 text-gray-600 transition-colors duration-300 hover:bg-gray-100 hover:text-gray-700"
             >
-            <img
+            <Image
                 className="h-8 w-8 rounded-full object-contain"
-                src="/48.jpg"
+                src={Logo1}
                 alt="User avatar"
             />
             <span className='text-xs font-bold'>LogOut</span>

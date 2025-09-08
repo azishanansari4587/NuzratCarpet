@@ -71,7 +71,7 @@ const Rugs = () => {
     categories: [],
     colors: [],
     sizes: [],
-    // designers: [],
+    designers: [],
     // priceRange: [0, 3000]
   });
 
@@ -99,12 +99,12 @@ const Rugs = () => {
       }
 
       // Designer filter
-      // if (
-      //   filters.designers.length > 0 &&
-      //   !product.designers.some(designer => filters.designers.includes(designer))
-      // ) {
-      //   return false;
-      // }
+      if (
+        filters.designers.length > 0 &&
+        !product.designers.some(designer => filters.designers.includes(designer))
+      ) {
+        return false;
+      }
     
     return true;
   });
@@ -132,7 +132,7 @@ const Rugs = () => {
       }),
 
       sizes: newFilters.sizes.map(size => size.toLowerCase()),
-      // designers: newFilters.designers.map(designer => designer.name.toLowerCase()),
+      designers: newFilters.designers.map(designer => designer),
       // colors: newFilters.colors.map(color => color.name.toLowerCase())
     });
     

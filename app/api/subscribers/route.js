@@ -71,3 +71,14 @@ export  async function POST(request) {
   }
 }
 
+
+// ** GET METHOD //
+export async function GET() {
+  try {
+    const [rows] = await connection.execute("SELECT * FROM subscriber"); 
+    return NextResponse.json({ subscribers: rows });
+  } catch (error) {
+    console.error("Error fetching subscribers:", error);
+    return NextResponse.json({ error: "Failed to fetch subscribers" }, { status: 500 });
+  }
+}

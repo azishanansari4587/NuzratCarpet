@@ -50,11 +50,6 @@ export default function Collection() {
             {collections.map((collection) => (
               <Card key={collection.slug} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <div className="relative h-64">
-                  {/* <img 
-                    src={collection.image} 
-                    alt={collection.name} 
-                    className="w-full h-full object-cover"
-                  /> */}
                   <div className="relative w-full h-full">
                     <Image
                       src={collection.image || "/placeholder.jpg"}  // fallback if `collection.image` is missing
@@ -71,7 +66,6 @@ export default function Collection() {
                 
                 <CardContent className="p-5">
                   <h3 className="text-xl font-serif font-bold mb-2 text-forest-800">{collection.name}</h3>
-                  {/* <p className="text-forest-700 mb-4">{collection.description}</p> */}
                   <Button asChild className="w-full bg-sand-600 hover:bg-sand-700 border-none">
                     <Link href={`/collection/${collection.slug}`}>View Collection</Link>
                   </Button>

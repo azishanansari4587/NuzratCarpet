@@ -2,6 +2,8 @@ import Image from 'next/image'
 import React from 'react'
 import designer1 from '@/public/KarimRashid.png'
 import designer2 from '@/public/kulper.jpg'
+import { ExternalLink } from 'lucide-react';
+import Link from "next/link"
 
 const Designers = () => {
   return (
@@ -30,7 +32,13 @@ const Designers = () => {
 
                 <p className='py-4 leading-6 text-gray-700'>Karim is a frequent guest lecturer at universities and conferences globally disseminating the importance of design in everyday life. He holds Honorary Doctorates from the OCAD, Toronto and Corcoran College of Art & Design, Washington. Karim has been featured in magazines and books including Time, Vogue, Esquire, GQ, Wallpaper, and countless more.</p>
 
-                <button className='btn btn-primary bg-primary-foreground rounded-md background border-neutral-800 bg-neutral-800 text-white p-2 text-sm'>View More About Karim Rashid</button>
+                <Link
+                href="" // yahan apna actual path de
+                className="inline-flex items-center gap-1 rounded-md bg-neutral-800 text-white p-2 text-sm hover:bg-neutral-700 transition"
+                >
+                <span>View More About Karim Rashid</span>
+                <ExternalLink className="w-4 h-4" />
+                </Link>
             </div>
         </div>
 
@@ -40,7 +48,13 @@ const Designers = () => {
 
                 <p className='py-4 leading-6 text-gray-700'>Beyond A’ Design, Ingrid has earned accolades from the European Product Design Award, International Design Award, German Design Award, and the Iconic Product Design Award in 2017–2018. Her work has been featured in publications like Plaza Interior and I Form, and she has crafted custom pieces for prestigious institutions such as KTH. Multilingual and creatively grounded, Ingrid brings her passions—yoga, sailing, raw food, and gardening—to every design, grounding her artistic vision in authenticity and balance.</p>
 
-                <button className='btn btn-primary bg-primary-foreground rounded-md background border-neutral-800 bg-neutral-800 text-white p-2 text-sm'>View More About Ingrid Kulper</button>
+                <Link
+                href="" // yahan apna actual path de
+                className="inline-flex items-center gap-1 rounded-md bg-neutral-800 text-white p-2 text-sm hover:bg-neutral-700 transition"
+                >
+                <span>View More About Ingrid Kulper</span>
+                <ExternalLink className="w-4 h-4" />
+                </Link>
             </div>
             <Image src={designer2} alt="Designer 1" priority className="w-full h-auto" />
         </div>
