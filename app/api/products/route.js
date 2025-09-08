@@ -82,39 +82,13 @@ export async function POST(req) {
 
     slug = uniqueSlug;
 
-    // Multiple product images
-    // const imageFiles = formData.getAll("images"); // multiple <input name="images" />
-    // const uploadedProductImages = await Promise.all(
-    //   imageFiles.map(file =>
-    //     file.size > 0
-    //       ? uploadToCloudinary(file, "NurzatProducts")
-    //       : null
-    //   )
-    // );
-
-    // Colors with images
-    // const colors = JSON.parse(formData.get("colors") || "[]");
-
-    // const updatedColors = await Promise.all(
-    //   colors.map(async (color, idx) => {
-    //     const colorFiles = formData.getAll(`colorImage_${idx}[]`); // ✅ key fix
-    //     const uploadedColorImages = await Promise.all(
-    //       colorFiles.map(file =>
-    //         file.size > 0
-    //           ? uploadToCloudinary(file, "NurzatProducts/colors")
-    //           : null
-    //       )
-    //     );
-    //     return { ...color, images: uploadedColorImages.filter(Boolean) }; // remove nulls
-    //   })
-    // );
     
 
     // Save to DB
     const [result] = await connection.execute(
       `INSERT INTO product 
-      (name, code, slug, short_description, description, isActive, isFeatured, tags, images, colors, sizes, features, specifications, inStock, sku, barcode, weight, collectionId) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, code, slug, short_description, description, isActive, isFeatured, tags, images, colors, sizes, features, specifications, inStock, sku, care, certification, barcode, weight, collectionId) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         code,
@@ -134,6 +108,8 @@ export async function POST(req) {
         JSON.stringify(specifications),
         inStock ? 1 : 0,
         sku,
+        care, 
+        certification,
         barcode,
         weight,
         collectionId,

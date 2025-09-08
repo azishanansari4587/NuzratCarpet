@@ -45,6 +45,7 @@ export default function AddProduct() {
     isActive: true,
     isFeatured: false,
     tags: [], // ✅ empty array instead of [""]
+    designers: [],
     images: [], // ✅ empty array instead of [""]
     imageUrls: [], // ✅ correct
     colors: [], // ✅ initially empty or [{ name: "", value: "", inStock: true, images: [] }] if you're binding a single item
@@ -59,37 +60,16 @@ export default function AddProduct() {
     collectionId: "",
     short_description: "",
     description: "",
+    care: "",
+    certification: ""
   };
 
-  // const [product, setProduct] = useState({
-  //   id: "",
-  //   name: "",
-  //   code: "",
-  //   isActive: true,
-  //   isFeatured: false,
-  //   tags: [], // ✅ empty array instead of [""]
-  //   images: [], // ✅ empty array instead of [""]
-  //   imageUrls: [], // ✅ correct
-  //   colors: [], // ✅ initially empty or [{ name: "", value: "", inStock: true, images: [] }] if you're binding a single item
-  //   sizes: [], // ✅ empty array instead of [""]
-  //   features: [], // ✅ empty array instead of [""]
-  //   specifications: [], // ✅ empty array instead of [{ key: "", value: "" }]
-  //   inStock: true,
-  //   sku: "",
-  //   barcode: "",
-  //   weight: "",
-  //   quantity: "",
-  //   collectionId: "",
-  //   short_description: "",
-  //   description: "",
-  // });
 
   const [product, setProduct] = useState(initialProductState);
 
 
   const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Pillow"];
-  const availableSizes = ["3' x 5'", "4' x 6'", "5' x 8'", "6' x 9'", "8' x 10'", "9' x 12'", "10' x 14'", "Runner", "Custom"];
-  // const availableTags = ["Banner", "New", "Discount"]; // Available options
+  const availableDesigners = ["Karim Rashid", "Ingrid Kulper", "Own"]; // Available options
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -100,13 +80,6 @@ export default function AddProduct() {
     setProduct(prev => ({ ...prev, [name]: checked }));
   };
 
-
-
-
-  // const handleImageUpload = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   setProduct({ ...product, images: [...product.images, ...files] }); // Store File objects
-  // };
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -134,19 +107,6 @@ export default function AddProduct() {
     setProduct({ ...product, images: imgs });
   };
   
-  // const handleColorImageUpload = (e, colorIndex) => {
-  //   const files = Array.from(e.target.files);
-  //   const updatedColors = [...product.colors];
-  
-  //   if (!updatedColors[colorIndex]) return;
-  
-  //   if (!Array.isArray(updatedColors[colorIndex].images)) {
-  //     updatedColors[colorIndex].images = [];
-  //   }
-  
-  //   updatedColors[colorIndex].images.push(...files); // Store File objects
-  //   setProduct({ ...product, colors: updatedColors });
-  // };
 
   const handleColorImageUpload = async (e, colorIndex) => {
     const files = Array.from(e.target.files);
@@ -193,12 +153,12 @@ export default function AddProduct() {
     }));
   };
 
-  const handleSizeChange = (size, checked) => {
+  const handleDesignerChange = (designer, checked) => {
     setProduct(prev => ({
       ...prev,
-      sizes: checked 
-        ? [...prev.sizes, size] 
-        : prev.sizes.filter(s => s !== size)
+      designers: checked 
+        ? [...prev.designers, designer] 
+        : prev.designers.filter(d => d !== designer)
     }));
   };
 
@@ -212,6 +172,8 @@ export default function AddProduct() {
     formData.append("isFeatured", product.isFeatured);
     formData.append("short_description", product.short_description);
     formData.append("description", product.description);
+    formData.append("care", product.care);
+    formData.append("certification", product.certification);
     formData.append("inStock", product.inStock);
     formData.append("sku", product.sku);
     formData.append("barcode", product.barcode);
@@ -220,6 +182,7 @@ export default function AddProduct() {
   
     // Tags, Sizes, Features, Specs
     formData.append("tags", JSON.stringify(product.tags));
+    formData.append("designers", JSON.stringify(product.designers));
     formData.append("sizes", JSON.stringify(product.sizes));
     formData.append("features", JSON.stringify(product.features));
     formData.append("specifications", JSON.stringify(product.specifications));
@@ -233,9 +196,7 @@ export default function AddProduct() {
         method: "POST",
         body: formData
       });
-  
       const result = await res.json();
-  
       if (res.ok) {
         toast.success("✅ Product saved successfully!");
         console.log(result);
@@ -249,69 +210,6 @@ export default function AddProduct() {
     }
   };
   
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  
-  //   const formData = new FormData();
-  //   formData.append("name", product.name);
-  //   formData.append("code", product.code);
-  //   formData.append("isActive", product.isActive);
-  //   formData.append("isFeatured", product.isFeatured);
-  //   formData.append("short_description", product.short_description);
-  //   formData.append("description", product.description);
-  //   formData.append("inStock", product.inStock);
-  //   formData.append("sku", product.sku);
-  //   formData.append("barcode", product.barcode);
-  //   formData.append("weight", product.weight);
-  //   formData.append("collectionId", product.collectionId);
-  
-  //   // Tags & Sizes as JSON
-  //   formData.append("tags", JSON.stringify(product.tags));
-  //   formData.append("sizes", JSON.stringify(product.sizes));
-  //   formData.append("features", JSON.stringify(product.features));
-  //   formData.append("specifications", JSON.stringify(product.specifications));
-  
-  //   // Main images
-  //   product.images.forEach((file) => {
-  //     formData.append("images", file);
-  //   });
-  
-  //   // Color images
-  //   formData.append("colors", JSON.stringify(
-  //     product.colors.map((color) => ({
-  //       ...color,
-  //       images: [] // We'll send actual files separately
-  //     }))
-  //   ));
-  
-  //   product.colors.forEach((color, colorIndex) => {
-  //     color.images.forEach((file) => {
-  //       formData.append(`colorImage_${colorIndex}[]`, file);
-  //     });
-  //   });
-  
-  //   try {
-  //     const res = await fetch("/api/products", {
-  //       method: "POST",
-  //       body: formData
-  //     });
-  
-  //     const result = await res.json();
-  
-  //     if (res.ok) {
-  //       toast.success("✅ Product saved successfully!");
-  //       console.log(result);
-  //       // Reset form after successful submit
-  //       setProduct(initialProductState);
-  //     } else {
-  //       toast.error(`❌ Error: ${result.message || "Failed to save product"}`);
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //     toast.error(`❌ Error: ${err.message || "Something went wrong"}`);
-  //   }
-  // };
 
 
   return (
@@ -394,6 +292,36 @@ export default function AddProduct() {
                       className="min-h-[120px] w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
                     />
                   </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="care" className="block text-sm font-medium text-forest-800">
+                      Product Care Guide <span className="text-red-500">*</span>
+                    </label>
+                    <Textarea
+                      id="care"
+                      name="care"
+                      required
+                      value={product.care}
+                      onChange={handleChange}
+                      placeholder="Enter product care guide"
+                      className="min-h-[120px] w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="certification" className="block text-sm font-medium text-forest-800">
+                      Product Certification <span className="text-red-500">*</span>
+                    </label>
+                    <Textarea
+                      id="certification"
+                      name="certification"
+                      required
+                      value={product.certification}
+                      onChange={handleChange}
+                      placeholder="Enter product certification details"
+                      className="min-h-[120px] w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
+                    />
+                  </div>
                   
                   <div className="flex flex-wrap gap-6">
                     <div className="flex items-center space-x-2">
@@ -454,15 +382,8 @@ export default function AddProduct() {
                     {product.images.map((url, index) =>
                       url ? (
                         <div key={index} className="relative group">
-                          {/* <img
-                            src={url}
-                            alt={`Product preview ${index + 1}`}
-                            // maxSize={5 * 1024 * 1024}
-                            className="w-full h-32 object-cover rounded-md border border-forest-200"
-                          /> */}
                           <div className="relative w-full h-32 rounded-md border border-forest-200 overflow-hidden">
                             <Image
-                              // src={URL.createObjectURL(url)}// fallback if url is missing
                               src={url}
                               alt={`Product preview ${index + 1}`}
                               fill
@@ -684,28 +605,64 @@ export default function AddProduct() {
                     </Button>
                   </div>
 
+                  {/* Sizes (Dynamic Input) */}
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-forest-800">
-                      Available Sizes
+                      Product Sizes
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                      {availableSizes.map((size) => (
-                        <div key={size} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`size-${size}`} 
-                            checked={product.sizes.includes(size)}
-                            onCheckedChange={(checked) => handleSizeChange(size, checked === true)}
-                          />
-                          <label
-                            htmlFor={`size-${size}`}
-                            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-forest-800"
+
+                    {/* Input + Add Button */}
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        placeholder="Enter size (e.g., 5' x 8')"
+                        value={product.newSize || ""}
+                        onChange={(e) =>
+                          setProduct({ ...product, newSize: e.target.value })
+                        }
+                      />
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          if (product.newSize && !product.sizes.includes(product.newSize)) {
+                            setProduct({
+                              ...product,
+                              sizes: [...product.sizes, product.newSize],
+                              newSize: "",
+                            });
+                          }
+                        }}
+                      >
+                        + Add
+                      </Button>
+                    </div>
+
+                    {/* Preview Added Sizes */}
+                    {product.sizes.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {product.sizes.map((size, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-1 px-3 py-1 border border-forest-300 rounded-full bg-forest-50 text-forest-800 text-sm"
                           >
                             {size}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = [...product.sizes];
+                                updated.splice(i, 1);
+                                setProduct({ ...product, sizes: updated });
+                              }}
+                              className="ml-1 text-red-500 hover:text-red-700"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
+
 
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-forest-800">
@@ -724,6 +681,30 @@ export default function AddProduct() {
                             className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-forest-800"
                           >
                             {tag}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Designers */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-forest-800">
+                      Available Designers
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {availableDesigners.map((designer) => (
+                        <div key={designer} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`designer-${designer}`} 
+                            checked={product.designers.includes(designer)}
+                            onCheckedChange={(checked) => handleDesignerChange(designer, checked === true)}
+                          />
+                          <label
+                            htmlFor={`designer-${designer}`}
+                            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-forest-800"
+                          >
+                            {designer}
                           </label>
                         </div>
                       ))}
