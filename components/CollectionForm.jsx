@@ -1,4 +1,3 @@
-// components/CollectionForm.jsx
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Upload, X } from "lucide-react";
-import Image from "next/image";
 import { toast } from "react-toastify";
 
 export default function CollectionForm({ initialData, onSubmit, onCancel, submitLabel }) {
@@ -27,13 +25,14 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
   // Pre-fill if initialData is passed (Edit mode)
   useEffect(() => {
     if (initialData) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         ...initialData,
         image: null,
         bannerImage: null,
         imageUrl: initialData.imageUrl || "",
         bannerImageUrl: initialData.bannerImageUrl || "",
-      });
+      }));
     }
   }, [initialData]);
 
@@ -42,7 +41,10 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
     setFormData(prev => ({ ...prev, [name]: value }));
 
     if (name === "name" && !formData.slug) {
-      const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      const slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
       setFormData(prev => ({ ...prev, slug }));
     }
   };
@@ -64,7 +66,9 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
   };
 
   const handleRemoveImage = (field) => {
-    if (formData[`${field}Url`]) URL.revokeObjectURL(formData[`${field}Url`]);
+    if (formData[`${field}Url`] && formData[field] instanceof File) {
+      URL.revokeObjectURL(formData[`${field}Url`]);
+    }
     setFormData(prev => ({
       ...prev,
       [field]: null,
@@ -101,22 +105,9 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
           <div className="space-y-6">
             {/* Name */}
             <div className="space-y-2">
-                   <label htmlFor="name" className="block text-sm font-medium text-forest-800">
-                     Collection Name <span className="text-red-500">*</span>
-                   </label>
-                   <input
-                     id="name"
-                     name="name"
-                     type="text"
-                     required
-                     value={formData.name}
-                     onChange={handleChange}
-                     placeholder="e.g., Persian Carpets"
-                     className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
-                   />
-                 </div>
-            {/* <div className="space-y-2">
-              <label htmlFor="name" className="block text-sm font-medium">Name</label>
+              <label htmlFor="name" className="block text-sm font-medium text-forest-800">
+                Collection Name <span className="text-red-500">*</span>
+              </label>
               <input
                 id="name"
                 name="name"
@@ -124,9 +115,10 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md"
+                placeholder="e.g., Persian Carpets"
+                className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
               />
-            </div> */}
+            </div>
             {/* Slug */}
             <div className="space-y-2">
               <label htmlFor="slug" className="block text-sm font-medium">Slug</label>
@@ -151,45 +143,27 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
             </div>
             {/* Switches */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div className="flex items-center space-x-2">
-                    <Switch 
-                    id="isActive" 
-                    checked={formData.isActive}
-                    onCheckedChange={(checked) => handleSwitchChange("isActive", checked)}
-                    />
-                    <label
-                    htmlFor="isActive"
-                    className="text-sm font-medium text-forest-800"
-                    >
-                    Active (visible on site)
-                    </label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                    <Switch 
-                    id="isFeatured" 
-                    checked={formData.isFeatured}
-                    onCheckedChange={(checked) => handleSwitchChange("isFeatured", checked)}
-                    />
-                    <label
-                    htmlFor="isFeatured"
-                    className="text-sm font-medium text-forest-800"
-                    >
-                    Featured Collection
-                    </label>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="isActive" 
+                  checked={formData.isActive}
+                  onCheckedChange={(checked) => handleSwitchChange("isActive", checked)}
+                />
+                <label htmlFor="isActive" className="text-sm font-medium text-forest-800">
+                  Active (visible on site)
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch 
+                  id="isFeatured" 
+                  checked={formData.isFeatured}
+                  onCheckedChange={(checked) => handleSwitchChange("isFeatured", checked)}
+                />
+                <label htmlFor="isFeatured" className="text-sm font-medium text-forest-800">
+                  Featured Collection
+                </label>
+              </div>
             </div>
-            
-            {/* <div className="flex gap-4">
-              <div className="flex items-center gap-2">
-                <Switch checked={formData.isActive} onCheckedChange={(val) => handleSwitchChange("isActive", val)} />
-                <span>Active</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={formData.isFeatured} onCheckedChange={(val) => handleSwitchChange("isFeatured", val)} />
-                <span>Featured</span>
-              </div>
-            </div> */}
           </div>
         </CardContent>
       </Card>
@@ -209,8 +183,12 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
               </label>
             ) : (
               <div className="relative">
-                <Image src={formData.imageUrl} alt="Thumbnail" width={400} height={200} className="rounded" />
-                <button type="button" onClick={() => handleRemoveImage("image")} className="absolute top-2 right-2">
+                <img
+                  src={formData.imageUrl}
+                  alt="Thumbnail"
+                  className="rounded w-[400px] h-[200px] object-cover"
+                />
+                <button type="button" onClick={() => handleRemoveImage("image")} className="absolute top-2 right-2 bg-white/80 p-1 rounded-full">
                   <X />
                 </button>
               </div>
@@ -227,8 +205,12 @@ export default function CollectionForm({ initialData, onSubmit, onCancel, submit
               </label>
             ) : (
               <div className="relative">
-                <Image src={formData.bannerImageUrl} alt="Banner" width={400} height={200} className="rounded" />
-                <button type="button" onClick={() => handleRemoveImage("bannerImage")} className="absolute top-2 right-2">
+                <img
+                  src={formData.bannerImageUrl}
+                  alt="Banner"
+                  className="rounded w-[400px] h-[200px] object-cover"
+                />
+                <button type="button" onClick={() => handleRemoveImage("bannerImage")} className="absolute top-2 right-2 bg-white/80 p-1 rounded-full">
                   <X />
                 </button>
               </div>

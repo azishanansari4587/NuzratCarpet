@@ -61,14 +61,18 @@ export default function AddProduct() {
     short_description: "",
     description: "",
     care: "",
-    certification: ""
+    certification: "",
+    isOutlet: false,
+    outletOldPrice: "",
+    outletNewPrice: "",
+    outletDiscount: "",
   };
 
 
   const [product, setProduct] = useState(initialProductState);
 
 
-  const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Pillow"];
+  const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Pillow", "Outlet"];
   const availableDesigners = ["Karim Rashid", "Ingrid Kulper", "Own"]; // Available options
 
   const handleChange = (e) => {
@@ -178,6 +182,10 @@ export default function AddProduct() {
     formData.append("sku", product.sku);
     formData.append("barcode", product.barcode);
     formData.append("weight", product.weight);
+    formData.append("isOutlet", product.isOutlet);
+    formData.append("outletOldPrice", product.outletOldPrice);
+    formData.append("outletNewPrice", product.outletNewPrice);
+    formData.append("outletDiscount", product.outletDiscount);
     formData.append("collectionId", product.collectionId);
   
     // Tags, Sizes, Features, Specs
@@ -715,6 +723,97 @@ export default function AddProduct() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Outlet Product Section */}
+            <Card>
+              <CardContent className="pt-6">
+                <h2 className="text-xl font-medium mb-4 text-forest-800">Outlet Product</h2>
+
+                {/* Switch / Checkbox */}
+                <div className="flex items-center space-x-2 mb-4">
+                  <Checkbox
+                    id="isOutlet"
+                    checked={product.isOutlet}
+                    onCheckedChange={(checked) =>
+                      setProduct({ ...product, isOutlet: checked === true })
+                    }
+                  />
+                  <label
+                    htmlFor="isOutlet"
+                    className="text-sm font-medium leading-none text-forest-800"
+                  >
+                    Mark as Outlet Product
+                  </label>
+                </div>
+
+                {/* Show Price + Discount only when Outlet is ON */}
+                {product.isOutlet && (
+                  <div className="grid gap-4">
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="outletPrice"
+                        className="block text-sm font-medium text-forest-800"
+                      >
+                        Outlet Old Price <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        id="outletOldPrice"
+                        name="outletOldPrice"
+                        type="number"
+                        min="0"
+                        value={product.outletOldPrice || ""}
+                        onChange={(e) =>
+                          setProduct({ ...product, outletOldPrice: e.target.value })
+                        }
+                        placeholder="Enter outlet price"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="outletPrice"
+                        className="block text-sm font-medium text-forest-800"
+                      >
+                        Outlet New Price <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        id="outletNewPrice"
+                        name="outletNewPrice"
+                        type="number"
+                        min="0"
+                        value={product.outletNewPrice || ""}
+                        onChange={(e) =>
+                          setProduct({ ...product, outletNewPrice: e.target.value })
+                        }
+                        placeholder="Enter outlet price"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="outletDiscount"
+                        className="block text-sm font-medium text-forest-800"
+                      >
+                        Discount (%)
+                      </label>
+                      <Input
+                        id="outletDiscount"
+                        name="outletDiscount"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={product.outletDiscount || ""}
+                        onChange={(e) =>
+                          setProduct({ ...product, outletDiscount: e.target.value })
+                        }
+                        placeholder="Enter discount percentage"
+                      />
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             
             <div className="flex justify-end space-x-4">
               <Button type="button" variant="outline" className="border-forest-300" asChild>

@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 
 import Link from "next/link";
-import { ArrowLeft, FolderPlus, Upload, X } from "lucide-react";
+import { FolderPlus, Upload, X } from "lucide-react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 
@@ -342,11 +342,7 @@ export default function AddCollection() {
                         className="w-full h-48 object-cover rounded-md border border-forest-200"
                         style={{ objectFit: "cover", borderRadius: "0.5rem" }}
                       />
-                      {/* <img
-                        src={formData.bannerImageUrl}
-                        alt="Collection banner preview"
-                        className="w-full h-48 object-cover rounded-md border border-forest-200"
-                      /> */}
+
                       <button
                         type="button"
                         onClick={() => handleRemoveImage('bannerImage')}
@@ -385,21 +381,3 @@ export default function AddCollection() {
   );
 }
 
-// "use client";
-// import CollectionForm from "@/components/CollectionForm";
-// import { toast } from "react-toastify";
-
-// export default function AddCollection() {
-//   const handleCreate = async (data) => {
-//     const res = await fetch("/api/collections", { method: "POST", body: data });
-//     const result = await res.json();
-//     if (!res.ok) throw new Error(result.error);
-//     toast.success("Collection created");
-//   };
-
-//   return (
-//     <div className="p-6">
-//       <CollectionForm submitLabel="Create Collection" onSubmit={handleCreate} onCancel={() => window.history.back()} />
-//     </div>
-//   );
-// }

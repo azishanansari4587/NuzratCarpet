@@ -79,27 +79,27 @@ const Footer = () => {
             <ul className="space-y-2 text-gray-700">
               <li>
                 <Link href="/shop" className="hover:text-black transition-colors">
-                  Shop All Rugs
+                  Rugs
                 </Link>
               </li>
               <li>
                 <Link href="/shop?category=Persian" className="hover:text-black transition-colors">
-                  Persian Rugs
+                  Outdoor
                 </Link>
               </li>
               <li>
                 <Link href="/shop?category=Modern" className="hover:text-black transition-colors">
-                  Modern Rugs
+                  Designers
                 </Link>
               </li>
               <li>
                 <Link href="/customize" className="hover:text-black transition-colors">
-                  Custom Rugs
+                  Outlet
                 </Link>
               </li>
               <li>
                 <Link href="/care-guide" className="hover:text-black transition-colors">
-                  Care Guide
+                  Customize Rugs
                 </Link>
               </li>
             </ul>

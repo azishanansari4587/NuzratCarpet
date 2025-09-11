@@ -46,8 +46,8 @@ export async function GET(req, { params }) {
 
 
 // 📌 PUT update collection
-export async function PUT(req, { params }) {
-  const { slug } = params;
+export async function PUT(req, context) {
+  const { slug } = await context.params; // ✅ await karo
 
   try {
     const formData = await req.formData();

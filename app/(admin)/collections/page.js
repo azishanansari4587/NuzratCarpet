@@ -15,8 +15,10 @@ import { Eye, FolderOpen, Pencil, Plus, Trash2 } from "lucide-react";
 import Spinner from '@/components/Spinner';
 import Image from 'next/image';
 import { Dialog, DialogOverlay, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import EditCollectionDialog from '@/components/EditCollection';
 import { toast } from 'react-toastify';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 
 
 export default function ViewCollections() {
@@ -54,16 +56,13 @@ export default function ViewCollections() {
     // In a real app, would call API to delete
     setCollections(collections.filter(collection => collection.id !== id));
     
-    toast({
-      title: "Collection Deleted",
-      description: `${name} has been removed from your collections.`,
-    });
+    toast.success(`Collection Deleted ${name} has been removed from your collections.`);
   };
 
   const handleToggleStatus = (id, field, currentValue) => {
     // In a real app, would call API to update
     setCollections(collections.map(collection => 
-      collection.id === id ? { ...collection, [field]: !currentValue } : collection
+      collection.id === id ? { ...collection, [field]: currentValue === 1 ? 0 : 1 }  : collection
     ));
     
     let message = "";
@@ -78,7 +77,7 @@ export default function ViewCollections() {
         ? "The collection has been removed from featured." 
         : "The collection is now featured on your store.";
       
-      toast.error(
+      toast.success(
         currentValue ? "Collection Unfeatured" : "Collection Featured",
         );
     }
@@ -86,72 +85,75 @@ export default function ViewCollections() {
 
 
    // Dialog states
-   const [viewDialogOpen, setViewDialogOpen] = useState(false);
-   const [editDialogOpen, setEditDialogOpen] = useState(false);
    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
  
    const [selectedCollection, setSelectedCollection] = useState(null);
-   const [editForm, setEditForm] = useState({
-     name: "",
-     description: "",
-     isActive: false,
-     isFeatured: false,
-     image: null
-   });
 
-const handleEditClick = (collection) => {
-  setSelectedCollection(collection);
-  setEditDialogOpen(true);
-};
-
-
-  //*** */
-  const handleView = async (slug) => {
-    try {
-      const res = await fetch(`/api/collections/${slug}`);
-      const data = await res.json();
-      setSelectedCollection(data.collection);
-      setViewDialogOpen(true);
-    } catch {
-      toast.error("Failed to load collection");
-    }
-  };
-
-  const handleEditOpen = (collection) => {
-    setSelectedCollection(collection);
-    setEditForm({
-      name: collection.name,
-      description: collection.description || "",
-      isActive: collection.isActive,
-      isFeatured: collection.isFeatured,
-      image: null
+   // States
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editForm, setEditForm] = useState({
+      id: null,
+      name: "",
+      description:"",
+      image: "",
+      isActive: false,
+      isFeatured: false,
     });
-    setEditDialogOpen(true);
-  };
 
-  const handleEditSubmit = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("name", editForm.name);
-      formData.append("description", editForm.description);
-      formData.append("isActive", editForm.isActive);
-      formData.append("isFeatured", editForm.isFeatured);
-      if (editForm.image) formData.append("image", editForm.image);
 
-      const res = await fetch(`/api/collections/${selectedCollection.slug}`, {
-        method: "PUT",
-        body: formData
+    // Open edit modal and pre-fill data
+    const handleEditOpen = (collection) => {
+      setEditForm({
+        id: collection.id,
+        slug: collection.slug,
+        name: collection.name,
+        description: collection.description,
+        image: collection.image || "/placeholder.jpg",
+        isActive: collection.isActive === 1,     // ✅
+        isFeatured: collection.isFeatured === 1, // ✅
+
       });
+      setEditDialogOpen(true);
+    };
 
-      if (!res.ok) throw new Error("Update failed");
 
-      toast.success("Collection updated successfully");
-      setEditDialogOpen(false);
-      fetchCollections();
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+    // Handle form update
+    const handleEditChange = (field, value) => {
+      setEditForm((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleUpdate = async () => {
+      try {
+        const formData = new FormData();
+        formData.append("name", editForm.name);
+        formData.append("description", editForm.description);
+        formData.append("isActive", editForm.isActive ? 1 : 0);     // ✅ true/false 1/0
+        formData.append("isFeatured", editForm.isFeatured ? 1 : 0); // ✅
+
+
+        if (editForm.file) {
+          formData.append("image", editForm.file); // new image file
+        }
+
+        const res = await fetch(`/api/collections/${editForm.slug}`, {
+          method: "PUT",
+          body: formData,
+        });
+
+        if (!res.ok) throw new Error("Update failed");
+
+        toast.success("Collection updated successfully");
+        setEditDialogOpen(false);
+        fetchCollections();
+      } catch (err) {
+        toast.error(err.message);
+      }
+    };
+
+
+
+
+
 
   const handleDelete = async () => {
     try {
@@ -217,29 +219,11 @@ const handleEditClick = (collection) => {
                     <TableCell className="font-medium">{collection.name}</TableCell>
                     <TableCell className="text-center">{collection.productCount || 0}</TableCell>
 
-                    <TableCell className="text-center">
-                      <button
-                        onClick={() => handleToggleStatus(collection.id, 'isActive', collection.isActive)}
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          collection.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {collection.isActive ? 'Active' : 'Inactive'}
-                      </button>
+                    <TableCell className="text-center"> 
+                      {collection.isActive ? 'Active' : 'Inactive'}
                     </TableCell>
-                    <TableCell className="text-center">
-                      <button
-                        onClick={() => handleToggleStatus(collection.id, 'isFeatured', collection.isFeatured)}
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          collection.isFeatured
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {collection.isFeatured ? 'Featured' : 'Not Featured'}
-                      </button>
+                    <TableCell className="text-center"> 
+                      {collection.isFeatured ? 'Featured' : 'Not Featured'}
                     </TableCell>
 
                     <TableCell className="text-right flex gap-2 justify-end">
@@ -268,32 +252,93 @@ const handleEditClick = (collection) => {
         )}
       </div>
 
-      {/* *** */}
-      {/* View Dialog */}
-      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+      {/* *** Edit Collection Dialog ****/}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen} className="mx-auto max-w-7xl fixed inset-0 z-50 flex items-center justify-center">
         <DialogOverlay className="bg-black/50 backdrop-blur-sm fixed inset-0" />
-        <DialogContent className="bg-white rounded-lg shadow-lg w-full max-w-7xl max-h-[80vh] p-6 overflow-y-auto">
+        <DialogContent className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>{selectedCollection?.name}</DialogTitle>
+            <DialogTitle>Edit Collection</DialogTitle>
           </DialogHeader>
-          {selectedCollection && (
-            <>
-              <Image src={selectedCollection.image} alt={selectedCollection.name} width={200} height={200} className="rounded" />
-              <p>{selectedCollection.description}</p>
-            </>
-          )}
+
+          {/* Image Upload */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Collection Image</label>
+            
+            {/* Preview */}
+            <div className="relative w-24 h-24 mb-2">
+              <Image
+                src={editForm.image || "/placeholder.jpg"}
+                alt="Preview"
+                fill
+                className="object-cover rounded"
+              />
+            </div>
+
+            {/* File Input */}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  // Preview image
+                  const previewUrl = URL.createObjectURL(file);
+                  setEditForm((prev) => ({
+                    ...prev,
+                    image: previewUrl,
+                    file, // actual file for upload
+                  }));
+                }
+              }}
+              className="block text-sm text-gray-600"
+            />
+          </div>
+
+
+          {/* Collection Name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <Input
+              value={editForm.name}
+              onChange={(e) => handleEditChange("name", e.target.value)}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <Textarea
+              rows={4}
+              value={editForm.description}
+              onChange={(e) => handleEditChange("description", e.target.value)}
+            />
+          </div>
+
+          {/* Status Switch */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-medium text-gray-700">Active</span>
+            <Switch
+              checked={editForm.isActive}
+              onCheckedChange={(val) => handleEditChange("isActive", val)}
+            />
+          </div>
+
+          {/* Featured Switch */}
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-sm font-medium text-gray-700">Featured</span>
+            <Switch
+              checked={editForm.isFeatured}
+              onCheckedChange={(val) => handleEditChange("isFeatured", val)}
+            />
+          </div>
+
+          <DialogFooter>
+            <Button onClick={handleUpdate} className="bg-primary">Save Changes</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
 
-      {selectedCollection && (
-      <EditCollectionDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        collection={selectedCollection}
-        refreshCollections={fetchCollections}
-      />
-    )}
+
 
       {/* Delete Dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

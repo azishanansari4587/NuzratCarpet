@@ -60,6 +60,13 @@ export async function POST(req) {
     const specifications = JSON.parse(formData.get("specifications") || "[]");
     const collectionId = formData.get("collectionId");
 
+    const isOutlet = formData.get("isOutlet") === "true";
+    const outletOldPrice = formData.get("outletOldPrice");
+    const outletNewPrice = formData.get("outletNewPrice");
+    const outletDiscount = formData.get("outletDiscount");
+    const care = formData.get("care");
+    const certification = formData.get("certification");
+
     // ✅ Images & Colors are already Cloudinary URLs from frontend
     const images = JSON.parse(formData.get("images") || "[]"); 
     const colors = JSON.parse(formData.get("colors") || "[]");
@@ -87,8 +94,8 @@ export async function POST(req) {
     // Save to DB
     const [result] = await connection.execute(
       `INSERT INTO product 
-      (name, code, slug, short_description, description, isActive, isFeatured, tags, images, colors, sizes, features, specifications, inStock, sku, care, certification, barcode, weight, collectionId) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, code, slug, short_description, description, isActive, isFeatured, tags, designers, images, colors, sizes, features, specifications, inStock, sku, care, certification, barcode, weight, collectionId, isOutlet, outletOldPrice, outletNewPrice, outletDiscount) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         code,
@@ -98,8 +105,8 @@ export async function POST(req) {
         isActive ? 1 : 0,
         isFeatured ? 1 : 0,
         JSON.stringify(tags),
-        // JSON.stringify(uploadedProductImages.filter(Boolean)),
-        // JSON.stringify(updatedColors),
+        JSON.stringify(designers),
+
         JSON.stringify(images),   // ✅ Already URLs
         JSON.stringify(colors),   // ✅ Each color already has images[] URLs
 
@@ -113,6 +120,10 @@ export async function POST(req) {
         barcode,
         weight,
         collectionId,
+        isOutlet ? 1 : 0,
+        outletOldPrice,
+        outletNewPrice,
+        outletDiscount
       ]
     );
 

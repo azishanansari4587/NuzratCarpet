@@ -1,12 +1,9 @@
 "use client"
-import React, {useState, useEffect, useRef} from 'react'
-
+import React, { useState, useEffect, useRef } from 'react'
 import 'swiper/css';
-import { Swiper, SwiperSlide } from 'swiper/react';
-// import required modules
 import 'swiper/css/navigation';
-import { MoveRight, MoveLeft, Minus, Plus, Info, Check } from 'lucide-react';
-import {useParams, useRouter } from 'next/navigation';
+import { Minus, Plus, Check } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link'
 import Spinner from '@/components/Spinner';
 import Image from 'next/image';
@@ -14,502 +11,368 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import LightGallery from 'lightgallery/react';
-
-// Plugins
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgZoom from 'lightgallery/plugins/zoom';
-
-// Styles
+import lgPager from 'lightgallery/plugins/pager';
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-thumbnail.css';
 import 'lightgallery/css/lg-zoom.css';
+import 'lightgallery/css/lg-pager.css';
 import { toast } from 'react-toastify';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from "jwt-decode";
+import DOMPurify from 'dompurify';
 import useWishlistStore from '@/store/useWishlistStore';
 import useCartStore from '@/store/cartStore';
 import RelatedProduct from '@/components/RelatedProduct';
 
 
-
-  
-
 const Product = () => {
-    const { slug } = useParams(); 
+  const { slug } = useParams(); 
+  const router = useRouter();
 
-    const [product, setProduct] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [quantity, setQuantity] = useState(1);
-    // const [selectedColor, setSelectedColor] = useState('');
-
-    // const [selectedImage, setSelectedImage] = useState(product?.images?.[0])
-    const [selectedColor, setSelectedColor] = useState(null);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
-    const [isOpen, setIsOpen] = useState(false)
 
-    const router = useRouter();
+  const addToWishlistLocal = useWishlistStore((state) => state.addToWishlist);
+  const lightGalleryRef = useRef(null);
 
+  const handleOpenGallery = (index) => {
+    if (lightGalleryRef.current) {
+      lightGalleryRef.current.instance.openGallery(index);
+    }
+  };
+
+  const increaseQuantity = () => setQuantity(prev => prev + 1);
+  const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+
+  const handleColorChange = (colorName) => {
+    setSelectedColor(colorName);
+    setSelectedImage(0);
+  };
+
+  const handleAddToCart = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to add to cart");
+      router.push("/signin");
+      return;
+    }
 
     const currentColorObj = product?.colors?.find(c => c.name === selectedColor) || product?.colors?.[0] || null;
+    const currentImages = currentColorObj?.images ?? [];
 
-    const currentImages = currentColorObj?.images || [];
-  
-    const sizeObject = product?.sizes?.find(s => s.value === selectedSize);
-  
-    const isInStock = sizeObject ? sizeObject.inStock : true;
-  
-    const addToWishlistLocal = useWishlistStore((state) => state.addToWishlist);
+    const cartItem = {
+      productId: product.id,
+      quantity: quantity,
+      color: currentColorObj?.name,
+      size: selectedSize,
+      image: currentImages[selectedImage],
+    };
 
-  
-    const handleAddToCart = async () => {
-      const token = localStorage.getItem("token");
-    
-      if (!token) {
-        alert("Please login to add to cart");
-        router.push("/signin");
-        return;
-      }
-    
-      const cartItem = {
-        productId: product.id,
-        quantity: quantity,
+    const res = await fetch("/api/cart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(cartItem),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      useCartStore.getState().addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: currentImages[selectedImage],
         color: currentColorObj?.name,
         size: selectedSize,
-        image: currentImages[selectedImage], // 🟢 send this too
-      };
-    
-      const res = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(cartItem),
       });
-    
-      const data = await res.json();
-    
-      if (res.ok) {
-        useCartStore.getState().addToCart({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: currentImages[selectedImage],
-            color: currentColorObj?.name,
-            size: selectedSize,
-        });
 
-        toast.success(`${quantity} x ${product.name} (${selectedSize}, ${selectedColor}) added to your cart.`);
-
-      } else {
-        toast.error(data.error);
-      }
-    };
-    
-  
-    const handleAddToWishlist = async (productId) => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please login to add to wishlist");
-        router.push("/login");
-        return;
-      }
-    
-      const decoded = jwtDecode(token);;// ✅ This will now work
-      const userId = decoded.id;
-    
-      const res = await fetch("/api/wishlist/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, productId }),
-      });
-    
-      const result = await res.json();
-    
-      if (res.ok) {
-        addToWishlistLocal(product);
-        toast.success("Added to Wishlist");
-      } else {
-        // If already exists
-        if (res.status === 409) {
-            toast.warning("Already in Wishlist");
-        } else {
-            toast.error( result.error);
-        }
-      }
-    };
-    
-  
-  
-     const handleColorChange = (colorName) => {
-      setSelectedColor(colorName);
-      setSelectedImage(0); // Reset to first image when color changes
-    };
-
-  
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 3000);
-  
-      return () => clearTimeout(timer);
-    }, []);
-  
-    useEffect(() => {
-        const fetchProduct = async () => {
-          try {
-            const res = await fetch(`/api/products/${slug}`);
-            const data = await res.json();
-    
-            if (res.ok) {
-              setProduct(data);
-              setSelectedColor(data.colors[0]?.value);
-              setSelectedSize(data.sizes[0]);
-            } else {
-              toast.warning(`Product Not Found,  ${data.error || "Unable to fetch product."} `);
-            }
-          } catch (err) {
-            toast.error(`Something went wrong`);
-          } finally {
-            setLoading(false);
-          }
-        };
-    
-        fetchProduct();
-      }, [slug]);
-    
-      if (loading) {
-        return (
-          <Spinner/>
-        );
-      }
-
-
-    const increaseQuantity = () => {
-        setQuantity((prevQuantity) => prevQuantity + 1);
-    };
-
-    const decreaseQuantity = () => {
-        setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
-    };
-
-  
-    return (
-        <>
-        {/* Breadcrumb */}
-        <div className="container mx-auto px-4 py-4">
-            <div className="text-sm text-gray-500">
-            <Link href={"/shop"} className="hover:text-gray-700">
-                SHOP
-            </Link>{" "}
-            / <span className='text-gray-700 uppercase'>{product.name}</span>
-            </div>
-        </div>
-
-        
-        
-        <section className='container mx-auto px-4 py-4'>
-            <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Product Images */}
-                <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-8">
-                {/* Thumbnails - will appear on top (mobile) or left (desktop) */}
-                    <div className="flex flex-row md:flex-col gap-4 md:mr-4 mb-4 md:mb-0 order-2 md:order-1">
-                        {currentImages.map((i, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setSelectedImage(index)}
-                            className="w-16 h-16 rounded-full overflow-hidden border border-gray-300"
-                        >
-                            <div className="relative w-full h-full bg-stone-300">
-                            <Image
-                                src={`${i}?height=64&width=64`}
-                                alt={`Thumbnail ${index}`}
-                                fill
-                                className="object-cover"
-                                priority
-                            />
-                            </div>
-                        </button>
-                        ))}
-                    </div>
-
-                    {/* Main Image - will appear below (mobile) or right (desktop) */}
-                    <div className="relative aspect-square w-full bg-stone-100 mb-4 md:mb-0 cursor-zoom-in order-1 md:order-2">
-                        <LightGallery speed={500} plugins={[lgThumbnail, lgZoom]} elementClassNames="custom-wrapper">
-                            <Image
-                                src={`${currentImages[selectedImage]}?height=700&width=700`}
-                                alt="Main product"
-                                fill
-                                className="object-cover"
-                                priority
-                            />
-                        </LightGallery>
-                    </div>
-                </div>
-
-
-                {/* Product Details */}
-                <div className="space-y-6">
-                    <div>
-                        <h1 className="text-2xl font-medium uppercase mb-2">{product?.name}</h1>
-                        <Separator/>
-                        <div className="flex items-center py-4 space-x-4">
-                            {product?.tags?.includes("New") &&  (
-                                <span className="text-sm rounded-md bg-gray-200 px-2 py-1">NEW</span>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Color */}
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold">Color</h3>
-                        <span className="text-primary font-medium bg-primary/10 px-3 py-1 rounded-full">
-                            {currentColorObj?.name}
-                        </span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-4">
-                        {product?.colors?.map(color => (
-                            <button
-                            key={color.name}
-                            className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200 ${
-                                !color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'
-                            } ${
-                                selectedColor === color.name 
-                                ? 'ring-4 ring-primary ring-offset-2 scale-110 shadow-lg' 
-                                : 'ring-2 ring-border hover:ring-primary/50'
-                            }`}
-                            onClick={() => color.inStock && handleColorChange(color.name)}
-                            disabled={!color.inStock}
-                            title={color.name}
-                            aria-label={`Select color: ${color.name}`}
-                            >
-                            <Image 
-                                src={`${color.images?.[0]}?height=100&width=100 `}
-                                alt={color.name} 
-                                fill
-                                className="object-cover w-full h-full rounded-full" 
-                            />
-
-                            {selectedColor === color.name && (
-                                <Check size={20} className="absolute inset-0 m-auto text-white drop-shadow-lg" />
-                            )}
-                            
-                            {!color.inStock && (
-                                <div className="absolute inset-0 bg-gray-400/50 rounded-full flex items-center justify-center">
-                                <div className="w-6 h-0.5 bg-red-500 rotate-45"></div>
-                                </div>
-                            )}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Size Selector */}
-                    <div className="flex flex-wrap gap-2">
-                        {product?.sizes?.map((size, index) => (
-                            <div
-                                key={index}
-                                onClick={() => setSelectedSize(size)}
-                                className={`cursor-pointer border rounded px-4 py-2 text-sm font-semibold transition duration-200 
-                                    ${selectedSize === size ? "bg-black text-white border-black" : "border-gray-300 text-gray-700 hover:border-black"}`}
-                            >
-                                {size}
-                            </div>
-                        ))}
-                    </div>
-
-                    <Separator/>
-
-                    {/* Quantity Selector */}
-                    <div className="flex items-center border border-gray-300 w-fit">
-                        <button className="p-2" aria-label="Decrease quantity" onClick={decreaseQuantity}>
-                            <Minus className="h-4 w-4" />
-                        </button>
-                        <span className="px-4">{quantity}</span>
-                        <button className="p-2" aria-label="Increase quantity" onClick={increaseQuantity}>
-                            <Plus className="h-4 w-4" />
-                        </button>
-                    </div>
-
-                    {/* Add to Cart Button */}
-                    <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none h-12" onClick={handleAddToCart}>ADD TO QUOTE REQUEST</Button>
-
-
-                    {/* Add to Wishlist Button */}
-                    <Button variant="outline" className="w-full rounded-none h-12 border-gray-300 hover:bg-gray-50" onClick={() => handleAddToWishlist(product.id)}>ADD TO WISHLIST</Button>
-                    
-                    
-
-                    {/* Shipping Info */}
-                    {/* <div className="space-y-2 pt-4">
-                        <p className='text-sm text-wrap text-green-500'>In Stock</p>   
-                        <div className="flex items-center text-sm">
-                            <span>Ships in 3-4 Weeks</span>
-                            <Info className="h-4 w-4 ml-1" />
-                        </div>
-                        <div className="flex items-center text-sm">
-                            <span>Non-refundable</span>
-                            <Info className="h-4 w-4 ml-1" />
-                        </div>
-                    </div> */}
-
-                    <div className="space-y-4 text-md text-gray-500">
-                        <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product?.description }} />
-                    </div>
-
-                    <Separator />
-
-                    {/* Product Description */}
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="description" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">DETAILS</AccordionTrigger>
-                            <AccordionContent>
-                            <div className="space-y-2 text-sm">
-                                {/* <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.info }} /> */}
-                                {product?.features?.map((feature, index) => (
-                                    <div key={index} className="pb-3">
-                                        <span className="font-medium text-gray-500">{feature}</span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="space-y-2 text-sm pb-6">
-                                {product?.specifications?.map((item, index) => (
-                                    <div key={index}>
-                                        <div className="flex gap-x-6 ">
-                                            <span className="font-medium text-gray-500">{item.key} :</span>
-                                            <span className="text-muted-foreground text-gray-500">{item.value}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            </AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="materials" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">CERTIFICATION</AccordionTrigger>
-                            <AccordionContent>
-                            <div className="space-y-2 text-sm">
-                                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.quality }} />
-                            </div>
-                            </AccordionContent>
-                        </AccordionItem>
-
-                        <AccordionItem value="construction" className="border-b">
-                            <AccordionTrigger className="text-sm font-medium py-4">CARE & MAINTENANCE</AccordionTrigger>
-                            <AccordionContent>
-                            <div className="space-y-2 text-sm">
-                                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: product.maintanace }} />
-                            </div>
-                            </AccordionContent>
-                        </AccordionItem>
-
-                    </Accordion>
-
-                    {/* Social Sharing */}
-                    <div className="flex items-center space-x-4 pt-4">
-                        <button className="flex items-center text-sm">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            >
-                            <path d="M8 12h8" />
-                            <path d="M12 8v8" />
-                            <circle cx="12" cy="12" r="10" />
-                            </svg>
-                            <span className="ml-1">PIN TO PINTEREST</span>
-                        </button>
-                        <button className="flex items-center text-sm">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            >
-                            <path d="M17 17h.01" />
-                            <path d="M7 11h10" />
-                            <path d="M7 7h10" />
-                            <rect width="18" height="18" x="3" y="3" rx="2" />
-                            </svg>
-                            <span className="ml-1">PRINT TEARSHEET</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-        </section>
-
-        {/* Benefits Section */}
-        <section className="py-16 ">
-          <div className="container-custom">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-secondary rounded-lg p-6 text-center shadow-sm">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-serif font-medium mb-2">Free Shipping</h3>
-                <p className="text-muted-foreground">
-                  Free shipping on all orders over $199 within the continental United States.
-                </p>
-              </div>
-              
-              <div className="bg-secondary rounded-lg p-6 text-center shadow-sm">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-serif font-medium mb-2">Quality Guarantee</h3>
-                <p className="text-muted-foreground">
-                  Crafted with premium materials and backed by our satisfaction guarantee.
-                </p>
-              </div>
-              
-              <div className="bg-secondary rounded-lg p-6 text-center shadow-sm">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9.75h4.875a2.625 2.625 0 010 5.25H12M8.25 9.75L10.5 7.5M8.25 9.75L10.5 12m9-7.243V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-serif font-medium mb-2">Expert Guidance</h3>
-                <p className="text-muted-foreground">
-                  Personal design consultations to help you find the perfect carpet for your space.
-                </p>
-              </div>
-            </div>
+      // ✅ Custom Popup at Bottom Right
+      toast (
+        <div className="flex gap-4 items-center">
+          <Image
+            src={currentImages[selectedImage]}
+            alt={product.name}
+            width={64}
+            height={64}
+            className="object-cover rounded-md"
+          />
+          <div>
+            <h4 className="text-md font-bold text-black">{product.name}</h4>
+            <p className="text-sm text-gray-700">
+              Quantity: {quantity},
+            </p>
+            <p className='text-sm text-gray-700'> Size: {selectedSize},</p>
+            <p className='text-sm text-gray-700'>Color: {selectedColor}</p>
+            <button
+              onClick={() => router.push("/cart")}
+              className="mt-1 text-xs px-3 py-1 bg-black text-white rounded"
+            >
+              View Cart
+            </button>
           </div>
-        </section>
+        </div>,
 
-        <Separator className="h-[2px] border-black mt-12"/>
+        {
+          position: "bottom-right",
+          autoClose: 10000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
 
-        {/* Related Products */}
-        <section className="py-16 md:py-24">
-        
-            <div className="container mx-auto px-4 md:px-6">
-                
-                <h2 className="text-2xl font-light mb-12 text-center">YOU MAY ALSO LIKE</h2>
-                <RelatedProduct/>
-            </div>    
-        </section>
+    } else {
+      toast.error(data.error);
+    }
 
-        </> 
-    );
-}
+  };
 
-export default Product
+  const handleAddToWishlist = async (productId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to add to wishlist");
+      router.push("/login");
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    const userId = decoded.id;
+
+    const res = await fetch("/api/wishlist/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId, productId }),
+    });
+
+    const result = await res.json();
+
+    if (res.ok) {
+      addToWishlistLocal(product);
+      toast.success("Added to Wishlist");
+    } else {
+      if (res.status === 409) {
+        toast.warning("Already in Wishlist");
+      } else {
+        toast.error(result.error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${slug}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setProduct(data);
+          setSelectedColor(data.colors[0]?.name);
+          setSelectedSize(data.sizes[0]?.value || data.sizes[0]);
+        } else {
+          toast.warning(`Product Not Found, ${data.error || "Unable to fetch product."}`);
+        }
+      } catch (err) {
+        toast.error("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [slug]);
+
+  if (loading || !product) return <Spinner />;
+
+  const currentColorObj = product?.colors?.find(c => c.name === selectedColor) || product?.colors?.[0] || null;
+  const currentImages = currentColorObj?.images ?? [];
+
+  return (
+    <>
+      {/* Breadcrumb */}
+      <div className="container mx-auto px-4 py-4">
+        <div className="text-sm text-gray-500">
+          <Link href={"/shop"} className="hover:text-gray-700">SHOP</Link>{" "}
+          / <span className='text-gray-700 uppercase'>{product.name}</span>
+        </div>
+      </div>
+
+      {/* Product Section */}
+      <section className='container mx-auto px-4 py-4'>
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          {/* Product Images */}
+          <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-8">
+            {/* Thumbnails */}
+            <div className="flex flex-row md:flex-col gap-4 md:mr-4 mb-4 md:mb-0 order-2 md:order-1">
+              {currentImages.map((i, index) => (
+                <button key={index} onClick={() => { setSelectedImage(index); }}
+                  className="w-16 h-16 rounded-full overflow-hidden border border-gray-300">
+                  <div className="relative w-full h-full bg-stone-300">
+                    <Image src={`${i}?height=64&width=64`} alt={`Thumbnail ${index}`} fill className="object-cover" />
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Main Image */}
+            <div className="relative aspect-square w-full bg-stone-100 mb-4 md:mb-0 cursor-zoom-in order-1 md:order-2"
+              onClick={() => handleOpenGallery(selectedImage)}>
+              <Image src={`${currentImages[selectedImage]}?height=700&width=700`} alt="Main product" fill className="object-cover" />
+            </div>
+
+            {/* Hidden LightGallery */}
+            <LightGallery
+              onInit={ref => lightGalleryRef.current = ref}
+              dynamic
+              dynamicEl={currentImages.map((img, index) => ({
+                src: `${img}?height=1200&width=1200`,
+                thumb: `${img}?height=100&width=100`,
+                subHtml: `<span>${index + 1} / ${currentImages.length}</span>`,
+              }))}
+              plugins={[lgThumbnail, lgZoom, lgPager]}
+              closable
+              download={false}
+              toggleThumb
+              hash={false}
+            />
+          </div>
+
+          {/* Product Details */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-2xl font-medium uppercase mb-2 flex justify-between gap-2">
+              {product.name}
+
+              {product.isOutlet === 1 && (
+                <span className="text-lg font-semibold text-green-600">
+                  USD {product.outletNewPrice } 
+                  <span className="ml-2 text-red-500 line-through">
+                    {product.outletDiscount}%
+                  </span>
+                </span>
+              )}
+              </h1>
+
+              <Separator />
+              <div className="space-y-4 text-md text-gray-500">
+                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
+              </div>
+            </div>
+
+            {/* Color */}
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Color</h3>
+              <span className="text-primary font-medium bg-primary/10 px-3 py-1 rounded-full">{currentColorObj?.name}</span>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              {product.colors.map(color => (
+                <button key={color.name} onClick={() => color.inStock && handleColorChange(color.name)}
+                  disabled={!color.inStock}
+                  title={color.name}
+                  aria-label={`Select color: ${color.name}`}
+                  className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200
+                    ${!color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
+                    ${selectedColor === color.name ? 'ring-4 ring-primary ring-offset-2 scale-110 shadow-lg' : 'ring-2 ring-border hover:ring-primary/50'}`}>
+                  <Image src={`${color.images?.[0]}?height=100&width=100`} alt={color.name} fill className="object-cover w-full h-full rounded-full" />
+                  {selectedColor === color.name && <Check size={20} className="absolute inset-0 m-auto text-white drop-shadow-lg" />}
+                  {!color.inStock && <div className="absolute inset-0 bg-gray-400/50 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-0.5 bg-red-500 rotate-45"></div>
+                  </div>}
+                </button>
+              ))}
+            </div>
+
+            {/* Size Selector */}
+            <div className="flex flex-wrap gap-2">
+              {product.sizes.map((size, index) => (
+                <div key={index} onClick={() => setSelectedSize(size.value || size)}
+                  className={`cursor-pointer border rounded px-4 py-2 text-sm font-semibold transition duration-200
+                    ${selectedSize === (size.value || size) ? "bg-black text-white border-black" : "border-gray-300 text-gray-700 hover:border-black"}`}>
+                  {size.value || size}
+                </div>
+              ))}
+            </div>
+
+            <Separator />
+
+            {/* Quantity Selector */}
+            <div className="flex items-center border border-gray-300 w-fit">
+              <button className="p-2" aria-label="Decrease quantity" onClick={decreaseQuantity}><Minus className="h-4 w-4" /></button>
+              <span className="px-4">{quantity}</span>
+              <button className="p-2" aria-label="Increase quantity" onClick={increaseQuantity}><Plus className="h-4 w-4" /></button>
+            </div>
+
+            {/* Add to Cart & Wishlist */}
+            <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-none h-12" onClick={handleAddToCart}>ADD TO QUOTE REQUEST</Button>
+            <Button variant="outline" className="w-full rounded-none h-12 border-gray-300 hover:bg-gray-50" onClick={() => handleAddToWishlist(product.id)}>ADD TO WISHLIST</Button>
+
+            {/* Accordion */}
+            <Separator />
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="description" className="border-b">
+                <AccordionTrigger className="text-sm font-medium py-4">DETAILS</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2 text-sm">
+                    {product.features?.map((feature, index) => (
+                      <div key={index} className="pb-2">
+                        <span className="font-medium text-gray-700">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-2 text-sm pb-6">
+                    {product.specifications?.map((item, index) => (
+                      <div key={index} className="flex gap-x-6 ">
+                        <span className="font-medium text-gray-700">{item.key} :</span>
+                        <span className="text-muted-foreground text-gray-700">{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="materials" className="border-b">
+                <AccordionTrigger className="text-sm font-medium py-4">CERTIFICATION</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="prose max-w-none mt-4 text-gray-700" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.certification) }} />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="construction" className="border-b">
+                <AccordionTrigger className="text-sm font-medium py-4">CARE & MAINTENANCE</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="prose max-w-none mt-4 text-gray-700" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.care) }} />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Products */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-2xl font-light mb-12 text-center">YOU MAY ALSO LIKE</h2>
+          <RelatedProduct />
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default Product;

@@ -29,6 +29,7 @@ export default function Header() {
     { href: "/outdoor", label: "Outdoor" },
     { href: "/collection", label: "Collections" },
     { href: "/designers", label: "Designers" },
+    { href: "/outlet", label: "Outlets" },
     { href: "/customizeInquiry", label: "Customize" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact Us" },
