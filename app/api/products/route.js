@@ -55,6 +55,7 @@ export async function POST(req) {
     const barcode = formData.get("barcode");
     const weight = formData.get("weight");
     const tags = JSON.parse(formData.get("tags") || "[]");
+    const designers = JSON.parse(formData.get("designers") || "[]");
     const sizes = JSON.parse(formData.get("sizes") || "[]");
     const features = JSON.parse(formData.get("features") || "[]");
     const specifications = JSON.parse(formData.get("specifications") || "[]");

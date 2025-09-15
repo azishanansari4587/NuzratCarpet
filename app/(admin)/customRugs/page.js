@@ -169,7 +169,7 @@ const handleEditClick = (rug) => {
                     {order.phone}
                   </TableCell>
 
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium capitalize">
                     {order.business_type}
                   </TableCell>
 
@@ -185,7 +185,7 @@ const handleEditClick = (rug) => {
                     {order.colors}
                   </TableCell>
 
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell className="hidden md:table-cell capitalize">
                     {order.material}
                   </TableCell>
 
