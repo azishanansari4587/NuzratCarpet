@@ -9,14 +9,15 @@ export async function POST(req) {
       email,
       phone,
       rugType,
+      businessType,
       size,
       customSize,
       material,
       colors,
       pattern,
-      budget,
       timeline,
       additionalInfo,
+      uploadedImages
     } = body;
 
     const customWidth = customSize?.width || null;
@@ -24,22 +25,23 @@ export async function POST(req) {
 
     await connection.query(
       `INSERT INTO custom_rug_requests 
-        (name, email, phone, rug_type, size, custom_width, custom_length, material, colors, pattern, budget, timeline, additional_info)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (name, email, phone, rug_type, business_type, size, custom_width, custom_length, material, colors, pattern, timeline, additional_info, uploaded_images)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         email,
         phone,
         rugType,
+        businessType,
         size,
         customWidth,
         customLength,
         material,
         colors,
         pattern,
-        budget,
         timeline,
         additionalInfo,
+        JSON.stringify(body.uploadedImages || [])
       ]
     );
 

@@ -19,7 +19,7 @@ import 'lightgallery/css/lg-thumbnail.css';
 import 'lightgallery/css/lg-zoom.css';
 import 'lightgallery/css/lg-pager.css';
 import { toast } from 'react-toastify';
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from 'jwt-decode'; // ✅ Correct
 import DOMPurify from 'dompurify';
 import useWishlistStore from '@/store/useWishlistStore';
 import useCartStore from '@/store/cartStore';

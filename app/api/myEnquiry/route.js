@@ -30,6 +30,7 @@ export async function GET(req) {
       `SELECT e.id, 
        e.cartItems, 
        e.created_at,
+       e.status,
        u.id as user_id, 
        CONCAT(u.first_name, ' ', u.last_name) as user_name, 
        u.email as user_email

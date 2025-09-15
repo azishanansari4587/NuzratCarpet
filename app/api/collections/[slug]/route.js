@@ -54,8 +54,8 @@ export async function PUT(req, context) {
 
     const name = formData.get("name");
     const description = formData.get("description");
-    const isActive = formData.get("isActive") === "true";
-    const isFeatured = formData.get("isFeatured") === "true";
+    const isActive = formData.get("isActive") === "1";   // true/false
+    const isFeatured = formData.get("isFeatured") === "1";
     const imageFile = formData.get("image");
     const bannerImageFile = formData.get("bannerImage");
 

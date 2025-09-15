@@ -52,41 +52,9 @@ export default function ViewCollections() {
     fetchCollections();
   }, []);
 
-  const handleDeleteCollection = (id, name) => {
-    // In a real app, would call API to delete
-    setCollections(collections.filter(collection => collection.id !== id));
-    
-    toast.success(`Collection Deleted ${name} has been removed from your collections.`);
-  };
-
-  const handleToggleStatus = (id, field, currentValue) => {
-    // In a real app, would call API to update
-    setCollections(collections.map(collection => 
-      collection.id === id ? { ...collection, [field]: currentValue === 1 ? 0 : 1 }  : collection
-    ));
-    
-    let message = "";
-    if (field === 'isActive') {
-      message = currentValue 
-        ? "The collection has been hidden from your store." 
-        : "The collection is now visible in your store.";
-      
-      toast.success( currentValue ? "Collection Deactivated" : "Collection Activated");
-    } else {
-      message = currentValue 
-        ? "The collection has been removed from featured." 
-        : "The collection is now featured on your store.";
-      
-      toast.success(
-        currentValue ? "Collection Unfeatured" : "Collection Featured",
-        );
-    }
-  };
-
 
    // Dialog states
    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
- 
    const [selectedCollection, setSelectedCollection] = useState(null);
 
    // States
@@ -127,8 +95,8 @@ export default function ViewCollections() {
         const formData = new FormData();
         formData.append("name", editForm.name);
         formData.append("description", editForm.description);
-        formData.append("isActive", editForm.isActive ? 1 : 0);     // ✅ true/false 1/0
-        formData.append("isFeatured", editForm.isFeatured ? 1 : 0); // ✅
+        formData.append("isActive", editForm.isActive);     // already 1/0 ✅
+        formData.append("isFeatured", editForm.isFeatured); // already 1/0 ✅
 
 
         if (editForm.file) {
@@ -318,7 +286,7 @@ export default function ViewCollections() {
             <span className="text-sm font-medium text-gray-700">Active</span>
             <Switch
               checked={editForm.isActive}
-              onCheckedChange={(val) => handleEditChange("isActive", val)}
+              onCheckedChange={(val) => handleEditChange("isActive", val ? 1 : 0)} // ✅ force 1/0
             />
           </div>
 
@@ -327,7 +295,7 @@ export default function ViewCollections() {
             <span className="text-sm font-medium text-gray-700">Featured</span>
             <Switch
               checked={editForm.isFeatured}
-              onCheckedChange={(val) => handleEditChange("isFeatured", val)}
+              onCheckedChange={(val) => handleEditChange("isFeatured", val ? 1 : 0)} // ✅ force 1/0
             />
           </div>
 

@@ -51,21 +51,26 @@ const CustomizeInquiry = () => {
   };
 
   const uploadImagesToCloudinary = async () => {
-    let urls = [];
-    for (let img of images) {
-      const formData = new FormData();
-      formData.append("file", img);
-      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET); // Cloudinary preset
+  let urls = [];
+  for (let img of images) {
+    const formData = new FormData();
+    formData.append("file", img);
+    formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET);
 
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        { method: "POST", body: formData }
-      );
-      const data = await res.json();
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+      { method: "POST", body: formData }
+    );
+    const data = await res.json();
+    if (data.secure_url) {
       urls.push(data.secure_url);
+    } else {
+      console.error("Cloudinary upload failed:", data);
     }
-    return urls;
-  };
+  }
+  return urls;
+};
+
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -100,30 +105,6 @@ const CustomizeInquiry = () => {
     }
   };
 
-//   const onSubmit = async (data) => {
-//   setIsSubmitting(true);
-
-//   try {
-//     const response = await fetch("/api/customize", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(data),
-//     });
-
-//     const result = await response.json();
-
-//     if (result.success) {
-//       toast.success("We've received your customization request and will contact you shortly.",);
-//       form.reset();
-//     } else {
-//       toast(`${result.message || "Please try again."}`);
-//     }
-//   } catch (error) {
-//     toast.error( "Something went wrong. Please try again.");
-//   } finally {
-//     setIsSubmitting(false);
-//   }
-// };
 
 
   return (
@@ -207,7 +188,7 @@ const CustomizeInquiry = () => {
                 
                 <FormField
                       control={form.control}
-                      name="bussinessType"
+                      name="businessType"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Business Type</FormLabel>
