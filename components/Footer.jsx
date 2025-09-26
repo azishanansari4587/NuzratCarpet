@@ -43,8 +43,8 @@ const Footer = () => {
       }
   return (
 
-    <footer className="bg-[#DED3C4]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-[#DED3C4] overflow-hidden">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
@@ -137,7 +137,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4" />
-                <span>nuzratcarpet@gmail.com</span>
+                <a href="mailto:nuzratcarpet@gmail.com">nuzratcarpet@gmail.com</a>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />

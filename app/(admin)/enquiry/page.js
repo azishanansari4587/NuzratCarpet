@@ -35,7 +35,7 @@ const Enquiry = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [status, setStatus] = useState("")
 
-  useEffect(() => {
+
   const fetchOrders = async () => {
     try {
       setIsLoading(true); // ✅ yaha loading start
@@ -53,8 +53,9 @@ const Enquiry = () => {
     }
   };
 
-  fetchOrders();
-}, []);
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
 const handleEdit = (order) => {
     setSelectedOrder(order)
@@ -63,14 +64,28 @@ const handleEdit = (order) => {
   }
 
   const handleUpdate = async () => {
-    if (!selectedOrder) return
-    await fetch("/api/myEnquiry", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: selectedOrder.id, status }),
-    })
-    setOpenDialog(false)
-  }
+    try {
+      setIsLoading(true);
+      const res = await fetch(`/api/myEnquiry/${selectedOrder.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+
+      if (res.ok) {
+        const updated = await res.json();
+        setOrders((prev) =>
+          prev.map((r) => (r.id === updated.id ? updated : r))
+        );
+        setOpenDialog(false);
+        fetchOrders();
+      }
+    } catch (error) {
+      console.error("Failed to update:", error);
+    } finally {
+      setIsLoading(false); // 🔥 stop loading
+    }
+  };
 
 
 
@@ -128,7 +143,21 @@ const handleEdit = (order) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {orders.map((order) => order.cartItems?.map((item, index) => (
+              {/* {orders.map((order) => order.cartItems?.map((item, index) => ( */}
+              {orders.map((order) => {
+                let cartItems = [];
+
+                try {
+                  cartItems =
+                    typeof order.cartItems === "string"
+                      ? JSON.parse(order.cartItems)
+                      : order.cartItems || [];
+                } catch (e) {
+                  console.error("❌ cartItems JSON parse error:", order.cartItems);
+                }
+
+                return cartItems.map((item, index) => (
+
                 // return (
                 <TableRow key={`${order.id}-${index}`}>
                   <TableCell className="hidden sm:table-cell">
@@ -180,7 +209,8 @@ const handleEdit = (order) => {
 
                 </TableRow>
 
-              )))}
+              ));
+              })}
               </TableBody>
             </Table> 
           )}
@@ -239,8 +269,8 @@ const handleEdit = (order) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="processing">Processing</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -248,7 +278,9 @@ const handleEdit = (order) => {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpenDialog(false)}>Cancel</Button>
-            <Button onClick={handleUpdate}>Update</Button>
+            <Button onClick={handleUpdate} disabled={isLoading}>
+              {isLoading ? "Updating..." : "Update"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -19,7 +19,7 @@ export async function POST(req) {
     const isFeatured = formData.get("isFeatured") === "true";
 
     const imageFile = formData.get("image");
-    const bannerImageFile = formData.get("bannerImage");
+    // const bannerImageFile = formData.get("bannerImage");
 
     let imageUrl = "";
     let bannerImageUrl = "";
@@ -58,14 +58,14 @@ export async function POST(req) {
       imageUrl = await uploadToCloudinary(imageFile, "Nuzrat/collections/thumbnails");
     }
 
-    if (bannerImageFile && bannerImageFile.size > 0) {
-      bannerImageUrl = await uploadToCloudinary(bannerImageFile, "Nuzrat/collections/banners");
-    }
+    // if (bannerImageFile && bannerImageFile.size > 0) {
+    //   bannerImageUrl = await uploadToCloudinary(bannerImageFile, "Nuzrat/collections/banners");
+    // }
 
     // 💾 Insert into database
     const [result] = await connection.execute(
-      `INSERT INTO collection (name, slug, description, isActive, isFeatured, image, bannerImage) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO collection (name, slug, description, isActive, isFeatured, image) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [
         name,
         slug,
@@ -73,7 +73,7 @@ export async function POST(req) {
         isActive,
         isFeatured,
         imageUrl,
-        bannerImageUrl,
+        // bannerImageUrl,
       ]
     );
 

@@ -34,7 +34,7 @@ const Outdoor = () => {
               console.error("Tag parsing error:", e);
             }
     
-            return tags.includes("Outdoor");
+            return tags.includes("OutDoor");
           });
     
           setProducts(filtered);
@@ -132,7 +132,7 @@ const Outdoor = () => {
         <section className="bg-sand-50 py-12">
           <div className="container-custom">
             <h1 className="text-3xl md:text-4xl font-serif font-medium text-center">
-              Shop Our Outdoor Rugs
+              Shop Our Indoor & Outdoor Rugs
             </h1>
             <p className="text-muted-foreground text-center mt-4 max-w-3xl mx-auto">
               Discover our exquisite selection of handcrafted rugs and carpets, 

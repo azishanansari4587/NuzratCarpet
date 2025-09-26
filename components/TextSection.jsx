@@ -9,7 +9,7 @@ const TextSection = () => {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-light mb-6">The World Known as Nuzrat Carpet Emporium.</h2>
           <p className="text-neutral-700 mb-8">
-          Nuzrat Carpet Emporium isn&#39;t just a name — it&#39;s a symbol of tradition, elegance, and craftsmanship recognized across continents. With roots tracing back to the 1940s in the carpet city of Mirzapur, India, we&#39;ve evolved from a humble cottage industry into a globally respected brand.
+          The story of Nuzrat Carpet Emporium is one of tradition, resilience, and excellence. It begins with the vision of the Late Mr. Haji Arman Ali, a farmer who combined his agricultural livelihood with an entrepreneurial spirit in the 1940s. With determination and foresight, he established a small cottage industry in his village, where skilled neighbors and artisans came together to weave hand-knotted carpets. These rugs, rooted in traditional techniques, supplied the local Indian market and quickly became admired for their beauty and durability.
           </p>
           <p className="text-neutral-700 mb-8">
           &#34;From the heart of India to homes around the world — every thread tells a story.&#34;

@@ -29,6 +29,7 @@
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@tabler/icons-react": "^3.31.0",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.6.0",

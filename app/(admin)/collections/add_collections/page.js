@@ -118,10 +118,10 @@ export default function AddCollection() {
       isFeatured: false,
       image: null,
       imageUrl: "",
-      bannerImage: null,
-      bannerImageUrl: "",
-      metaTitle: "",
-      metaDescription: "",
+      // bannerImage: null,
+      // bannerImageUrl: "",
+      // metaTitle: "",
+      // metaDescription: "",
     });
 
   } catch (err) {

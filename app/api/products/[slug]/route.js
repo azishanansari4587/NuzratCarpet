@@ -35,6 +35,92 @@ export async function GET(req, context) {
 }
 
 
+
+// ** Edit Product Page **//
+export async function PUT(req, { params }) {
+  const { slug } = params;
+
+  try {
+    const body = await req.json();
+
+    // ✅ Prepare JSON fields
+    const images = JSON.stringify(body.images || []);
+    const colors = JSON.stringify(body.colors || []);
+    const sizes = JSON.stringify(body.sizes || []);
+    const features = JSON.stringify(body.features || []);
+    const specifications = JSON.stringify(body.specifications || []);
+    // const tags = JSON.stringify(body.tags || []);
+    const tags = Array.isArray(body.tags) ? body.tags : [];
+    // const designers = JSON.stringify(body.designers || []);
+    const designers = Array.isArray(body.designers) ? body.designers : [];  
+
+    const result = await connection.execute(
+      `UPDATE product SET
+        name = ?,
+        code = ?,
+        slug = ?,
+        isActive = ?,
+        isFeatured = ?,
+        images = ?,
+        colors = ?,
+        sizes = ?,
+        features = ?,
+        specifications = ?,
+        inStock = ?,
+        sku = ?,
+        collectionId = ?,
+        short_description = ?,
+        description = ?,
+        care = ?,
+        certification = ?,
+        isOutlet = ?,
+        outletOldPrice = ?,
+        outletNewPrice = ?,
+        outletDiscount = ?,
+        addInfo = ?,
+        badges = ?,
+        tags = ?,
+        designers = ?
+      WHERE slug = ?`,
+      [
+        body.name,
+        body.code,
+        body.slug,
+        body.isActive ? 1 : 0,
+        body.isFeatured ? 1 : 0,
+        images,
+        colors,
+        sizes,
+        features,
+        specifications,
+        body.inStock ? 1 : 0,
+        body.sku || "",
+        body.collectionId || "",
+        body.short_description || "",
+        body.description || "",
+        body.care || "",
+        body.certification || "",
+        body.isOutlet ? 1 : 0,
+        body.outletOldPrice || "",
+        body.outletNewPrice || "",
+        body.outletDiscount || "",
+        body.addInfo || "",
+        body.badges || "",
+        // tags,
+        // designers,
+        JSON.stringify(tags),
+        JSON.stringify(designers),
+        slug
+      ]
+    );
+
+    return NextResponse.json({ message: "Product updated successfully" });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ message: "Failed to update product" }, { status: 500 });
+  }
+}
+
 export async function DELETE(req, { params }) {
   const { slug } = params;
 

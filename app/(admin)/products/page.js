@@ -80,6 +80,7 @@ const fetchProducts = async () => {
       const formatted = data.products.map(p => ({
         id: p.id,
         name: p.name,
+        slug: p.slug,
         image: p.images?.[0] || "/placeholder.svg", // First image or fallback
         // category: p.category,
         collectionId: p.collectionId, 
@@ -275,7 +276,7 @@ const fetchProducts = async () => {
                             className="h-8 w-8 p-0"
                             asChild
                           >
-                            <Link href={`/admin/products/edit/${product.id}`}>
+                            <Link href={`/products/edit_product/${product.slug}`}>
                               <span className="sr-only">Edit</span>
                               <Pencil className="h-4 w-4" />
                             </Link>

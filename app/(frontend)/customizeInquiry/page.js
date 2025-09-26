@@ -32,7 +32,6 @@ const CustomizeInquiry = () => {
         width: "",
         length: ""
       },
-      material: "",
       colors: "",
       pattern: "",
       timeline: "4-8 weeks",
@@ -217,30 +216,6 @@ const CustomizeInquiry = () => {
                 <div>
                   <h2 className="text-xl font-medium mb-4">Rug Specifications</h2>
                   <div className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="rugType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Rug Type</FormLabel>
-                          <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select rug type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="area-rug">Area Rug</SelectItem>
-                                <SelectItem value="runner">Runner</SelectItem>
-                                <SelectItem value="wall-hanging">Wall Hanging</SelectItem>
-                                <SelectItem value="carpet">Carpet</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     
                     <div className="space-y-3">
                       <FormLabel>Size</FormLabel>
@@ -271,12 +246,12 @@ const CustomizeInquiry = () => {
                                     <SelectValue placeholder="Select standard size" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="3x5">3&apos; x 5&apos;</SelectItem>
-                                    <SelectItem value="4x6">4&apos; x 6&apos;</SelectItem>
-                                    <SelectItem value="5x8">5&apos; x 8&apos;</SelectItem>
-                                    <SelectItem value="8x10">8&apos; x 10&apos;</SelectItem>
-                                    <SelectItem value="9x12">9&apos; x 12&apos;</SelectItem>
-                                    <SelectItem value="10x14">10&apos; x 14&apos;</SelectItem>
+                                    <SelectItem value="3'11x5'11">3&apos;11&quot; x 5&apos;11&quot; feet / 120 x 180 cm </SelectItem>
+                                    <SelectItem value="4'7x6'7">4&apos;7&quot; x 6&apos;7&quot; feet / 140 x 200 cm</SelectItem>
+                                    <SelectItem value="5'7x7'10">5&apos;7&quot; x 7&apos;10&quot; feet / 170 x 240 cm</SelectItem>
+                                    <SelectItem value="8'2x11'6">8&apos;2&quot; x 11&apos;6&quot; feet / 250 x 350 cm</SelectItem>
+                                    <SelectItem value="8'10x13'1">8&apos;10&quot; x 13&apos;1&quot; feet / 270 x 400 cm</SelectItem>
+                                    <SelectItem value="9'10x13'1">9&apos;10&quot; x 13&apos;1&quot; feet / 300 x 400 cm</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </FormControl>
@@ -291,7 +266,7 @@ const CustomizeInquiry = () => {
                             name="customSize.width"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Width (feet)</FormLabel>
+                                <FormLabel>Width (feet/cm)</FormLabel>
                                 <FormControl>
                                   <Input type="number" min="1" step="0.5" {...field} />
                                 </FormControl>
@@ -304,7 +279,7 @@ const CustomizeInquiry = () => {
                             name="customSize.length"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Length (feet)</FormLabel>
+                                <FormLabel>Length (feet/cm)</FormLabel>
                                 <FormControl>
                                   <Input type="number" min="1" step="0.5" {...field} />
                                 </FormControl>
@@ -316,32 +291,6 @@ const CustomizeInquiry = () => {
                       )}
                     </div>
                     
-                    <FormField
-                      control={form.control}
-                      name="material"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Material</FormLabel>
-                          <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select material" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="wool">Wool</SelectItem>
-                                <SelectItem value="silk">Silk</SelectItem>
-                                <SelectItem value="cotton">Cotton</SelectItem>
-                                <SelectItem value="jute">Jute/Sisal</SelectItem>
-                                <SelectItem value="synthetic">Synthetic</SelectItem>
-                                <SelectItem value="bamboo">Bamboo</SelectItem>
-                                <SelectItem value="blend">Blend</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     
                     <FormField
                       control={form.control}

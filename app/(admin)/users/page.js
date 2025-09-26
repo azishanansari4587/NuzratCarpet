@@ -73,6 +73,20 @@ const Users = () =>  {
 
                       <th
                         scope="col"
+                        className="px-12 py-3.5 text-left text-sm font-normal text-gray-700"
+                      >
+                        City
+                      </th>
+
+                      <th
+                        scope="col"
+                        className="px-12 py-3.5 text-left text-sm font-normal text-gray-700"
+                      >
+                        State
+                      </th>
+
+                      <th
+                        scope="col"
                         className="px-4 py-3.5 text-left text-sm font-normal text-gray-700"
                       >
                         Contact
@@ -101,13 +115,21 @@ const Users = () =>  {
                               />
                             </div> */}
                             <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{person.name}</div>
+                              <div className="text-sm font-medium text-gray-900">{person.first_name} {person.last_name}</div>
                               <div className="text-sm text-gray-700">{person.email}</div>
                             </div>
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-12 py-4">
                           <div className="text-sm text-gray-900 ">{person.address}</div>
+                        </td>
+
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
+                          {person.city}
+                        </td>
+
+                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
+                          {person.state}
                         </td>
 
                         <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">

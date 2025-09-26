@@ -36,7 +36,7 @@ const Designers = () => {
                 href="" // yahan apna actual path de
                 className="inline-flex items-center gap-1 rounded-md bg-neutral-800 text-white p-2 text-sm hover:bg-neutral-700 transition"
                 >
-                <span>View More About Karim Rashid</span>
+                <span>View Products of Karim Rashid</span>
                 <ExternalLink className="w-4 h-4" />
                 </Link>
             </div>
@@ -52,7 +52,7 @@ const Designers = () => {
                 href="" // yahan apna actual path de
                 className="inline-flex items-center gap-1 rounded-md bg-neutral-800 text-white p-2 text-sm hover:bg-neutral-700 transition"
                 >
-                <span>View More About Ingrid Kulper</span>
+                <span>View Products of Ingrid Kulper</span>
                 <ExternalLink className="w-4 h-4" />
                 </Link>
             </div>

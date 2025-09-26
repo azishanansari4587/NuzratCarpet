@@ -5,11 +5,10 @@ import nodemailer from "nodemailer";
 // Ensure you import your DB connection
 
 
-
 // app/api/myEnquiries/route.js
 
 
-export async function GET(req) {
+ export async function GET(req) {
   try {
     // 🛡️ Token se user ka ID nikalna (JWT decode ya session)
     
@@ -26,7 +25,7 @@ export async function GET(req) {
     const [rows] = await connection.execute(
       // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC",
       // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC;",
-      // [userId]
+      // [userId] 
       `SELECT e.id, 
        e.cartItems, 
        e.created_at,
@@ -37,8 +36,7 @@ export async function GET(req) {
 FROM enquiries e
 LEFT JOIN users u ON e.userId = u.id
 ORDER BY e.created_at DESC;
-`
-    );
+`);
 
     // cartItems ko JSON parse karke bhejna
     const data = rows.map((enquiry) => ({

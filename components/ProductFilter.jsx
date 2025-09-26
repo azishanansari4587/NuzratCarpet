@@ -8,6 +8,9 @@ import { X, FilterIcon, Minus, Plus } from 'lucide-react';
 const colors = [
   { id: 'beige', name: 'Beige', color: '#e8d9c7' },
   { id: 'blue', name: 'Blue', color: '#a4c2e3' },
+  { id: 'pink', name: 'Pink', color: '#FF69B4' },
+  { id: 'yellow', name: 'Yellow', color: '#FFFF00' },
+  { id: 'gold', name: 'Golden', color: '#CFB53B' },
   { id: 'red', name: 'Red', color: '#c25e5e' },
   { id: 'green', name: 'Green', color: '#87a987' },
   { id: 'gray', name: 'Gray', color: '#9f9ea1' },
@@ -223,7 +226,7 @@ const ProductFilter = ({ onFilterChange }) => {
       </div>
 
       {/* Designers */}
-       <div className="mb-8">
+       {/* <div className="mb-8">
         <button
             className="flex justify-between items-center w-full mb-2 font-semibold text-lg"
             onClick={() => toggleSection('designers')}
@@ -253,7 +256,7 @@ const ProductFilter = ({ onFilterChange }) => {
           ))}
         </div>
         )}
-      </div>
+      </div> */}
 
       {/* Colors */}
       <div className="mb-8">

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe, Mail  } from 'lucide-react'
+import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe, Mail, ImageIcon, Projector, SquareDashedBottom  } from 'lucide-react'
 import Link from 'next/link'
 import Logo1 from '@/public/LOGO1.png'
 import Logo2 from '@/public/LOGO2.png'
@@ -29,7 +29,7 @@ const sideMenu =[
     },
     {
         title: 'Custom Rugs',
-        icon: <Users className="h-5 w-5" aria-hidden="true"/>,
+        icon: <SquareDashedBottom className="h-5 w-5" aria-hidden="true"/>,
         path: '/customRugs',
     },
     
@@ -44,6 +44,16 @@ const sideMenu =[
         path: '/subscribers',
     },
     {
+        title: 'Projects',
+        icon: <Projector className="h-5 w-5" aria-hidden="true"/>,
+        path: '/projects',
+    },
+    {
+        title: 'Banners',
+        icon: <ImageIcon className="h-5 w-5" aria-hidden="true"/>,
+        path: '/banners',
+    },
+    {
         title: 'Website',
         icon: <Globe className="h-5 w-5" aria-hidden="true"/>,
         path: '/link',
@@ -53,7 +63,7 @@ const sideMenu =[
 const SideMenu = () => {
   return (
     <aside className="hidden lg:flex w-64 flex-col overflow-y-auto border-r bg-white px-5 py-8">
-      <Link href="#" className='text-center'>
+      <Link href="/" className='text-center'>
         <Image src={Logo1}  className='w-12 py-4 item-center' alt="Logo1" />
         <Image src={Logo2} alt="Logo2" priority />
       </Link>

@@ -57,7 +57,7 @@ export async function PUT(req, context) {
     const isActive = formData.get("isActive") === "1";   // true/false
     const isFeatured = formData.get("isFeatured") === "1";
     const imageFile = formData.get("image");
-    const bannerImageFile = formData.get("bannerImage");
+    // const bannerImageFile = formData.get("bannerImage");
 
     // Check if collection exists
     const [existing] = await connection.execute(
@@ -70,7 +70,7 @@ export async function PUT(req, context) {
     }
 
     let imageUrl = existing[0].image;
-    let bannerImageUrl = existing[0].bannerImage;
+    // let bannerImageUrl = existing[0].bannerImage;
 
     // Upload to Cloudinary if new files are provided
     async function uploadToCloudinary(file, folder) {
@@ -91,15 +91,15 @@ export async function PUT(req, context) {
       imageUrl = await uploadToCloudinary(imageFile, "Nuzrat/collections/thumbnails");
     }
 
-    if (bannerImageFile && bannerImageFile.size > 0) {
-      bannerImageUrl = await uploadToCloudinary(bannerImageFile, "Nuzrat/collections/banners");
-    }
+    // if (bannerImageFile && bannerImageFile.size > 0) {
+    //   bannerImageUrl = await uploadToCloudinary(bannerImageFile, "Nuzrat/collections/banners");
+    // }
 
     await connection.execute(
       `UPDATE collection 
-       SET name = ?, description = ?, isActive = ?, isFeatured = ?, image = ?, bannerImage = ?
+       SET name = ?, description = ?, isActive = ?, isFeatured = ?, image = ?
        WHERE slug = ?`,
-      [name, description, isActive, isFeatured, imageUrl, bannerImageUrl, slug]
+      [name, description, isActive, isFeatured, imageUrl, slug]
     );
 
     return NextResponse.json({ message: "Collection updated successfully" }, { status: 200 });

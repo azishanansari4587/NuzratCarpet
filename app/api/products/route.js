@@ -52,8 +52,8 @@ export async function POST(req) {
     const description = formData.get("description");
     const inStock = formData.get("inStock") === "true";
     const sku = formData.get("sku");
-    const barcode = formData.get("barcode");
-    const weight = formData.get("weight");
+    const badges = formData.get("badges");
+    const addInfo = formData.get("addInfo");
     const tags = JSON.parse(formData.get("tags") || "[]");
     const designers = JSON.parse(formData.get("designers") || "[]");
     const sizes = JSON.parse(formData.get("sizes") || "[]");
@@ -95,7 +95,7 @@ export async function POST(req) {
     // Save to DB
     const [result] = await connection.execute(
       `INSERT INTO product 
-      (name, code, slug, short_description, description, isActive, isFeatured, tags, designers, images, colors, sizes, features, specifications, inStock, sku, care, certification, barcode, weight, collectionId, isOutlet, outletOldPrice, outletNewPrice, outletDiscount) 
+      (name, code, slug, short_description, description, isActive, isFeatured, tags, designers, images, colors, sizes, features, specifications, inStock, sku, care, certification, badges, addInfo, collectionId, isOutlet, outletOldPrice, outletNewPrice, outletDiscount) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
@@ -118,8 +118,8 @@ export async function POST(req) {
         sku,
         care, 
         certification,
-        barcode,
-        weight,
+        badges,
+        addInfo,
         collectionId,
         isOutlet ? 1 : 0,
         outletOldPrice,

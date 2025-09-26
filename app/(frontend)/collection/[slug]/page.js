@@ -72,11 +72,10 @@ export default function CollectionPage() {
             <div className="absolute inset-0 bg-gradient-to-r from-forest-900/60 to-transparent flex items-end p-8">
               <div className="max-w-2xl text-white">
                 <h2 className="text-2xl font-serif font-bold mb-3">{collection.name}</h2>
-                <p className="text-white/90">{collection.description}</p>
               </div>
             </div>
           </div>
-          <p className="text-lg text-forest-700 max-w-4xl">
+          <p className="text-md text-forest-700 max-w-4xl">
             {collection.description}
           </p>
         </div>

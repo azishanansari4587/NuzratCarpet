@@ -43,9 +43,17 @@ const Contact = () => {
                                 India.
                             </address>
 
-                            <p className='mt-4 text-gray-700'>Work Time: 9:00 A.M To 10:00 P.M</p>
-                            <p className='mt-4 text-gray-700'>Telephone: +91 9876543210</p>
-                            <p className='mt-4 text-gray-700'>Email: nuzratcarpet@gmail.com</p>
+                            <p className='mt-4 text-gray-700'>Contact: +91 9839805703</p>
+                            <p className="mt-4 text-gray-700">
+                                Email:{" "}
+                                <a href="mailto:nuzratcarpet@gmail.com" className="text-blue-600 underline">
+                                    nuzratcarpet@gmail.com
+                                </a>
+                                <br />
+                                <a href="mailto:info@nuzratcarpet.com" className="text-blue-600 underline">
+                                    info@nuzratcarpet.com
+                                </a>
+                            </p>
 
                             <a
                                 href="#"

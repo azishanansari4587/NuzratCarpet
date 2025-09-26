@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from '@/components/ui/textarea'
+import { set } from 'react-hook-form'
 
 
 const CustomRugs = () => {
@@ -46,22 +47,40 @@ const CustomRugs = () => {
   const [status, setStatus] = useState("");
 
 
-  useEffect(() => {
-  const fetchCustomRugs = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch("/api/customize");
-      const data = await res.json();
-      setCustomRugs(data);
-    } catch (err) {
-      console.error("Failed to load messages:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//   useEffect(() => {
+//   const fetchCustomRugs = async () => {
+//     try {
+//       setIsLoading(true);
+//       const res = await fetch("/api/customize");
+//       const data = await res.json();
+//       setCustomRugs(data);
+//     } catch (err) {
+//       console.error("Failed to load messages:", err);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
+//   fetchCustomRugs();
+// }, []);
+
+const fetchCustomRugs = async () => {
+  try {
+    setIsLoading(true);
+    const res = await fetch("/api/customize");
+    const data = await res.json();
+    setCustomRugs(data);
+  } catch (err) {
+    console.error("Failed to load messages:", err);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+useEffect(() => {
   fetchCustomRugs();
 }, []);
+
 
 
 const handleEditClick = (rug) => {
@@ -72,6 +91,7 @@ const handleEditClick = (rug) => {
 
   const handleUpdate = async () => {
     try {
+      setIsLoading(true);
       const res = await fetch(`/api/customize/${selectedRug.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -84,9 +104,12 @@ const handleEditClick = (rug) => {
           prev.map((r) => (r.id === updated.id ? updated : r))
         );
         setOpenDialog(false);
+        fetchCustomRugs();
       }
     } catch (error) {
       console.error("Failed to update:", error);
+    } finally {
+      setIsLoading(false); // 🔥 stop loading
     }
   };
 
@@ -354,8 +377,8 @@ const handleEditClick = (rug) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="processing">Processing</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -365,7 +388,9 @@ const handleEditClick = (rug) => {
             <Button variant="outline" onClick={() => setOpenDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate}>Update</Button>
+            <Button onClick={handleUpdate} disabled={isLoading}>
+              {isLoading ? "Updating..." : "Update"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -355,7 +355,16 @@ const Product = () => {
                 <AccordionTrigger className="text-sm font-medium py-4">CARE & MAINTENANCE</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-2 text-sm">
-                    <div className="prose max-w-none mt-4 text-gray-700" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.care) }} />
+                    <div className="prose max-w-none mt-4 text-gray-700" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.care.split("\\n").join("<br />")) }} />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="addInfo" className="border-b">
+                <AccordionTrigger className="text-sm font-medium py-4 uppercase">Additional Info</AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2 text-sm">
+                    <div className="prose max-w-none mt-4 text-gray-700" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.addInfo.split("\\n").join("<br />")) }} />
                   </div>
                 </AccordionContent>
               </AccordionItem>
