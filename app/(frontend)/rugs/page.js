@@ -248,8 +248,9 @@ const Rugs = () => {
                           }
                           category={product.category}
                           colors={product.colors || []}
+                          badges={product.badges}
                           sizes={product.sizes || []}
-                        />);
+                        /> );
                       }
                         
 

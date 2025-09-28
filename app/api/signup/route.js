@@ -9,7 +9,7 @@ export async function POST(request) {
     
 
     try {
-        const { first_name, last_name, email, password, contact } = await request.json();
+        const { first_name, last_name, email, password, contact, businessType } = await request.json();
         const trimmedEmail = email?.trim();
         const trimmedPassword = password?.trim();
 
@@ -31,8 +31,8 @@ export async function POST(request) {
 
         //Insert the new user into the database 
         await connection.execute(
-            "INSERT INTO users (first_name, last_name, email, password, contact, role, is_verified, verification_token, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [first_name, last_name, trimmedEmail, hashedPassword, contact, 0, 0, verificationToken, null, null]
+            "INSERT INTO users (first_name, last_name, email, password, businessType, contact, role, is_verified, verification_token, reset_token, reset_token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [first_name, last_name, trimmedEmail, hashedPassword, businessType, contact, 0, 0, verificationToken, null, null]
         );
 
 

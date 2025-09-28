@@ -21,6 +21,7 @@ const ProductCard = ({
   category,
   colors,
   sizes,
+  badges
 }) => {
 
     const [showHoverImage, setShowHoverImage] = useState(false);
@@ -85,6 +86,15 @@ const ProductCard = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         >
+
+        {/* ✅ Badge (top-right corner) */}
+        {badges && badges !== "none" && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge className="bg-gray-500 text-white px-2 py-1 rounded-md shadow">
+              {badges}
+            </Badge>
+          </div>
+        )}
 
         {/* Product image */}
         <Link href={`/products/${id}`}>

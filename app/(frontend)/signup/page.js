@@ -19,9 +19,9 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [contact, setContact] = useState('');
+    const [businessType, setBusinessType] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('');
-    const [phone, setPhone] = useState('');
     const router = useRouter();
 
     const handleSubmit = async (e) => {
@@ -35,7 +35,7 @@ const SignUp = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ first_name:firstName, last_name:lastName, email, password, contact}),
+                body: JSON.stringify({ first_name:firstName, last_name:lastName, email, password, contact, businessType}),
             });
 
             const data = await result.json();
@@ -123,6 +123,28 @@ const SignUp = () => {
                                 placeholder="Enter phone number"
                             />
                         </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="businessType">Business Type</Label>
+                            <select
+                                id="businessType"
+                                name="businessType"
+                                value={businessType}
+                                onChange={(e) => setBusinessType(e.target.value)}
+                                required
+                                className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 py-2 focus-visible:ring-0 focus-visible:border-black"
+                            >
+                                <option value="" disabled>Select business type</option>
+                                <option value="architect">Architect</option>
+                                <option value="interior-designer">Interior Designer</option>
+                                <option value="retailer">Retailer</option>
+                                <option value="whole-seller">Whole Seller</option>
+                                <option value="hotel-owner">Hotel Owner</option>
+                                <option value="store">Store</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
 
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? "Creating account..." : "Create account"}

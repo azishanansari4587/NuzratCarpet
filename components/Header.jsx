@@ -250,24 +250,19 @@ export default function Header() {
 
               </div>
 
-              <Link href="/" className="text-gray-700 hover:text-amber-600 font-medium">
-                Home
-              </Link>
-              <Link href="/shop" className="text-gray-700 hover:text-amber-600 font-medium">
-                Shop All
-              </Link>
-              <Link href="/shop?category=Persian" className="text-gray-700 hover:text-amber-600 font-medium">
-                Persian Rugs
-              </Link>
-              <Link href="/shop?category=Modern" className="text-gray-700 hover:text-amber-600 font-medium">
-                Modern
-              </Link>
-              <Link href="/customize" className="text-amber-600 hover:text-amber-700 font-medium">
-                Custom Rugs
-              </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-amber-600 font-medium">
-                Contact
-              </Link>
+              {/* Dynamic nav links */}
+      {navItems.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className={`font-medium ${
+            pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
+          }`}
+          onClick={() => setIsMenuOpen(false)} // ✅ close on navigation
+        >
+          {item.label}
+        </Link>
+      ))}
             </div>
           </div>
         )}
