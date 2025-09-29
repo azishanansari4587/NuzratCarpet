@@ -78,32 +78,34 @@ const Footer = () => {
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-gray-700">
               <li>
-                <Link href="/shop" className="hover:text-black transition-colors">
+                <Link href="/rugs" className="hover:text-black transition-colors">
                   Rugs
                 </Link>
               </li>
               <li>
-                <Link href="/shop?category=Persian" className="hover:text-black transition-colors">
+                <Link href="/outdoor" className="hover:text-black transition-colors">
                   Outdoor
                 </Link>
               </li>
               <li>
-                <Link href="/shop?category=Modern" className="hover:text-black transition-colors">
+                <Link href="/designers" className="hover:text-black transition-colors">
                   Designers
                 </Link>
               </li>
               <li>
-                <Link href="/customize" className="hover:text-black transition-colors">
+                <Link href="/outlet" className="hover:text-black transition-colors">
                   Outlet
                 </Link>
               </li>
               <li>
-                <Link href="/care-guide" className="hover:text-black transition-colors">
+                <Link href="/customizeInquiry" className="hover:text-black transition-colors">
                   Customize Rugs
                 </Link>
               </li>
             </ul>
           </div>
+
+          
 
           {/* Customer Service */}
           <div>
@@ -122,6 +124,12 @@ const Footer = () => {
               <li>
                 <Link href="/contact" className="hover:text-black transition-colors">
                   Contact Us
+                </Link>
+              </li>
+
+              <li>
+                <Link href="/catalogue" className="hover:text-black transition-colors">
+                  Catalogue
                 </Link>
               </li>
             </ul>

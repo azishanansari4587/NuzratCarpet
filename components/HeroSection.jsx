@@ -104,7 +104,7 @@ const HeroSection = () => {
                 fill
                 className="w-full h-full object-contain"
               />
-              <div className="absolute inset-0 bg-black/40"></div>
+              {/* <div className="absolute inset-0 bg-white/30"></div> */}
             </div>
           </SwiperSlide>
         ))}

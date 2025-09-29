@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import connection from "@/lib/connection";
+import cloudinary from "@/lib/cloudinary";
 
 
 
