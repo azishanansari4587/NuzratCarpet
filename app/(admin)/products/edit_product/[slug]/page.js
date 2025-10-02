@@ -11,8 +11,9 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import { uploadToCloudinary } from "@/lib/uploadCloudinary";
 import { useParams, useRouter } from "next/navigation";
+import withAuth from "@/lib/withAuth";
 
-export default function EditProduct() {
+const EditProduct = () => {
   const params = useParams();
   const router = useRouter();
   const productId = params?.slug;
@@ -85,7 +86,13 @@ export default function EditProduct() {
         const res = await fetch(`/api/products/${productId}`);
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
-        setProduct(data); // 👈 server se aaya hua data state me set
+        // setProduct(data); // 👈 server se aaya hua data state me set
+        setProduct({
+          ...initialProductState,
+          ...data,
+          tags: Array.isArray(data.tags) ? data.tags : JSON.parse(data.tags || "[]"),
+          designers: Array.isArray(data.designers) ? data.designers : JSON.parse(data.designers || "[]"),
+        });
       } catch (err) {
         console.error(err);
         toast.error("❌ Failed to load product");
@@ -129,7 +136,7 @@ const handleImageUpload = async (e) => {
     // 🔹 Step 2: Upload files to Cloudinary with progress
     const uploaded = await Promise.all(
       files.map(file =>
-        uploadToCloudinary(file, "NurzatProducts", (progress) => {
+        uploadToCloudinary(file, "NurzatProducts", "image", (progress) => {
           setProduct(prev => ({
             ...prev,
             images: prev.images.map(img =>
@@ -202,7 +209,7 @@ const handleColorImageUpload = async (e, colorIndex) => {
     if (!file) continue;
 
     try {
-      const uploaded = await uploadToCloudinary(file, "NurzatProducts/colors", progress => {
+      const uploaded = await uploadToCloudinary(file, "NurzatProducts/colors", "image", progress => {
         setProduct(prev => {
           const newColors = [...prev.colors];
           newColors[colorIndex].images = newColors[colorIndex].images.map(img =>
@@ -986,10 +993,6 @@ const handleColorImageUpload = async (e, colorIndex) => {
             </CardContent>
           </Card>
 
-          {/* Aap AddProduct ke baaki sections jaise "Images", "Organization", "Variants", "Outlet" etc. 
-               yaha same copy-paste karke reuse kar sakte ho.
-               Sirf submit handler aur fetch logic change kiya hai. */}
-
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline" className="border-forest-300" asChild>
               <Link href="/admin/products">Cancel</Link>
@@ -1007,3 +1010,5 @@ const handleColorImageUpload = async (e, colorIndex) => {
     </div>
   );
 }
+
+export default withAuth(EditProduct, [1]);

@@ -29,10 +29,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import withAuth from '@/lib/withAuth';
 
 
 
-export default function ViewProducts() {
+const ViewProducts = () => {
   
   // State for search and filtering
   const [searchTerm, setSearchTerm] = useState("");
@@ -351,3 +352,5 @@ const fetchProducts = async () => {
     </div>
   );
 }
+
+export default withAuth(ViewProducts, [1]);

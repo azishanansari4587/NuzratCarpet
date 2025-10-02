@@ -50,9 +50,13 @@ export async function PUT(req, { params }) {
     const features = JSON.stringify(body.features || []);
     const specifications = JSON.stringify(body.specifications || []);
     // const tags = JSON.stringify(body.tags || []);
-    const tags = Array.isArray(body.tags) ? body.tags : [];
+    // const tags = Array.isArray(body.tags) ? body.tags : [];
     // const designers = JSON.stringify(body.designers || []);
-    const designers = Array.isArray(body.designers) ? body.designers : [];  
+    // const designers = Array.isArray(body.designers) ? body.designers : [];  
+    // const tags = JSON.parse(body.tags || "[]");
+    // const designers = JSON.parse(body.designers || "[]");
+    const tags = Array.isArray(body.tags) ? body.tags : [];
+    const designers = Array.isArray(body.designers) ? body.designers : [];
 
     const result = await connection.execute(
       `UPDATE product SET

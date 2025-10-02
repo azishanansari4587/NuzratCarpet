@@ -6,9 +6,10 @@ import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { uploadToCloudinary } from "@/lib/uploadCloudinary"; // ✅ function import kar
 import { toast } from "react-toastify";
+import withAuth from "@/lib/withAuth";
 
 
-export default function AddProjects() {
+const AddProjects = () => {
   const [image, setImage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -29,6 +30,7 @@ export default function AddProjects() {
       const uploaded = await uploadToCloudinary(
         file,
         "NurzatProducts",
+        "image",
         (progress) => {
           setImage((prev) => ({ ...prev, progress, uploading: progress < 100 }));
         }
@@ -169,3 +171,5 @@ export default function AddProjects() {
     </div>
   );
 }
+
+export default withAuth(AddProjects, [1]);

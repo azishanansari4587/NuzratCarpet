@@ -14,8 +14,9 @@ import {Select,   SelectContent, SelectItem, SelectTrigger, SelectValue} from "@
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { uploadToCloudinary } from "@/lib/uploadCloudinary";
+import withAuth from "@/lib/withAuth";
 
-export default function AddProduct() {
+const AddProduct = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -176,7 +177,7 @@ const handleImageUpload = async (e) => {
     // 🔹 Step 2: Upload files to Cloudinary with progress
     const uploaded = await Promise.all(
       files.map(file =>
-        uploadToCloudinary(file, "NurzatProducts", (progress) => {
+        uploadToCloudinary(file, "NurzatProducts", "image", (progress) => {
           setProduct(prev => ({
             ...prev,
             images: prev.images.map(img =>
@@ -312,7 +313,7 @@ const handleColorImageUpload = async (e, colorIndex) => {
     if (!file) continue;
 
     try {
-      const uploaded = await uploadToCloudinary(file, "NurzatProducts/colors", progress => {
+      const uploaded = await uploadToCloudinary(file, "NurzatProducts/colors", "image", progress => {
         setProduct(prev => {
           const newColors = [...prev.colors];
           newColors[colorIndex].images = newColors[colorIndex].images.map(img =>
@@ -1156,3 +1157,5 @@ const handleColorImageUpload = async (e, colorIndex) => {
     </div>
   );
 }
+
+export default withAuth(AddProduct, [1]);

@@ -19,9 +19,10 @@ import { toast } from 'react-toastify';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import withAuth from '@/lib/withAuth';
 
 
-export default function Banner() {
+const Banner = () =>{
   
   // Mock collections data
   const [banners, setBanners] = useState([]);
@@ -148,33 +149,35 @@ const handleDelete = async (id) => {
             <Spinner />
         ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-  {banners.map((banner) => (
-    <div
-      key={banner.id}
-      className="relative w-full pt-[100%] rounded-md overflow-hidden border border-gray-300 group"
-    >
-      {/* Banner Image */}
-      <Image
-        src={banner.imageUrl || "/placeholder.jpg"} // fallback
-        alt={`Banner ${banner.id}`}
-        fill
-        className="object-cover rounded-md"
-      />
+          {banners.map((banner) => (
+            <div
+              key={banner.id}
+              className="relative w-full pt-[100%] rounded-md overflow-hidden border border-gray-300 group"
+            >
+              {/* Banner Image */}
+              <Image
+                src={banner.imageUrl || "/placeholder.jpg"} // fallback
+                alt={`Banner ${banner.id}`}
+                fill
+                className="object-cover rounded-md"
+              />
 
-      {/* Delete button - hidden by default, visible on hover */}
-      <button
-        onClick={() => handleDelete(banner.id)}
-        className="absolute top-2 right-2 bg-white/80 p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-        // aria-label="Delete banner"
-      >
-        <Trash2 className="h-5 w-5" />
-      </button>
-    </div>
-  ))}
-</div>
+              {/* Delete button - hidden by default, visible on hover */}
+              <button
+                onClick={() => handleDelete(banner.id)}
+                className="absolute top-2 right-2 bg-white/80 p-1 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                // aria-label="Delete banner"
+              >
+                <Trash2 className="h-5 w-5" />
+              </button>
+            </div>
+          ))}
+        </div>
         )}
       </div>
 
     </div>
   );
 }
+
+export default withAuth(Banner, [1]);

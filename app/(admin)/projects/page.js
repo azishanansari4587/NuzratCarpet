@@ -8,9 +8,10 @@ import Spinner from '@/components/Spinner';
 import Image from 'next/image';
 import { Dialog, DialogOverlay, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from 'react-toastify';
+import withAuth from '@/lib/withAuth';
 
 
-export default function Projects() {
+const Projects = () => {
   
   // Mock collections data
   const [projects, setProjects] = useState([]);
@@ -110,3 +111,5 @@ const handleDelete = async (id) => {
     </div>
   );
 }
+
+export default withAuth(Projects, [1]);

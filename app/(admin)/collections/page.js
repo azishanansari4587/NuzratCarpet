@@ -19,9 +19,10 @@ import { toast } from 'react-toastify';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import withAuth from '@/lib/withAuth';
 
 
-export default function ViewCollections() {
+const ViewCollections = () => {
   
   // Mock collections data
   const [collections, setCollections] = useState([]);
@@ -324,3 +325,5 @@ export default function ViewCollections() {
     </div>
   );
 }
+
+export default withAuth(ViewCollections, [1]);

@@ -11,6 +11,7 @@ import {
   TableCaption,
   TableFooter,
 } from "@/components/ui/table"
+import withAuth from '@/lib/withAuth';
 
 
 const Subscribers = () => {
@@ -76,4 +77,4 @@ const Subscribers = () => {
 
 }
 
-export default Subscribers
+export default withAuth(Subscribers, [1]);

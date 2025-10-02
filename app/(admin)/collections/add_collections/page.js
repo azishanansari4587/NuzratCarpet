@@ -9,8 +9,9 @@ import Link from "next/link";
 import { FolderPlus, Upload, X } from "lucide-react";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import withAuth from "@/lib/withAuth";
 
-export default function AddCollection() {
+const AddCollection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Form state
@@ -380,4 +381,6 @@ export default function AddCollection() {
     </div>
   );
 }
+
+export default withAuth(AddCollection, [1]);
 

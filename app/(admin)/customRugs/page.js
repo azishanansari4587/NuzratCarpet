@@ -37,6 +37,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from '@/components/ui/textarea'
 import { set } from 'react-hook-form'
+import withAuth from '@/lib/withAuth'
 
 
 const CustomRugs = () => {
@@ -399,4 +400,4 @@ const handleEditClick = (rug) => {
   )
 }
 
-export default CustomRugs
+export default withAuth(CustomRugs, [1]);
