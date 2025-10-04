@@ -20,7 +20,9 @@ const About = () => {
                     </div>
 
                     <div className='mx-auto max-w-7xl px-4 py-10 lg:px-64'>
-                        <h2 className='text-3xl leading-8  font-bold py-6 lg:py-8 '>Nuzrat Carpet Emporium–A Journey of Craftsmanship Across Generations</h2>
+                        <h1 className='text-3xl leading-8  font-bold py-6 lg:py-8 '>Nuzrat Carpet Emporium </h1>
+
+                        <h2 className='text-2xl leading-8  font-bold py-6 lg:py-8'>A Journey of Craftsmanship Across Generations</h2>
                         <p className='leading-6 text-gray-700'>The story of Nuzrat Carpet Emporium is one of tradition, resilience, and excellence. It begins with the vision of the Late Mr. Haji Arman Ali, a farmer who combined his agricultural livelihood with an entrepreneurial spirit in the 1940s. With determination and foresight, he established a small cottage industry in his village, where skilled neighbors and artisans came together to weave hand-knotted carpets. These rugs, rooted in traditional techniques, supplied the local Indian market and quickly became admired for their beauty and durability.</p>
                         <p className=' py-4 leading-6 text-gray-700'>
                         For decades, this humble initiative nurtured not only livelihoods but also a deep cultural heritage. It was within this environment of creativity and craftsmanship that his son, Mr. Abdul Sattar, grew up. From a young age, he observed the details of weaving, dyeing, and designing—learning from the artisans who worked alongside his father. By the time he came of age, Abdul Sattar had absorbed both the artistry and the business sense required to carry the vision forward.
