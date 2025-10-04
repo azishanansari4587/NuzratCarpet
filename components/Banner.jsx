@@ -81,9 +81,9 @@ const Banner = () => {
     { isLoading ?  <Spinner/> : (
       <Swiper
       effect="fade"
-      speed={2000} // 2 seconds fade transition
+      speed={5000} // 2 seconds fade transition
       loop={true}
-      autoplay={{ delay: 5000 }}
+      autoplay={{ delay: 10000 }}
       pagination={{
         clickable: true,
         el: '.swiper-pagination',

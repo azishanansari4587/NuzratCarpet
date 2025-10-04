@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2, Upload, X } from "lucide-react";
 import PhoneNumber from "@/components/PhoneNumber";
 import { toast } from 'react-toastify';
+import { uploadToCloudinary } from '@/lib/uploadCloudinary';
 
 
 const CustomizeInquiry = () => {
@@ -49,26 +50,26 @@ const CustomizeInquiry = () => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const uploadImagesToCloudinary = async () => {
-  let urls = [];
-  for (let img of images) {
-    const formData = new FormData();
-    formData.append("file", img);
-    formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET);
+//   const uploadImagesToCloudinary = async () => {
+//   let urls = [];
+//   for (let img of images) {
+//     const formData = new FormData();
+//     formData.append("file", img);
+//     formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET);
 
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
-      { method: "POST", body: formData }
-    );
-    const data = await res.json();
-    if (data.secure_url) {
-      urls.push(data.secure_url);
-    } else {
-      console.error("Cloudinary upload failed:", data);
-    }
-  }
-  return urls;
-};
+//     const res = await fetch(
+//       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+//       { method: "POST", body: formData }
+//     );
+//     const data = await res.json();
+//     if (data.secure_url) {
+//       urls.push(data.secure_url);
+//     } else {
+//       console.error("Cloudinary upload failed:", data);
+//     }
+//   }
+//   return urls;
+// };
 
 
   const onSubmit = async (data) => {
@@ -77,7 +78,7 @@ const CustomizeInquiry = () => {
     try {
       let uploadedUrls = [];
       if (images.length > 0) {
-        uploadedUrls = await uploadImagesToCloudinary();
+        uploadedUrls = await uploadToCloudinary();
       }
 
       const finalData = { ...data, uploadedImages: uploadedUrls };

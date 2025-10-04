@@ -324,9 +324,9 @@ const Product = () => {
               <AccordionItem value="description" className="border-b">
                 <AccordionTrigger className="text-sm font-medium py-2">DETAILS</AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-2 text-sm">  
+                  <div className="space-y-2 text-sm pb-2">  
                     {product.features?.map((feature, index) => (
-                      <div key={index} className="pb-2">
+                      <div key={index}>
                         <span className="font-medium text-gray-700">{feature}</span>
                       </div>
                     ))}
