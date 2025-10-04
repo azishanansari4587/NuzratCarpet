@@ -324,16 +324,16 @@ const Product = () => {
               <AccordionItem value="description" className="border-b">
                 <AccordionTrigger className="text-sm font-medium py-2">DETAILS</AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-2 text-sm pb-2">  
+                  <div className="space-y-2 text-sm pb-1">  
                     {product.features?.map((feature, index) => (
                       <div key={index}>
                         <span className="font-medium text-gray-700">{feature}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="space-y-2 text-sm pb-2">
+                  <div className="space-y-2 text-sm pb-1">
                     {product.specifications?.map((item, index) => (
-                      <div key={index} className="flex gap-x-6 ">
+                      <div key={index} className="flex justify-items-center ">
                         <span className="font-medium text-gray-700">{item.key} :</span>
                         <span className="text-muted-foreground text-gray-700">{item.value}</span>
                       </div>
