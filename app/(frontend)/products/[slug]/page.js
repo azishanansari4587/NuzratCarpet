@@ -139,8 +139,8 @@ const Product = () => {
   const handleAddToWishlist = async (productId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login to add to wishlist");
-      router.push("/login");
+      toast.error("Please login to add to wishlist");
+      router.push("/signin");
       return;
     }
 
@@ -257,6 +257,7 @@ const Product = () => {
               {product.isOutlet === 1 && (
                 <span className="text-lg font-semibold text-green-600">
                   USD {product.outletNewPrice } 
+                  USD {product.outletOldPrice } 
                   <span className="ml-2 text-red-500 line-through">
                     {product.outletDiscount}%
                   </span>
