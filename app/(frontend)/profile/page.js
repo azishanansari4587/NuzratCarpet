@@ -217,7 +217,7 @@ const fetchProfile = async () => {
             </CardContent>
           </Card>
           
-          {/* Main Content */}
+          {/* Main Content */} 
           <div className="lg:col-span-3">
             <Tabs defaultValue="profile" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-8 bg-white">

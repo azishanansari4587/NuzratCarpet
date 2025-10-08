@@ -24,7 +24,7 @@ const Catalogues = () => {
         <section className="py-24 bg-gradient-to-br from-primary/10 to-primary/5">
             <div className="container-custom text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                <span className="text-primary">Our Catalogues & Bouchers</span>
+                <span className="text-primary">Our Catalogues & Brochures</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
                 Explore our latest collections and products. Browse, download, and stay updated with our curated catalogues.

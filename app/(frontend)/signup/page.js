@@ -118,7 +118,7 @@ const SignUp = () => {
                                 country={'in'}
                                 value={contact}
                                 onChange={setContact}
-                                enableSearch={true}
+                                enableSearch={true} 
                                 inputStyle={{ width: '100%' }}
                                 placeholder="Enter phone number"
                             />

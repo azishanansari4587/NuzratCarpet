@@ -44,23 +44,23 @@ const Contact = () => {
                             </address>
 
                             <p className='mt-4 text-gray-700'>Contact: +91 9839805703</p>
-                            <p className="mt-4 text-gray-700">
+                            <div className="mt-4 text-gray-700 flex gap-3">
                                 Email:{" "}
-                                <a href="mailto:nuzratcarpet@gmail.com" className="text-blue-600 underline">
+                                <div className='flex flex-col'>
+                                    <a href="mailto:nuzratcarpet@gmail.com" className="text-blue-600 underline">
                                     nuzratcarpet@gmail.com
                                 </a>
-                                <br />
                                 <a href="mailto:info@nuzratcarpet.com" className="text-blue-600 underline">
                                     info@nuzratcarpet.com
-                                </a>
-                            </p>
+                                </a></div>
+                            </div>
 
-                            <div
+                            {/* <div
                                 // href="#"
                                 className="mt-8 inline-block rounded border border-black bg-black px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-black focus:outline-none focus:ring active:text-indigo-500"
                             >
                                 Contact Now
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
