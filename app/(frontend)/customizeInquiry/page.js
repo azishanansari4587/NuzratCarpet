@@ -389,13 +389,15 @@ const CustomizeInquiry = () => {
                               className="flex flex-col space-y-2"
                             >
                               <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="4-8 weeks" id="4-8" />
-                                <Label htmlFor="4-8">4-8 weeks (standard)</Label>
-                              </div>
-                              <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="8-12 weeks" id="8-12" />
-                                <Label htmlFor="8-12">8-12 weeks (flexible)</Label>
+                                <Label htmlFor="8-12">8-12 weeks (standard)</Label>
                               </div>
+                              
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="4-8 weeks" id="4-8" />
+                                <Label htmlFor="4-8">4-8 weeks (rush)</Label>
+                              </div>
+                              
                             </RadioGroup>
                           </FormControl>
                           <FormMessage />
