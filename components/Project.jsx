@@ -33,11 +33,11 @@ const Project = () => {
           {projects.map((project, index) => (
             <li
               key={project.id}
-              className={
-                index === 2
-                  ? "lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1"
-                  : ""
-              }
+              // className={
+              //   index === 2
+              //     ? "lg:col-span-2 lg:col-start-2 lg:row-span-2 lg:row-start-1"
+              //     : ""
+              // }
             >
               <div className="group relative block">
                 <Image

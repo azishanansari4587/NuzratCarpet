@@ -52,23 +52,23 @@ export default function RootLayout({ children }) {
         <meta name="twitter:title" content="Premium Quality Carpets | Nuzrat Carpet Emporium" />
         <meta name="twitter:description" content="Explore a wide range of stylish, durable, and affordable carpets for every space. Shop now for the perfect blend of comfort and elegance!" />
         <meta name="twitter:image" content="https://nuzratcarpet.com/48.jpg" />
-                <script
-                    async
-                    src={`https://www.googletagmanager.com/gtag/js?id=YOUR_GA_TRACKING_ID`}
-                ></script>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                            gtag('config', 'YOUR_GA_TRACKING_ID', {
-                                page_path: window.location.pathname,
-                            });
-                        `,
-                    }}
-                ></script>
-            </head>
+          <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=YOUR_GA_TRACKING_ID`}
+          ></script>
+          <script
+              dangerouslySetInnerHTML={{
+                  __html: `
+                      window.dataLayer = window.dataLayer || [];
+                      function gtag(){dataLayer.push(arguments);}
+                      gtag('js', new Date());
+                      gtag('config', 'YOUR_GA_TRACKING_ID', {
+                          page_path: window.location.pathname,
+                      });
+                  `,
+              }}
+          ></script>
+        </head>
       <body className={`${playfair.variable} ${lora.variable}`.className} data-cjcrx="addYes">
       <GoogleAnalytics trackingId="YOUR_GA_TRACKING_ID" />
         <div className="min-h-screen bg-[#f8f8f6]">
