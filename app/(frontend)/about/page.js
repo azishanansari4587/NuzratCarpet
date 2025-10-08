@@ -3,7 +3,7 @@ import Footer from '@/components/Footer'
 import React from 'react'
 import Image from 'next/image'
 
-import first from '@/public/1.png'
+import first from '@/public/RR.png'
 
 const About = () => {
   return (
