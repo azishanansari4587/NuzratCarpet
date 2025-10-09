@@ -1,21 +1,21 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Autoplay, Pagination, Navigation } from "swiper/modules"
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
-import { Button } from "./ui/button"
-import "swiper/css"
-import "swiper/css/navigation"
-import "swiper/css/pagination"
 import Image from "next/image"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import Autoplay from "embla-carousel-autoplay"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 const HeroSection = () => {
   const [slides, setSlides] = useState([])
-
-  const prevRef = useRef(null)
-  const nextRef = useRef(null)
-  const swiperRef = useRef(null)
+  const carouselRef = useRef(null)
+  const autoplay = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }))
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -30,79 +30,52 @@ const HeroSection = () => {
     fetchBanners()
   }, [])
 
-  // ✅ Fix navigation refs AFTER Swiper is mounted
-  useEffect(() => {
-    if (
-      swiperRef.current &&
-      swiperRef.current.params &&
-      swiperRef.current.params.navigation
-    ) {
-      swiperRef.current.params.navigation.prevEl = prevRef.current
-      swiperRef.current.params.navigation.nextEl = nextRef.current
-      swiperRef.current.navigation.init()
-      swiperRef.current.navigation.update()
-    }
-  }, [slides]) // jab slides load ho jaye tab run karo
+
+
+  if (!slides.length)
+    return (
+      <div className="flex items-center justify-center h-[80vh] md:h-[70vh] w-full bg-gray-100">
+        <p className="text-gray-500">Loading banners...</p>
+      </div>
+    )
 
   return (
-    <section className="relative h-[80vh] overflow-hidden">
-      <Swiper
-        modules={[Autoplay, Pagination, Navigation]}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
-        pagination={{ clickable: true }}
+    <section className="relative h-[80vh] md:h-[70vh] w-full overflow-hidden">
+      <Carousel
+        ref={carouselRef}
         loop
-        onSwiper={(swiper) => (swiperRef.current = swiper)} // ✅ ref capture
-        className="h-full overflow-hidden"
+        opts={{ loop: true }}
+        plugins={[autoplay.current]}
+        className="w-full h-full relative"
       >
-        {slides?.map((slide) => (
-          <SwiperSlide key={slide.id}>
-            <div className="relative w-full h-full">
-              <Image
-                src={slide.imageUrl}
-                alt={slide.id}
-                fill
-                className="w-full h-full object-cover"
-              />
-              {/* <div className="absolute inset-0 bg-white/30"></div> */}
-            </div>
-          </SwiperSlide>
-        ))}
+        <CarouselContent className="w-full h-full relative">
+          {slides.map((slide, index) => (
+            <CarouselItem
+              key={index}
+              className="w-full relative h-[80vh] md:h-[70vh]"
+            >
+              <div className="relative w-full h-full">
+                <Image
+                  src={slide.imageUrl}
+                  alt={`Slide ${index}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
-        {/* Custom Arrows */}
-        <div
-          ref={prevRef}
-          className="custom-prev absolute left-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-12 h-12 bg-white/20 hover:bg-amber-600 text-white rounded-full shadow-lg cursor-pointer transition"
-        >
+        {/* Navigation Arrows */}
+        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-amber-500 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg transition">
           <ChevronLeft size={28} />
-        </div>
-        <div
-          ref={nextRef}
-          className="custom-next absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-12 h-12 bg-white/20 hover:bg-amber-600 text-white rounded-full shadow-lg cursor-pointer transition"
-        >
+        </CarouselPrevious>
+        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-amber-500 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg transition">
           <ChevronRight size={28} />
-        </div>
-      </Swiper>
-
-      {/* Custom Dots */}
-      <style jsx global>{`
-        .swiper-pagination-bullet {
-          background: white;
-          opacity: 0.6;
-          width: 12px;
-          height: 12px;
-          border-radius: 9999px;
-          transition: all 0.3s ease;
-        }
-        .swiper-pagination-bullet-active {
-          background: #d97706;
-          opacity: 1;
-          transform: scale(1.3);
-        }
-      `}</style>
+        </CarouselNext>
+      </Carousel>
     </section>
   )
 }
 
 export default HeroSection
-
-

@@ -26,6 +26,9 @@ import useCartStore from '@/store/cartStore';
 import RelatedProduct from '@/components/RelatedProduct';
 
 
+import { useSearchParams } from "next/navigation";
+
+
 const Product = () => {
   const { slug } = useParams(); 
   const router = useRouter();
@@ -36,6 +39,11 @@ const Product = () => {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
+
+
+  const searchParams = useSearchParams();
+  const initialColor = searchParams.get("color");
+
 
   const addToWishlistLocal = useWishlistStore((state) => state.addToWishlist);
   const lightGalleryRef = useRef(null);
@@ -178,7 +186,11 @@ const Product = () => {
 
         if (res.ok) {
           setProduct(data);
-          setSelectedColor(data.colors[0]?.name);
+
+          const validColor = data.colors.find(c => c.name.toLowerCase() === initialColor?.toLowerCase());
+  
+          setSelectedColor(validColor ? validColor.name : data.colors[0]?.name);
+          // setSelectedColor(data.colors[0]?.name);
           setSelectedSize(data.sizes[0]?.value || data.sizes[0]);
         } else {
           toast.warning(`Product Not Found, ${data.error || "Unable to fetch product."}`);
@@ -195,7 +207,8 @@ const Product = () => {
 
   if (loading || !product) return <Spinner />;
 
-  const currentColorObj = product?.colors?.find(c => c.name === selectedColor) || product?.colors?.[0] || null;
+  // const currentColorObj = product?.colors?.find(c => c.name === selectedColor) || product?.colors?.[0] || null;
+  const currentColorObj = product?.colors?.find(c => c.name === selectedColor) || product?.colors?.[0];
   const currentImages = currentColorObj?.images ?? [];
 
   return (

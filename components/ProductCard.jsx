@@ -21,7 +21,8 @@ const ProductCard = ({
   category,
   colors,
   sizes,
-  badges
+  badges,
+  selectedColor // ✅ yeh aa raha hai parent se
 }) => {
 
     const [showHoverImage, setShowHoverImage] = useState(false);
@@ -97,7 +98,7 @@ const ProductCard = ({
         )}
 
         {/* Product image */}
-        <Link href={`/products/${id}`}>
+        <Link href={`/products/${id}?color=${selectedColor?.name}`}>
 
           <div className="relative aspect-square overflow-hidden">
             <Image
@@ -128,7 +129,7 @@ const ProductCard = ({
       {/* Product info */}
       <div>
         <div className="text-sm text-muted-foreground mb-1">{category}</div>
-        <Link href={`/products/${id}`} className="block">
+        <Link href={`/products/${id}?color=${selectedColor?.name}`} className="block">
           <h3 className="font-serif text-md font-medium hover:text-primary transition-colors">
             {name}
           </h3>
@@ -137,7 +138,17 @@ const ProductCard = ({
 
           
           {/* Color options */}
-          <div className="flex items-center space-x-1">
+           {/* ✅ Show which color */}
+        {selectedColor && (
+          <div className="mt-1 flex items-center space-x-2">
+            <span
+              className="w-4 h-4 rounded-full border"
+              style={{ backgroundColor: selectedColor.value }}
+            />
+            <span className="text-sm">{selectedColor.name}</span>
+          </div>
+        )}
+          {/* <div className="flex items-center space-x-1">
             {colors.map((color, index) => (
               <div 
                 key={index} 
@@ -146,7 +157,7 @@ const ProductCard = ({
                 aria-label={`Color: ${color}`}
               ></div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -20,6 +20,7 @@ const SignUp = () => {
     const [password, setPassword] = useState('');
     const [contact, setContact] = useState('');
     const [businessType, setBusinessType] = useState('');
+    const [country, setCountry] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('');
     const router = useRouter();
@@ -35,7 +36,7 @@ const SignUp = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ first_name:firstName, last_name:lastName, email, password, contact, businessType}),
+                body: JSON.stringify({ first_name:firstName, last_name:lastName, email, password, contact, businessType, country}),
             });
 
             const data = await result.json();
@@ -143,6 +144,20 @@ const SignUp = () => {
                                 <option value="store">Store</option>
                                 <option value="other">Other</option>
                             </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="country" className="text-sm font-medium text-forest-800">
+                            Country
+                          </label>
+                          <input
+                            id="country"
+                            name="country"
+                            type="text"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                            className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
+                          />
                         </div>
 
 

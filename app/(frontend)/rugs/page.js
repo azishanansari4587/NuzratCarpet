@@ -212,7 +212,7 @@ const Rugs = () => {
                   </div>
 
                   {/* Products */}
-                  {currentProducts.length > 0 ? (
+                  {/* {currentProducts.length > 0 ? (
                     <div className={
                       viewMode === 'grid' 
                         ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
@@ -270,7 +270,91 @@ const Rugs = () => {
                         Reset Filters
                       </Button>
                     </div>
-                  )}
+                  )} */}
+
+                  {/* Products */}
+{currentProducts.length > 0 ? (
+  <div
+    className={
+      viewMode === "grid"
+        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
+        : "space-y-6"
+    }
+  >
+    {currentProducts.flatMap((product) => {
+      let images = [];
+
+      try {
+        if (Array.isArray(product.images)) {
+          images = product.images;
+        } else if (typeof product.images === "string") {
+          if (product.images.trim().startsWith("[")) {
+            images = JSON.parse(product.images);
+          } else {
+            images = [product.images];
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse images:", e);
+      }
+
+      // ✅ color wise cards
+      if (Array.isArray(product.colors) && product.colors.length > 0) {
+        return product.colors.map((color, idx) => (
+          <ProductCard
+            key={`${product.id}-${idx}`}
+            productId={product.id}
+            id={product.slug}
+            name={`${product.name} - ${color.name}`} // ✅ name ke sath color bhi
+            image={color.images?.[0] || images[0]}   // ✅ color ka image
+            hoverImage={color.images?.[1] || images[1] || null}
+            category={product.category}
+            colors={product.colors}
+            badges={product.badges}
+            sizes={product.sizes || []}
+            selectedColor={color} // ✅ send complete color object
+          />
+        ));
+      }
+
+      // ✅ agar koi colors nahi hai
+      return (
+        <ProductCard
+          key={product.id}
+          productId={product.id}
+          id={product.slug}
+          name={product.name}
+          image={images[0]}
+          hoverImage={images[1] || null}
+          category={product.category}
+          colors={product.colors || []}
+          badges={product.badges}
+          sizes={product.sizes || []}
+        />
+      );
+    })}
+  </div>
+) : (
+  <div className="text-center py-12">
+    <h3 className="text-lg font-medium mb-2">No products found</h3>
+    <p className="text-muted-foreground mb-6">
+      Try adjusting your filters to find what you&apos;re looking for.
+    </p>
+    <Button
+      onClick={() =>
+        handleFilterChange({
+          categories: [],
+          colors: [],
+          sizes: [],
+        })
+      }
+    >
+      Reset Filters
+    </Button>
+  </div>
+)}
+
+
 
                   {/* Pagination */}
                   {totalPages > 1 && (
