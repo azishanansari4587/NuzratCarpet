@@ -41,14 +41,66 @@ const CustomizeInquiry = () => {
     }
   });
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    setImages((prev) => [...prev, ...files]);
+  // const handleImageUpload = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   setImages((prev) => [...prev, ...files]);
+  // };
+
+  // const removeImage = (index) => {
+  //   setImages((prev) => prev.filter((_, i) => i !== index));
+  // };
+
+   // ✅ Multiple image upload handler
+  const handleImageUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const previews = Array.from(files).map((file) => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      uploading: true,
+      progress: 0,
+      file,
+    }));
+
+    setImages((prev) => [...prev, ...previews]);
+
+    previews.forEach(async (preview) => {
+      try {
+        const uploaded = await uploadToCloudinary(
+          preview.file,
+          "NurzatProducts",
+          "image",
+          (progress) => {
+            setImages((prev) =>
+              prev.map((img) =>
+                img.url === preview.url ? { ...img, progress, uploading: progress < 100 } : img
+              )
+            );
+          }
+        );
+
+        setImages((prev) =>
+          prev.map((img) =>
+            img.url === preview.url
+              ? { ...img, url: uploaded.secure_url, uploading: false, progress: 100 }
+              : img
+          )
+        );
+
+        URL.revokeObjectURL(preview.url);
+      } catch (err) {
+        console.error("Image upload error:", err);
+        setImages((prev) => prev.filter((img) => img.url !== preview.url));
+        toast.error("❌ Image upload failed");
+      }
+    });
   };
 
-  const removeImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveImage = (url) => {
+    setImages((prev) => prev.filter((img) => img.url !== url));
   };
+
 
 //   const uploadImagesToCloudinary = async () => {
 //   let urls = [];
@@ -78,7 +130,8 @@ const CustomizeInquiry = () => {
     try {
       let uploadedUrls = [];
       if (images.length > 0) {
-        uploadedUrls = await uploadToCloudinary();
+        // uploadedUrls = await uploadToCloudinary(image, "customize", "image");
+        const uploadedUrls = images.filter((img) => !img.uploading).map((img) => img.url);
       }
 
       const finalData = { ...data, uploadedImages: uploadedUrls };
@@ -328,7 +381,7 @@ const CustomizeInquiry = () => {
                 
 
                 {/* Image Upload */}
-                <div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">
+                {/* <div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">
                   <Upload className="h-8 w-8 mx-auto text-forest-400 mb-2" />
                   <p className="text-forest-700 mb-2">Drag and drop images here or click to upload</p>
                   <p className="text-sm text-forest-600 mb-4">PNG, JPG, GIF up to 5MB</p>
@@ -344,7 +397,7 @@ const CustomizeInquiry = () => {
                     />
                   </div>
 
-                  {/* Preview */}
+                  
                   {images.length > 0 && (
                     <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
                       {images.map((img, index) => (
@@ -365,7 +418,54 @@ const CustomizeInquiry = () => {
                       ))}
                     </div>
                   )}
-                </div>
+                </div> */}
+
+                {/* ✅ Image Upload Section */}
+<div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">
+  <Upload className="h-8 w-8 mx-auto text-forest-400 mb-2" />
+  <p className="text-forest-700 mb-2">Drag and drop images here or click to upload</p>
+  <p className="text-sm text-forest-600 mb-4">PNG, JPG, GIF up to 5MB</p>
+
+  <div className="relative inline-block overflow-hidden">
+    <Button variant="outline" className="border-forest-300">Select Files</Button>
+    <input
+      type="file"
+      multiple
+      accept="image/*"
+      onChange={handleImageUpload}
+      className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+    />
+  </div>
+
+  {/* ✅ Preview */}
+  {images.length > 0 && (
+    <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {images.map((img, index) => (
+        <div key={index} className="relative group">
+          <img
+            src={img.url}  // ✅ direct url use kar (Cloudinary ya local blob)
+            alt="preview"
+            className="w-full h-24 object-cover rounded-md"
+          />
+
+          {/* Progress bar */}
+          {img.uploading && (
+            <div className="absolute bottom-0 left-0 h-1 bg-blue-500" style={{ width: `${img.progress}%` }} />
+          )}
+
+          <button
+            type="button"
+            onClick={() => handleRemoveImage(img.url)}  // ✅ correct function call
+            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs opacity-0 group-hover:opacity-100 transition"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
                 
                 <Separator />
                 
