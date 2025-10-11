@@ -23,6 +23,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import withAuth from '@/lib/withAuth'
 import Spinner from '@/components/Spinner'
 import { Edit } from 'lucide-react'
+import { jwtDecode } from 'jwt-decode'
 
 
 
@@ -35,25 +36,37 @@ const Enquiry = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [status, setStatus] = useState("")
 
-
-  const fetchOrders = async () => {
-    try {
-      setIsLoading(true); // ✅ yaha loading start
-      const res = await fetch("/api/myEnquiry");
-      const data = await res.json();
-      if (res.ok) {
-        setOrders(data);
-      } else {
-        console.error(data.error || "Failed to fetch orders");
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false); // ✅ yaha loading khatam
-    }
-  };
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    setRole(decoded.role);
+
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("/api/myEnquiry", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          setOrders(data);
+        } else {
+          console.error(data.error || "Failed to fetch enquiries");
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchOrders();
   }, []);
 
@@ -143,7 +156,6 @@ const handleEdit = (order) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-              {/* {orders.map((order) => order.cartItems?.map((item, index) => ( */}
               {orders.map((order) => {
                 let cartItems = [];
 
@@ -157,8 +169,6 @@ const handleEdit = (order) => {
                 }
 
                 return cartItems.map((item, index) => (
-
-                // return (
                 <TableRow key={`${order.id}-${index}`}>
                   <TableCell className="hidden sm:table-cell">
                     <Image src={item.image} alt={item.name} width={100} height={100}/>

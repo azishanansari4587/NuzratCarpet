@@ -55,11 +55,6 @@ export default function CollectionPage() {
         
         <div className="mb-10">
           <div className="relative h-[400px] rounded-lg overflow-hidden mb-8">
-            {/* <img 
-              src={collection.image} 
-              alt={`${collection.name} banner`} 
-              className="w-full h-full object-cover"
-            /> */}
             <div className="relative w-full h-full">
               <Image
                 src={collection.image || "/placeholder.jpg"} // fallback if image missing
@@ -70,7 +65,7 @@ export default function CollectionPage() {
             </div>
 
             <div className="absolute inset-0 bg-gradient-to-r from-forest-900/60 to-transparent flex items-end p-8">
-              <div className="max-w-2xl text-black">
+              <div className="max-w-2xl text-white">
                 <h2 className="text-2xl  font-serif font-bold mb-3">{collection.name}</h2>
               </div>
             </div>
@@ -83,9 +78,6 @@ export default function CollectionPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-serif font-bold mb-6 text-forest-800">Products in this Collection</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-            {/* {products.map((product) => (
-              <ProductCard key={product.id} {...product}/>
-            ))} */}
             {  products.map(product => {
               let images = [];
 
@@ -107,7 +99,6 @@ export default function CollectionPage() {
                 id={product.slug}
                 name={product.name}
                 image={images[0]}
-                // image={Array.isArray(product.images) ? product.images[0] : product.images}
                 hoverImage={
                   Array.isArray(product.images) && product.images[1]
                     ? product.images[1]

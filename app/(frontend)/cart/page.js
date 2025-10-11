@@ -14,7 +14,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const { cart: cartItems, setCart, addToCart, removeFromCart, increment, decrement, clearCart } = useCartStore();
+  const { cart: cartItems, setCart, removeFromCart, clearCart } = useCartStore();
 
 
   const fetchCart = async () => {
@@ -33,7 +33,6 @@ const Cart = () => {
       console.log(data);
       
       if (res.ok) {
-        // setCartItems(data.cartItems);
         setCart(data.cartItems); // ✅ Zustand update
 
       } else {
@@ -147,11 +146,7 @@ const Cart = () => {
                 className="flex flex-col sm:flex-row border rounded-lg p-4 shadow-sm"
               >
                 <div className="w-full sm:w-40 h-40 overflow-hidden rounded-md mb-4 sm:mb-0">
-                  {/* <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  /> */}
+
                   <div className="relative w-full h-full">
                     <Image
                       src={item.image || "/placeholder.jpg"} // fallback if image is missing

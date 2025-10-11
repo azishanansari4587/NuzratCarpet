@@ -78,7 +78,7 @@ const AddProduct = () => {
   const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Bag", "Puff", "Outlet"];
   const availableDesigners = ["Karim Rashid", "Ingrid Kulper", "Own"]; // Available options
   const availableBadges = [
-    {id: "news", name:"News"},
+    {id: "new", name:"New"},
     {id: "top_sell", name: "Top Sell"},
     {id: "none", name:"None"},
   ];
@@ -91,67 +91,6 @@ const AddProduct = () => {
   const handleCheckboxChange = (name, checked) => {
     setProduct(prev => ({ ...prev, [name]: checked }));
   };
-
-
-//   const handleImageUpload = async (e) => {
-//   const files = Array.from(e.target.files);
-
-//   // ✅ Pehle se preview dikhane ke liye temp object banate hain
-//   const previews = files.map((file) => ({
-//     name: file.name,
-//     url: URL.createObjectURL(file), // local preview
-//     uploading: true,
-//     progress: 0,
-//   }));
-
-//   // UI me preview add kar dete hain
-//   setProduct((prev) => ({
-//     ...prev,
-//     images: [...prev.images, ...previews],
-//   }));
-
-//   try {
-//     const uploaded = await Promise.all(
-//       files.map((file) =>
-//         uploadToCloudinary(file, "NurzatProducts", (progress) => {
-//           // ✅ har file ke liye progress update
-//           setProduct((prev) => ({
-//             ...prev,
-//             images: prev.images.map((img) =>
-//               img.name === file.name
-//                 ? { ...img, progress, uploading: progress < 100 }
-//                 : img
-//             ),
-//           }));
-//         })
-//       )
-//     );
-
-//     // ✅ temp URL replace with Cloudinary URL + cleanup
-//     setProduct((prev) => ({
-//       ...prev,
-//       images: prev.images.map((img) => {
-//         const uploadedFile = uploaded.find(
-//           (u) => u.original_filename === img.name
-//         );
-//         if (uploadedFile) {
-//           if (img.temp) URL.revokeObjectURL(img.url); // cleanup blob URL
-//           return {
-//             url: uploadedFile.secure_url,
-//             uploading: false,
-//             progress: 100,
-//           };
-//         }
-//         return img;
-//       }),
-//     }));
-
-//   } catch (err) {
-//     console.error("Image upload error:", err);
-//     toast.error("❌ Failed to upload image");
-//   }
-// };
-
 
   
 const handleImageUpload = async (e) => {
@@ -212,71 +151,6 @@ const handleImageUpload = async (e) => {
     setProduct({ ...product, images: imgs });
   };
   
-
-//   const handleColorImageUpload = async (e, colorIndex) => {
-//   const files = Array.from(e.target.files);
-
-//   // ✅ Preview objects banaye (local blob URL ke sath)
-//   const previews = files.map((file) => ({
-//     name: file.name,
-//     url: URL.createObjectURL(file),
-//     uploading: true,
-//     progress: 0,
-//     temp: true,
-//   }));
-
-//   // ✅ Pehle UI me preview dikhaye
-//   const updatedColors = [...product.colors];
-//   if (!Array.isArray(updatedColors[colorIndex].images)) {
-//     updatedColors[colorIndex].images = [];
-//   }
-//   updatedColors[colorIndex].images.push(...previews);
-
-//   setProduct({ ...product, colors: updatedColors });
-
-//   try {
-//     const uploaded = await Promise.all(
-//       files.map((file) =>
-//         uploadToCloudinary(file, "NurzatProducts/colors", (progress) => {
-//           // ✅ Update progress of current file
-//           setProduct((prev) => {
-//             const newColors = [...prev.colors];
-//             newColors[colorIndex].images = newColors[colorIndex].images.map((img) =>
-//               img.name === file.name
-//                 ? { ...img, progress, uploading: progress < 100 }
-//                 : img
-//             );
-//             return { ...prev, colors: newColors };
-//           });
-//         })
-//       )
-//     );
-
-//     // ✅ Upload complete hone ke baad Cloudinary URL replace karo + cleanup blob
-//     setProduct((prev) => {
-//       const newColors = [...prev.colors];
-//       newColors[colorIndex].images = newColors[colorIndex].images.map((img) => {
-//         const uploadedFile = uploaded.find(
-//           (u) => u.original_filename === img.name
-//         );
-//         if (uploadedFile) {
-//           if (img.temp) URL.revokeObjectURL(img.url);
-//           return {
-//             url: uploadedFile.secure_url,
-//             uploading: false,
-//             progress: 100,
-//           };
-//         }
-//         return img;
-//       });
-//       return { ...prev, colors: newColors };
-//     });
-//   } catch (err) {
-//     console.error("Color image upload error:", err);
-//     toast.error("❌ Failed to upload color image");
-//   }
-// };
-
   
 const handleColorImageUpload = async (e, colorIndex) => {
   const files = Array.from(e.target.files);
@@ -611,51 +485,6 @@ const handleColorImageUpload = async (e, colorIndex) => {
                 </div>
                 
                 {product.images.filter((url) => url).length > 0 && (
-                  // <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
-                  //   {product.images.map((img, index) =>
-                  //     img.url ? (
-                  //       <div key={index} className="relative group">
-                  //         <div className="relative w-full h-32 rounded-md border border-forest-200 overflow-hidden flex items-center justify-center">
-                  //           <Image
-                  //             src={img.url}
-                  //             alt={`Product preview ${index + 1}`}
-                  //             fill
-                  //             className="object-cover rounded-md"
-                  //           />
-
-                  //           {/* ✅ Progress bar */}
-                  //           {img.uploading && (
-                  //             <div className="absolute bottom-0 left-0 w-full bg-gray-200 h-2">
-                  //               <div
-                  //                 className="bg-green-600 h-2 rounded-full transition-all"
-                  //                 style={{ width: `${img.progress}%` }}
-                  //               />
-                  //             </div>
-                  //           )}
-
-                  //           {/* ✅ Spinner */}
-                  //           {img.uploading && (
-                  //             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                  //               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                  //             </div>
-                  //           )}
-                  //         </div>
-
-                  //         {!img.uploading && (
-                  //           <button
-                  //             type="button"
-                  //             onClick={() => handleRemoveImage(index)}
-                  //             className="absolute top-1 right-1 bg-white/80 p-1 rounded-full hover:bg-white text-red-500"
-                  //             aria-label="Remove image"
-                  //           >
-                  //             <X className="h-4 w-4" />
-                  //           </button>
-                  //         )}
-                  //       </div>
-                  //     ) : null
-                  //   )}
-                  // </div>
-
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                     {product.images.map((img, index) => (
                       <div key={index} className="relative group">

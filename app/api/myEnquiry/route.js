@@ -7,49 +7,106 @@ import nodemailer from "nodemailer";
 
 // app/api/myEnquiries/route.js
 
-
- export async function GET(req) {
+export async function GET(req) {
   try {
-    // 🛡️ Token se user ka ID nikalna (JWT decode ya session)
-    
-    // const authHeader = req.headers.get("authorization");
-    // if (!authHeader) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    // ✅ Token check
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
 
-    // const token = authHeader.split(" ")[1];
-   
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // const userId = decoded.id;
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const [rows] = await connection.execute(
-      // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC",
-      // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC;",
-      // [userId] 
-      `SELECT e.id, 
-       e.cartItems, 
-       e.created_at,
-       e.status,
-       u.id as user_id, 
-       CONCAT(u.first_name, ' ', u.last_name) as user_name, 
-       u.email as user_email
-FROM enquiries e
-LEFT JOIN users u ON e.userId = u.id
-ORDER BY e.created_at DESC;
-`);
+    const userId = decoded?.id;
+    const role = decoded?.role; // role: 1 (admin), 0 (user)
 
-    // cartItems ko JSON parse karke bhejna
-    const data = rows.map((enquiry) => ({
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), { status: 403 });
+    }
+
+    let rows;
+
+    if (role === 1) {
+      // ✅ Admin → sabhi enquiries dekh sakta hai
+      [rows] = await connection.execute(
+        // `SELECT 
+        //   e.id, 
+        //   e.cartItems,         
+        //   e.created_at,
+        //   e.status,
+        //   u.id AS user_id, 
+        //   CONCAT(u.first_name, ' ', u.last_name) AS user_name, 
+        //   u.email AS user_email 
+        // FROM enquiries e
+        // LEFT JOIN users u ON e.userId = u.id
+        // ORDER BY e.created_at DESC`
+        "SELECT * FROM enquiries ORDER BY created_at DESC",
+      );
+    } else {
+      // ✅ Normal user → sirf apni enquiries
+      [rows] = await connection.execute(
+        "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC",
+        [userId]
+      );
+    }
+
+    // ✅ Parse JSON safely
+    const formatted = rows.map((enquiry) => ({
       ...enquiry,
-      cartItems: JSON.parse(enquiry.cartItems),
+      cartItems: enquiry.cartItems ? JSON.parse(enquiry.cartItems) : [],
     }));
 
-    return NextResponse.json(data);
+    return new Response(JSON.stringify(formatted), { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Fetch enquiries error:", error);
+    return new Response(JSON.stringify({ error: "Server error" }), { status: 500 });
   }
 }
+
+
+//  export async function GET(req) {
+//   try {
+//     // 🛡️ Token se user ka ID nikalna (JWT decode ya session)
+    
+//     // const authHeader = req.headers.get("authorization");
+//     // if (!authHeader) {
+//     //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     // }
+
+//     // const token = authHeader.split(" ")[1];
+   
+//     // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     // const userId = decoded.id;
+
+//     const [rows] = await connection.execute(
+//       // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC",
+//       // "SELECT * FROM enquiries WHERE userId = ? ORDER BY created_at DESC;",
+//       // [userId] 
+//       `SELECT e.id, 
+//        e.cartItems, 
+//        e.created_at,
+//        e.status,
+//        u.id as user_id, 
+//        CONCAT(u.first_name, ' ', u.last_name) as user_name, 
+//        u.email as user_email
+// FROM enquiries e
+// LEFT JOIN users u ON e.userId = u.id
+// ORDER BY e.created_at DESC;
+// `);
+
+//     // cartItems ko JSON parse karke bhejna
+//     const data = rows.map((enquiry) => ({
+//       ...enquiry,
+//       cartItems: JSON.parse(enquiry.cartItems),
+//     }));
+
+//     return NextResponse.json(data);
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ error: "Server error" }, { status: 500 });
+//   }
+// }
 
 
 

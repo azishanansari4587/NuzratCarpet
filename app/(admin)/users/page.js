@@ -113,13 +113,6 @@ const Users = () =>  {
                       <tr key={person.id}>
                         <td className="whitespace-nowrap px-4 py-4">
                           <div className="flex items-center">
-                            {/* <div className="h-10 w-10 flex-shrink-0">
-                              <Image
-                                className="h-10 w-10 rounded-full object-cover"
-                                src={person.image}
-                                alt=""
-                              />
-                            </div> */}
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">{person.first_name} {person.last_name}</div>
                               <div className="text-sm text-gray-700">{person.email}</div>
@@ -159,40 +152,6 @@ const Users = () =>  {
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex items-center justify-center pt-6">
-          <a href="#" className="mx-1 cursor-not-allowed text-sm font-semibold text-gray-900">
-            <span className="hidden lg:block">&larr; Previous</span>
-            <span className="block lg:hidden">&larr;</span>
-          </a>
-          <a
-            href="#"
-            className="mx-1 flex items-center rounded-md border border-gray-400 px-3 py-1 text-gray-900 hover:scale-105"
-          >
-            1
-          </a>
-          <a
-            href="#"
-            className="mx-1 flex items-center rounded-md border border-gray-400 px-3 py-1 text-gray-900 hover:scale-105"
-          >
-            2
-          </a>
-          <a
-            href="#"
-            className="mx-1 flex items-center rounded-md border border-gray-400 px-3 py-1 text-gray-900 hover:scale-105"
-          >
-            3
-          </a>
-          <a
-            href="#"
-            className="mx-1 flex items-center rounded-md border border-gray-400 px-3 py-1 text-gray-900 hover:scale-105"
-          >
-            4
-          </a>
-          <a href="#" className="mx-2 text-sm font-semibold text-gray-900">
-            <span className="hidden lg:block">Next &rarr;</span>
-            <span className="block lg:hidden">&rarr;</span>
-          </a>
         </div>
       </section>
     )}

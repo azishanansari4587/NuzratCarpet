@@ -57,7 +57,7 @@ const EditProduct = () => {
     const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Bag", "Puff", "Outlet"];
   const availableDesigners = ["Karim Rashid", "Ingrid Kulper", "Own"]; // Available options
   const availableBadges = [
-    {id: "news", name:"News"},
+    {id: "new", name:"New"},
     {id: "top_sell", name: "Top Sell"}
   ];
 
@@ -307,42 +307,6 @@ const handleColorImageUpload = async (e, colorIndex) => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* <Card>
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-medium mb-4 text-forest-800">
-                Basic Information
-              </h2>
-
-              <div className="grid gap-6 mb-6">
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-forest-800">
-                    Product Name
-                  </label>
-                  <Input
-                    name="name"
-                    value={product.name}
-                    onChange={handleChange}
-                    placeholder="Enter product name"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-forest-800">
-                    Product Code
-                  </label>
-                  <Input
-                    name="code"
-                    value={product.code}
-                    onChange={handleChange}
-                    placeholder="e.g., ROYAL2134Z"
-                    required
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card> */}
-
           <Card>
             <CardContent className="pt-6">
               <h2 className="text-xl font-medium mb-4 text-forest-800">Basic Information</h2>

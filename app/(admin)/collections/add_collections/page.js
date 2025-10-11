@@ -119,10 +119,6 @@ const AddCollection = () => {
       isFeatured: false,
       image: null,
       imageUrl: "",
-      // bannerImage: null,
-      // bannerImageUrl: "",
-      // metaTitle: "",
-      // metaDescription: "",
     });
 
   } catch (err) {
@@ -297,7 +293,7 @@ const AddCollection = () => {
                 </div>
 
                 {/* Banner Image */}
-                <div>
+                {/* <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-forest-800">
                       Banner Image
@@ -357,7 +353,7 @@ const AddCollection = () => {
                   <p className="text-xs text-forest-600 mt-2">
                     This image will be displayed as a large banner on the collection page.
                   </p>
-                </div>
+                </div> */}
               </div>
 
             </CardContent>

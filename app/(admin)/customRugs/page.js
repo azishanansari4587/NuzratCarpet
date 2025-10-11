@@ -8,8 +8,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption,
-  TableFooter,
 } from "@/components/ui/table"
 import {
   Card,
@@ -31,12 +29,10 @@ import {
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Edit, Eye } from 'lucide-react'
-import Link from 'next/link'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from '@/components/ui/textarea'
-import { set } from 'react-hook-form'
 import withAuth from '@/lib/withAuth'
 
 
@@ -46,24 +42,6 @@ const CustomRugs = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRug, setSelectedRug] = useState(null);
   const [status, setStatus] = useState("");
-
-
-//   useEffect(() => {
-//   const fetchCustomRugs = async () => {
-//     try {
-//       setIsLoading(true);
-//       const res = await fetch("/api/customize");
-//       const data = await res.json();
-//       setCustomRugs(data);
-//     } catch (err) {
-//       console.error("Failed to load messages:", err);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   fetchCustomRugs();
-// }, []);
 
 const fetchCustomRugs = async () => {
   try {
@@ -116,9 +94,6 @@ const handleEditClick = (rug) => {
 
   return (
     <>
-      {/* {isLoading ? (
-        <Spinner />
-      ) : ( */}
       <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Card x-chunk="dashboard-06-chunk-0">
           <CardHeader>

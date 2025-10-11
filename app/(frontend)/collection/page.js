@@ -13,14 +13,12 @@ export default function Collection() {
   const [loading, setLoading] = useState(true);
   
     useEffect(() => {
-      // setLoading(true)
         // Fetch collection from the Api
         const fetchCollection = async () => {
           try {
             const res = await fetch('/api/collections');
             const data = await res.json();
             setCollections(data);
-            // setFilteredProducts(data);
           } catch (error) {
             console.error('Failed to fetch collections', error);
           } finally {

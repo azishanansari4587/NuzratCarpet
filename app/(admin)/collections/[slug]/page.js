@@ -44,8 +44,6 @@ const EditCollection = ({}) => {
 
 
     useEffect (()=> {
-        // if (!id) return;
-
         const fetchCollection = async () => {
             try {
                 const res = await fetch(`/api/collections/${id}`);
@@ -117,16 +115,6 @@ const EditCollection = ({}) => {
                 
                 <Input type="text"  value={name} onChange={(e) => setName(e.target.value)} required/>
                 <div className="my-3 grid gap-3 ">
-                    {/* <Label htmlFor="status">Status</Label>
-                    <Select onChange={(e)=> setStatus(e.target.value)} defaultValue={status} value={status} onValueChange={setStatus}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="1">Active</SelectItem>
-                        <SelectItem value="0">Draft</SelectItem>
-                    </SelectContent>
-                    </Select> */}
                     <Label htmlFor="status">Status</Label>
                     <Select value={status} onValueChange={setStatus}>
                         <SelectTrigger>

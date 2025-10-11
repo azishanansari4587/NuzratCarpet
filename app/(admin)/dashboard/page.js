@@ -31,7 +31,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -39,8 +38,6 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { Calendar } from "@/components/ui/calendar"
 import Spinner from '@/components/Spinner';
 import withAuth from '@/lib/withAuth';
 import { useRouter } from 'next/navigation';
@@ -70,8 +67,6 @@ const Dashboard = () => {
     totalOrders: 0,
     percentageChange: 0
   });
-
-  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);

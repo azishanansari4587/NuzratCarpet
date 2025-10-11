@@ -80,7 +80,6 @@ const EnquiryClient = () => {
                       </p>
                     </div>
                     <Image src={item.image} alt={item.name} width={100} height={100}/>
-                    {/* <p className="font-medium">₹{item.price}</p> */}
                   </div>
                 </li>
               ))}

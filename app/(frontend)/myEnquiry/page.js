@@ -2,26 +2,36 @@
 import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
 import Image from "next/image";
+import { jwtDecode } from "jwt-decode";
 
 const MyEnquiry = () => {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
 
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Decode userId from JWT
+    const decoded = jwtDecode(token);
+    setUserId(decoded.id);
+
     const fetchOrders = async () => {
       try {
-        const token = localStorage.getItem("token");
         const res = await fetch("/api/myEnquiry", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
         const data = await res.json();
+
         if (res.ok) {
           setOrders(data);
         } else {
-          console.error(data.error || "Failed to fetch orders");
+          console.error(data.error || "Failed to fetch enquiries");
         }
       } catch (error) {
         console.error(error);
@@ -32,6 +42,7 @@ const MyEnquiry = () => {
 
     fetchOrders();
   }, []);
+
 
   if (loading) return <Spinner />;
 

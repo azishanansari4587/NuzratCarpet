@@ -54,13 +54,6 @@ const Contact = () => {
                                     info@nuzratcarpet.com
                                 </a></div>
                             </div>
-
-                            {/* <div
-                                // href="#"
-                                className="mt-8 inline-block rounded border border-black bg-black px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-black focus:outline-none focus:ring active:text-indigo-500"
-                            >
-                                Contact Now
-                            </div> */}
                         </div>
                     </div>
                 </div>
