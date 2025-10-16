@@ -84,7 +84,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link href="/outdoor" className="hover:text-black transition-colors">
-                  Outdoor
+                  Indoor & Outdoor
                 </Link>
               </li>
               <li>
