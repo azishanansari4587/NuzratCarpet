@@ -134,31 +134,6 @@ const ProductCard = ({
             {name}
           </h3>
         </Link>
-        <div className="mt-2 flex justify-between items-center">
-
-          
-          {/* Color options */}
-           {/* ✅ Show which color */}
-        {selectedColor && (
-          <div className="mt-1 flex items-center space-x-2">
-            <span
-              className="w-4 h-4 rounded-full border"
-              style={{ backgroundColor: selectedColor.value }}
-            />
-            <span className="text-sm">{selectedColor.name}</span>
-          </div>
-        )}
-          {/* <div className="flex items-center space-x-1">
-            {colors.map((color, index) => (
-              <div 
-                key={index} 
-                className="w-3 h-3 rounded-full border border-muted" 
-                style={{ backgroundColor: color }}
-                aria-label={`Color: ${color}`}
-              ></div>
-            ))}
-          </div> */}
-        </div>
       </div>
     </div>
   );

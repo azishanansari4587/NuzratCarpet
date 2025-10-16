@@ -55,11 +55,12 @@ const EditProduct = () => {
   const [product, setProduct] = useState(initialProductState);
 
     const availableTags = ["Rugs", "OutDoor", "New Arrival", "Cushion", "Bag", "Puff", "Outlet"];
-  const availableDesigners = ["Karim Rashid", "Ingrid Kulper", "Own"]; // Available options
-  const availableBadges = [
-    {id: "new", name:"New"},
-    {id: "top_sell", name: "Top Sell"}
-  ];
+    const availableDesigners = ["Karim Rashid", "Ingrid Kulper", "Own"]; // Available options
+    const availableBadges = [
+      {id: "new", name:"New"},
+      {id: "top_sell", name: "Top Sell"},
+      {id: "none", name:"None"},
+    ];
 
   // ✅ Collections fetch
   useEffect(() => {
@@ -604,6 +605,23 @@ const handleColorImageUpload = async (e, colorIndex) => {
                             setProduct({ ...product, specifications: specs });
                           }}
                         />
+                        {/* ✅ REMOVE BUTTON YAHAN ADD KIYA HAI */}
+        <button
+          type="button"
+          onClick={() => {
+            // 1. Array ki copy banao
+            const specs = [...product.specifications];
+            // 2. 'i' index waale item ko hata do
+            specs.splice(i, 1);
+            // 3. State ko naye array se update kar do
+            setProduct({ ...product, specifications: specs });
+          }}
+          className="p-2 text-red-500 rounded-md hover:bg-red-100"
+          aria-label="Remove specification"
+        >
+          {/* Make sure you import the 'X' icon */}
+          <X className="h-5 w-5" />
+        </button>
                       </div>
                     ))}
                   </div>
@@ -620,17 +638,38 @@ const handleColorImageUpload = async (e, colorIndex) => {
             </CardContent>
           </Card>
           
-          <Card>
-            <CardContent className="pt-6">
+          <Card className="overflow-visible">
+            <CardContent className="pt-6 ">
               <h2 className="text-xl font-medium mb-4 text-forest-800">Variants</h2>
               
-              <div className="grid gap-6">
+              <div >
 
                 {/* Colors */}
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <label className="font-semibold">🎨 Colors</label>
+
+                  <div className="space-y-4">
+                    { console.log("Product Colors Array:", product.colors)}
                   {product.colors.map((color, idx) => (
-                    <div key={idx} className="border p-4 rounded-lg space-y-2 ">
+                   
+                    <div
+        key={idx}
+        className="relative border p-6 rounded-lg space-y-2 bg-white shadow-sm"
+      >
+        {/* ✅ Remove Color Box Button */}
+        <button
+          type="button"
+          onClick={() => {
+            const updatedColors = [...product.colors];
+            updatedColors.splice(idx, 1);
+            setProduct({ ...product, colors: updatedColors });
+          }}
+          className="absolute -top-3 -right-3 z-50 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 shadow-lg"
+          aria-label="Remove color variant"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
                       <div className="grid md:grid-cols-2 gap-4">
                         <Input placeholder="Color Name" value={color.name} onChange={(e) => {
                           const colors = [...product.colors];
@@ -704,7 +743,7 @@ const handleColorImageUpload = async (e, colorIndex) => {
                                 {/* Remove button for both previews and uploaded URLs */}
                                 <button
                                   type="button"
-                                  onClick={() => handleRemoveColorImage(colorIndex, i)}
+                                   onClick={() => handleRemoveColorImage(idx, i)} // ✅ Correct index
                                   className="absolute top-1 right-1 bg-white/80 p-1 rounded-full hover:bg-white text-red-500"
                                   aria-label="Remove image"
                                 >
@@ -718,6 +757,7 @@ const handleColorImageUpload = async (e, colorIndex) => {
                       </div>
                     </div>
                   ))}
+                  </div>
 
                   <Button
                     type="button"

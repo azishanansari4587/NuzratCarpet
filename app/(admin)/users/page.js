@@ -93,16 +93,16 @@ const Users = () =>  {
 
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-left text-sm font-normal text-gray-700"
+                        className="px-12 py-3.5 text-left text-sm font-normal text-gray-700"
                       >
-                        Contact
+                        Country
                       </th>
 
                       <th
                         scope="col"
                         className="px-4 py-3.5 text-left text-sm font-normal text-gray-700"
                       >
-                        Status
+                        Contact
                       </th>
 
                     </tr>
@@ -120,30 +120,27 @@ const Users = () =>  {
                           </div>
                         </td>
                         <td className="text-center px-12 py-4">
-                          <div className="text-sm text-gray-900 text-center ">{person.businessType}</div>
+                          <div className="text-sm text-gray-900 ">{person.businessType}</div>
                         </td>
-                        <td className="whitespace-nowrap px-12 py-4">
+                        <td className="text-center px-12 py-4">
                           <div className="text-sm text-gray-900 ">{person.address}</div>
                         </td>
 
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
+                        <td className="text-center px-4 py-4 text-sm text-gray-700">
                           {person.city}
                         </td>
 
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
+                        <td className="text-center px-4 py-4 text-sm text-gray-700">
                           {person.state}
                         </td>
 
-                        <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
-                          {person.contact}
+                        <td className="text-center px-4 py-4 text-sm text-gray-700">
+                          {person.country}
                         </td>
 
-                        <td className="whitespace-nowrap px-4 py-4">
-                          <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                            Active
-                          </span>
+                        <td className="text-center px-4 py-4 text-sm text-gray-700">
+                          {person.contact}
                         </td>
-                        
                         
                       </tr>
                     ))}

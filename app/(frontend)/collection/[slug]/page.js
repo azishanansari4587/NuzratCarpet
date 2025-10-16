@@ -78,7 +78,7 @@ export default function CollectionPage() {
         <div className="mb-10">
           <h2 className="text-2xl font-serif font-bold mb-6 text-forest-800">Products in this Collection</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-            {  products.map(product => {
+            {/* {  products.map(product => {
               let images = [];
 
               try {
@@ -108,7 +108,61 @@ export default function CollectionPage() {
                 colors={product.colors || []}
                 sizes={product.sizes || []}
               />);
-            } )}
+            } )} */}
+
+                {products.flatMap((product) => {
+                  let images = [];
+            
+                  try {
+                    if (Array.isArray(product.images)) {
+                      images = product.images;
+                    } else if (typeof product.images === "string") {
+                      if (product.images.trim().startsWith("[")) {
+                        images = JSON.parse(product.images);
+                      } else {
+                        images = [product.images];
+                      }
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse images:", e);
+                  }
+            
+                  // ✅ color wise cards
+                  if (Array.isArray(product.colors) && product.colors.length > 0) {
+                    return product.colors.map((color, idx) => (
+                      <ProductCard
+                        key={`${product.id}-${idx}`}
+                        productId={product.id}
+                        id={product.slug}
+                        name={`${product.name} - ${color.name}`} // ✅ name ke sath color bhi
+                        image={color.images?.[0] || images[0]}   // ✅ color ka image
+                        hoverImage={color.images?.[1] || images[1] || null}
+                        category={product.category}
+                        colors={product.colors}
+                        badges={product.badges}
+                        sizes={product.sizes || []}
+                        selectedColor={color} // ✅ send complete color object
+                      />
+                    ));
+                  }
+            
+                  // ✅ agar koi colors nahi hai
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      productId={product.id}
+                      id={product.slug}
+                      name={product.name}
+                      image={images[0]}
+                      hoverImage={images[1] || null}
+                      category={product.category}
+                      colors={product.colors || []}
+                      badges={product.badges}
+                      sizes={product.sizes || []}
+                    />
+                  );
+                })}
+              
           </div>
         </div>
       </div>

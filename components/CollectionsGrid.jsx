@@ -18,7 +18,12 @@ const CollectionsGrid = () => {
         const data = await res.json();
   
         if (Array.isArray(data)) {
-          setCollections(data);
+          // ✅ Sirf wahi collections jinka isFeatured === 1 hai
+        const featuredCollections = data.filter(
+          (item) => item.isFeatured === 1 || item.isFeatured === "1"
+        );
+        setCollections(featuredCollections);
+          // setCollections(data);
         } else {
           console.error("Invalid API response:", data);
           setCollections([]);

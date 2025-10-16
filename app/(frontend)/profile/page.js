@@ -277,14 +277,6 @@ const fetchProfile = async () => {
                           <label htmlFor="phone" className="text-sm font-medium text-forest-800">
                             Phone Number
                           </label>
-                          {/* <input
-                            id="phone"
-                            name="phone"
-                            type="text"
-                            value={profileData.phone}
-                            onChange={handleProfileChange}
-                            className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
-                          /> */}
                           <PhoneNumber value={profileData.contact} onChange={(e) =>
                             setProfileData((prev) => ({ ...prev, contact: e.target.value }))
                           } />

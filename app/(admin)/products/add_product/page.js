@@ -214,11 +214,6 @@ const handleColorImageUpload = async (e, colorIndex) => {
 };
 
 
-
-
-
-
-
   const handleRemoveColorImage = (colorIndex, imageIndex) => {
     const updatedColors = [...product.colors];
     if (
@@ -229,6 +224,19 @@ const handleColorImageUpload = async (e, colorIndex) => {
       setProduct({ ...product, colors: updatedColors });
     }
   };
+
+//   const handleRemoveColorImage = (colorIndex, imageIndex) => {
+//   setProduct(prev => {
+//     const updatedColors = [...prev.colors];
+//     if (updatedColors[colorIndex] && Array.isArray(updatedColors[colorIndex].images)) {
+//       updatedColors[colorIndex].images = updatedColors[colorIndex].images.filter(
+//         (_, i) => i !== imageIndex
+//       );
+//     }
+//     return { ...prev, colors: updatedColors };
+//   });
+// };
+
   
 
 
@@ -612,6 +620,23 @@ const handleColorImageUpload = async (e, colorIndex) => {
                             setProduct({ ...product, specifications: specs });
                           }}
                         />
+                        {/* ✅ REMOVE BUTTON YAHAN ADD KIYA HAI */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    // 1. Array ki copy banao
+                                    const specs = [...product.specifications];
+                                    // 2. 'i' index waale item ko hata do
+                                    specs.splice(i, 1);
+                                    // 3. State ko naye array se update kar do
+                                    setProduct({ ...product, specifications: specs });
+                                  }}
+                                  className="p-2 text-red-500 rounded-md hover:bg-red-100"
+                                  aria-label="Remove specification"
+                                >
+                                  {/* Make sure you import the 'X' icon */}
+                                  <X className="h-5 w-5" />
+                                </button>
                       </div>
                     ))}
                   </div>
@@ -638,7 +663,24 @@ const handleColorImageUpload = async (e, colorIndex) => {
                 <div className="space-y-2">
                   <label className="font-semibold">🎨 Colors</label>
                   {product.colors.map((color, idx) => (
-                    <div key={idx} className="border p-4 rounded-lg space-y-2 ">
+                    <div
+                            key={idx}
+                            className="relative border p-6 rounded-lg space-y-2 bg-white shadow-sm"
+                          >
+                            {/* ✅ Remove Color Box Button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updatedColors = [...product.colors];
+                                updatedColors.splice(idx, 1);
+                                setProduct({ ...product, colors: updatedColors });
+                              }}
+                              className="absolute -top-3 -right-3 z-50 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 shadow-lg"
+                              aria-label="Remove color variant"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+
                       <div className="grid md:grid-cols-2 gap-4">
                         <Input placeholder="Color Name" value={color.name} onChange={(e) => {
                           const colors = [...product.colors];
@@ -712,7 +754,7 @@ const handleColorImageUpload = async (e, colorIndex) => {
                                 {/* Remove button for both previews and uploaded URLs */}
                                 <button
                                   type="button"
-                                  onClick={() => handleRemoveColorImage(colorIndex, i)}
+                                  onClick={() => handleRemoveColorImage(idx, i)} // ✅ Correct index
                                   className="absolute top-1 right-1 bg-white/80 p-1 rounded-full hover:bg-white text-red-500"
                                   aria-label="Remove image"
                                 >
