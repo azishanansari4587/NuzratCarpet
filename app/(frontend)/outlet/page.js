@@ -166,23 +166,23 @@ const Outlet = () => {
       }
 
       // ✅ agar koi colors nahi hai
-      return (
-        <ProductCard
-          key={product.id}
-          productId={product.id}
-          id={product.slug}
-          name={product.name}
-          image={images[0]}
-          hoverImage={images[1] || null}
-          category={product.category}
-          colors={product.colors || []}
-          badges={product.badges}
-          sizes={product.sizes || []}
-        />
-      );
-    })}
-  </div>
-)  : (
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      productId={product.id}
+                      id={product.slug}
+                      name={product.name}
+                      image={images[0]}
+                      hoverImage={images[1] || null}
+                      category={product.category}
+                      colors={product.colors || []}
+                      badges={product.badges}
+                      sizes={product.sizes || []}
+                    />
+                  );
+                })}
+              </div>
+            )  : (
                 <div className="text-center py-12">
                   <h3 className="text-lg font-medium mb-2">No outlet products found</h3>
                   <p className="text-muted-foreground mb-6">

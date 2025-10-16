@@ -266,17 +266,20 @@ const Product = () => {
             <div>
               <h1 className="text-2xl font-medium uppercase mb-2 flex justify-between gap-2">
               {product.name}
+              </h1>
 
               {product.isOutlet === 1 && (
-                <span className="text-lg font-semibold text-green-600">
-                  USD {product.outletNewPrice } 
-                  USD {product.outletOldPrice } 
-                  <span className="ml-2 text-red-500 line-through">
-                    {product.outletDiscount}%
+                <div className='flex justify-between gap-6'>
+                  <span className="text-md font-semibold text-green-600">
+                    Starting from USD {product.outletNewPrice } to
+                    USD {product.outletOldPrice } 
+                    
                   </span>
-                </span>
+                  <span className="ml-2 text-lg text-red-500 font-semibold border border-red-500 rounded-md p-2 ">
+                   - {product.outletDiscount}% Off
+                  </span>
+                </div>
               )}
-              </h1>
 
               <Separator />
               <div className="space-y-4 text-md text-gray-500">
@@ -360,8 +363,8 @@ const Product = () => {
                 <AccordionTrigger className="text-sm font-medium py-4">CERTIFICATION</AccordionTrigger>
                 <AccordionContent>
                   <div className="prose max-w-none mt-4 text-gray-700 whitespace-pre-wrap">
-  {product.certification}
-</div>
+                    {product.certification}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
@@ -369,8 +372,8 @@ const Product = () => {
                 <AccordionTrigger className="text-sm font-medium py-4">CARE & MAINTENANCE</AccordionTrigger>
                 <AccordionContent>
                   <div className="prose max-w-none mt-4 text-gray-700 whitespace-pre-wrap">
-  {product.care}
-</div>
+                    {product.care}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
@@ -378,8 +381,8 @@ const Product = () => {
                 <AccordionTrigger className="text-sm font-medium py-4 uppercase">Additional Info</AccordionTrigger>
                 <AccordionContent>
                   <div className="prose max-w-none mt-4 text-gray-700 whitespace-pre-wrap">
-  {product.addInfo}
-</div>
+                    {product.addInfo}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

@@ -161,7 +161,8 @@ const handleEditClick = (rug) => {
 
                   <TableCell className="font-small">
                     <p>Name: {order.name}</p>
-                    Email: {order.email}
+                    <p>Email: {order.email}</p>
+                    <p>{order.user_country}</p>
                   </TableCell>
 
                   <TableCell className="hidden md:table-cell">

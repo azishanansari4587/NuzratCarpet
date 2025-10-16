@@ -574,7 +574,8 @@ const handleColorImageUpload = async (e, colorIndex) => {
                       Product Features <span className="text-red-500">*</span>
                     </label>
                   {product.features.map((f, i) => (
-                    <Textarea
+                    <div>
+                      <Textarea
                       key={i}
                       placeholder={`Feature ${i + 1}`}
                       value={f}
@@ -584,6 +585,26 @@ const handleColorImageUpload = async (e, colorIndex) => {
                         setProduct({ ...product, features });
                       }}
                     />
+                      {/* ✅ REMOVE BUTTON YAHAN ADD KIYA HAI */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    // 1. Array ki copy banao
+                                    const features = [...product.features];
+                                    // 2. 'i' index waale item ko hata do
+                                    features.splice(i, 1);
+                                    // 3. State ko naye array se update kar do
+                                    setProduct({ ...product, features });
+                                  }}
+                                  className="p-2 text-red-500 rounded-md hover:bg-red-100"
+                                  aria-label="Remove specification"
+                                >
+                                  {/* Make sure you import the 'X' icon */}
+                                  <X className="h-5 w-5" />
+                                </button>
+                    </div>
+                    
+                    
                   ))}
                   </div>
                   <Button
