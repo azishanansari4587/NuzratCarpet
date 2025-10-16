@@ -140,7 +140,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:nuzratcarpet@gmail.com">nuzratcarpet@gmail.com</a>
+                <a href="mailto:nuzratcarpet@gmail.com">info@nuzratcarpet</a>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
