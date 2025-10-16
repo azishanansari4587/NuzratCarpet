@@ -180,7 +180,8 @@ const handleEdit = (order) => {
 
                   <TableCell className="font-small">
                     <p>{order.user_name}</p>
-                    {order.user_email}
+                    <p>{order.user_email}</p>
+                    <p>{order.user_country}</p>
                   </TableCell>
 
                   <TableCell className="hidden md:table-cell">

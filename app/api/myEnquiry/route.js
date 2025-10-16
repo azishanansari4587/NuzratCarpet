@@ -30,18 +30,19 @@ export async function GET(req) {
     if (role === 1) {
       // ✅ Admin → sabhi enquiries dekh sakta hai
       [rows] = await connection.execute(
-        // `SELECT 
-        //   e.id, 
-        //   e.cartItems,         
-        //   e.created_at,
-        //   e.status,
-        //   u.id AS user_id, 
-        //   CONCAT(u.first_name, ' ', u.last_name) AS user_name, 
-        //   u.email AS user_email 
-        // FROM enquiries e
-        // LEFT JOIN users u ON e.userId = u.id
-        // ORDER BY e.created_at DESC`
-        "SELECT * FROM enquiries ORDER BY created_at DESC",
+        `SELECT 
+          e.id, 
+          e.cartItems,         
+          e.created_at, 
+          e.status,
+          u.id AS user_id, 
+          CONCAT(u.first_name, ' ', u.last_name) AS user_name, 
+          u.email AS user_email ,
+          u.country As user_country
+        FROM enquiries e
+        LEFT JOIN users u ON e.userId = u.id
+        ORDER BY e.created_at DESC`
+        // "SELECT * FROM enquiries ORDER BY created_at DESC",
       );
     } else {
       // ✅ Normal user → sirf apni enquiries
