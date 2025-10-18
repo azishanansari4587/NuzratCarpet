@@ -156,7 +156,17 @@ const handleEditClick = (rug) => {
                 // return (
                 <TableRow key={`${order.id}`}>
                   <TableCell className="hidden sm:table-cell">
-                    <Image src={order.image || "placeholder.svg"} alt={order.name || ""} width={100} height={100}/>
+                    <Image
+                      src={
+                        Array.isArray(order.uploaded_images)
+                          ? order.uploaded_images[0]
+                          : JSON.parse(order.uploaded_images || "[]")[0] || "/placeholder.svg"
+                      }
+                      alt={order.name || "Rug"}
+                      width={100}
+                      height={100}
+                      className="object-cover rounded-md border"
+                    />
                   </TableCell>
 
                   <TableCell className="font-small">
@@ -241,29 +251,37 @@ const handleEditClick = (rug) => {
             <div className="space-y-4">
 
               {/* Image Preview Section */}
-              {selectedRug.image && (
-                <div className="space-y-2">
-                  <Label>Uploaded Image</Label>
-                  <div className="flex items-center gap-4">
-                    <Image
-                      src={selectedRug.image}
-                      alt="Uploaded Rug"
-                      width={150}
-                      height={150}
-                      className="rounded-md border"
-                    />
-                    <a
-                      href={selectedRug.image}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700"
-                    >
-                      Download
-                    </a>
-                  </div>
-                </div>
-              )}
+{selectedRug?.uploaded_images && (
+  <div className="space-y-2">
+    <Label>Uploaded Image(s)</Label>
+    <div className="flex flex-wrap items-center gap-4">
+      {(Array.isArray(selectedRug.uploaded_images)
+        ? selectedRug.uploaded_images
+        : JSON.parse(selectedRug.uploaded_images || "[]")
+      ).map((url, idx) => (
+        <div key={idx} className="flex flex-col items-center gap-2">
+          <Image
+            src={url}
+            alt={`Uploaded Rug ${idx + 1}`}
+            width={150}
+            height={150}
+            className="rounded-md border object-cover"
+          />
+          <a
+            href={url}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700"
+          >
+            Download
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+ 
 
               {/* Rug Details Section */}
               <div className="grid grid-cols-2 gap-4">

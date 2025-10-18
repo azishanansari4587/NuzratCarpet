@@ -67,7 +67,13 @@ export async function GET() {
        ORDER BY created_at DESC`
     );
 
-    return NextResponse.json(messages, { status: 200 });
+     // Parse uploaded_images JSON strings
+    const data = messages.map((row) => ({
+      ...row,
+      uploaded_images: JSON.parse(row.uploaded_images || "[]"),
+    }));
+
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("MySQL Fetch Error:", error);
     return NextResponse.json(
