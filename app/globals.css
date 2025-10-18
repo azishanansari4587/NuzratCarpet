@@ -199,3 +199,14 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-primary/40 rounded-full hover:bg-primary/60;
 }
+
+/* LightGallery white background */
+.lg-backdrop {
+  background-color: #fff !important;  /* White background */
+  opacity: 1 !important;              /* Full opacity */
+}
+
+/* Remove fade animation overlay dark effect */
+.lg-backdrop.in {
+  opacity: 1 !important;
+}

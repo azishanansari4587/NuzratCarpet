@@ -30,6 +30,7 @@ import { jwtDecode } from 'jwt-decode'
 
 
 const Enquiry = () => {
+  
   const [orders, setOrders] = useState([]); 
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false)
@@ -38,8 +39,7 @@ const Enquiry = () => {
 
   const [role, setRole] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
     if (!token) {
       setIsLoading(false);
       return;
@@ -67,6 +67,8 @@ const Enquiry = () => {
       }
     };
 
+
+  useEffect(() => {
     fetchOrders();
   }, []);
 

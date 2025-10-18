@@ -41,15 +41,6 @@ const CustomizeInquiry = () => {
     }
   });
 
-  // const handleImageUpload = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   setImages((prev) => [...prev, ...files]);
-  // };
-
-  // const removeImage = (index) => {
-  //   setImages((prev) => prev.filter((_, i) => i !== index));
-  // };
-
    // ✅ Multiple image upload handler
   const handleImageUpload = async (e) => {
     const files = e.target.files;
@@ -102,27 +93,6 @@ const CustomizeInquiry = () => {
   };
 
 
-//   const uploadImagesToCloudinary = async () => {
-//   let urls = [];
-//   for (let img of images) {
-//     const formData = new FormData();
-//     formData.append("file", img);
-//     formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET);
-
-//     const res = await fetch(
-//       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
-//       { method: "POST", body: formData }
-//     );
-//     const data = await res.json();
-//     if (data.secure_url) {
-//       urls.push(data.secure_url);
-//     } else {
-//       console.error("Cloudinary upload failed:", data);
-//     }
-//   }
-//   return urls;
-// };
-
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -130,10 +100,7 @@ const CustomizeInquiry = () => {
     try {
       let uploadedUrls = [];
       if (images.length > 0) {
-        // uploadedUrls = await uploadToCloudinary(image, "customize", "image");
-        // const uploadedUrls = images.filter((img) => !img.uploading).map((img) => img.url);
         uploadedUrls = images.filter((img) => !img.uploading).map((img) => img.url);
-
       }
 
       const finalData = { ...data, uploadedImages: uploadedUrls };
@@ -381,48 +348,6 @@ const CustomizeInquiry = () => {
                     />
                   </div>
                 </div>
-
-                
-
-                {/* Image Upload */}
-                {/* <div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">
-                  <Upload className="h-8 w-8 mx-auto text-forest-400 mb-2" />
-                  <p className="text-forest-700 mb-2">Drag and drop images here or click to upload</p>
-                  <p className="text-sm text-forest-600 mb-4">PNG, JPG, GIF up to 5MB</p>
-
-                  <div className="relative inline-block overflow-hidden">
-                    <Button variant="outline" className="border-forest-300">Select Files</Button>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-
-                  
-                  {images.length > 0 && (
-                    <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      {images.map((img, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={URL.createObjectURL(img)}
-                            alt="preview"
-                            className="w-full h-24 object-cover rounded-md"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs opacity-0 group-hover:opacity-100 transition"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div> */}
 
                 {/* ✅ Image Upload Section */}
                 <div className="border-2 border-dashed border-forest-300 rounded-md p-6 text-center">

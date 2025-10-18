@@ -248,6 +248,7 @@ const Product = () => {
             <LightGallery
               onInit={ref => lightGalleryRef.current = ref}
               dynamic
+              elementClassNames="custom-lightgallery"
               dynamicEl={currentImages.map((img, index) => ({
                 src: `${img}?height=1200&width=1200`,
                 thumb: `${img}?height=100&width=100`,
