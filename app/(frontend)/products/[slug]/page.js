@@ -317,7 +317,7 @@ const Product = () => {
               {product.sizes.map((size, index) => (
                 <div key={index} onClick={() => setSelectedSize(size.value || size)}
                   className={`cursor-pointer border rounded px-4 py-2 text-sm font-semibold transition duration-200
-                    ${selectedSize === (size.value || size) ? "bg-black text-white border-black" : "border-gray-300 text-gray-700 hover:border-black"}`}>
+                    ${selectedSize === (size.value || size) ? " text-black border-black" : "border-gray-300 text-gray-700 hover:border-black"}`}>
                   {size.value || size}
                 </div>
               ))}

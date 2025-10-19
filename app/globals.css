@@ -210,3 +210,29 @@
 .lg-backdrop.in {
   opacity: 1 !important;
 }
+
+/* Make controls visible (since they are white icons by default) */
+.lg-toolbar,
+.lg-actions .lg-prev,
+.lg-actions .lg-next,
+.lg-close {
+  filter: invert(1); /* turns icons black on white background */
+}
+
+/* 🔵 Pagination dots customization */
+.lg-pager-outer {
+  bottom: 20px; /* Adjust position if needed */
+}
+
+/* Unselected dot color */
+.lg-pager-cont .lg-pager {
+  background-color: #111 !important;  /* light gray */
+  opacity: 1 !important;
+}
+
+/* Selected (active) dot color */
+.lg-pager-cont .lg-pager.active {
+  background-color: #111 !important;  /* black or dark gray */
+  transform: scale(1.2); /* optional zoom effect */
+  transition: all 0.3s ease;
+}
