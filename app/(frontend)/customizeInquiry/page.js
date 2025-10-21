@@ -197,7 +197,7 @@ const CustomizeInquiry = () => {
                         <FormItem>
                           <FormLabel>Company Website</FormLabel>
                           <FormControl>
-                            <Input type="text" placeholder="www.carpet.com" {...field} required />
+                            <Input type="text" placeholder="www.carpet.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

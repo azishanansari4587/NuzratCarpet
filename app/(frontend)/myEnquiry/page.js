@@ -39,7 +39,6 @@ const MyEnquiry = () => {
         setLoading(false);
       }
     };
-
     fetchOrders();
   }, []);
 
@@ -58,10 +57,10 @@ const MyEnquiry = () => {
               key={order.id}
               className="border rounded-lg shadow p-4 bg-white"
             >
-              <p className="text-sm text-gray-500 mb-2">
+              {/* <p className="text-sm text-gray-500 mb-2">
                 Reference: <b>{order.id}</b> | Date:{" "}
                 {new Date(order.createdAt).toLocaleString()}
-              </p>
+              </p> */}
               <ul className="space-y-2">
                 {order.cartItems.map((item, index) => (
                   <li
