@@ -141,9 +141,9 @@ export async function POST(req) {
     `;
 
     await transporter.sendMail({
-      from: `"Your Store" <${process.env.EMAIL_ADDRESS}>`,
+      from: `"Nuzrat Carpet Emporium" <${process.env.EMAIL_ADDRESS}>`,
       // to: process.env.EMAIL_ADDRESS,
-      to: "shikshawala.in@gmail.com",
+      to: "nuzratcarpet@gmail.com",
       subject: "New Enquiry Received",
       html: `
         <h3>New Enquiry from User ID: ${userId}</h3>
