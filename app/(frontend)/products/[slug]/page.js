@@ -223,7 +223,7 @@ const Product = () => {
 
       {/* Product Section */}
       <section className='container mx-auto px-4 py-4'>
-        <div className="grid md:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 gap-8 items-start lg:grid-cols-2">
           {/* Product Images */}
           <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-8">
             {/* Thumbnails */}
