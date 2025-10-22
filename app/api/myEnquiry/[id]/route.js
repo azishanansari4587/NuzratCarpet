@@ -65,3 +65,24 @@ export async function PUT(req, { params }) {
   }
 }
 
+
+export async function DELETE(req, { params }) {
+  try {
+    const { id } = params;
+
+    await connection.query(`DELETE FROM enquiries WHERE id = ?`, [id]);
+
+    return NextResponse.json(
+      { success: true, message: "Product enquiry deleted successfully!" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting enquiry:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to delete enquiry." },
+      { status: 500 }
+    );
+  }
+}
+
+

@@ -2,7 +2,17 @@
 import { useEffect, useState } from 'react';
 import Spinner from '@/components/Spinner';
 import withAuth from '@/lib/withAuth';
-
+import { Trash } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from '@/components/ui/button';
+import { toast } from 'react-toastify';
 
 
 
@@ -12,6 +22,8 @@ const Users = () =>  {
 
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,6 +49,37 @@ const Users = () =>  {
 
     fetchUsers();
   }, []);
+
+    // Open dialog for confirmation
+  const confirmDelete = (user) => {
+    setSelectedUser(user)
+    setOpenDialog(true)
+  }
+
+  // Actual delete API call
+  const handleDelete = async () => {
+    if (!selectedUser) return
+    try {
+      setIsLoading(true)
+      const res = await fetch(`/api/users/${selectedUser.id}`, {
+        method: "DELETE",
+      })
+
+      if (res.ok) {
+        setUsers((prev) => prev.filter((r) => r.id !== selectedUser.id))
+        setOpenDialog(false)
+        toast.success("User deleted successfully!")
+      } else {
+        toast.error("Failed to delete user.")
+      }
+    } catch (error) {
+      console.error("Delete error:", error)
+      toast.error("Something went wrong while deleting.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
 
   return (
     
@@ -83,12 +126,6 @@ const Users = () =>  {
                         City
                       </th>
 
-                      <th
-                        scope="col"
-                        className="px-12 py-3.5 text-left text-sm font-normal text-gray-700"
-                      >
-                        State
-                      </th>
 
                       <th
                         scope="col"
@@ -102,6 +139,13 @@ const Users = () =>  {
                         className="px-4 py-3.5 text-left text-sm font-normal text-gray-700"
                       >
                         Contact
+                      </th>
+
+                      <th
+                        scope="col"
+                        className="px-4 py-3.5 text-left text-sm font-normal text-gray-700"
+                      >
+                        Action
                       </th>
 
                     </tr>
@@ -127,9 +171,7 @@ const Users = () =>  {
 
                         <td className="text-center px-4 py-4 text-sm text-gray-700">
                           {person.city}
-                        </td>
-
-                        <td className="text-center px-4 py-4 text-sm text-gray-700">
+                          <br/>
                           {person.state}
                         </td>
 
@@ -139,6 +181,17 @@ const Users = () =>  {
 
                         <td className="text-center px-4 py-4 text-sm text-gray-700">
                           {person.contact}
+                        </td>
+                        
+                        <td className="text-center px-4 py-4 text-sm text-gray-700">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-red-600 hover:text-red-700"
+                            onClick={() => confirmDelete(person)}
+                          >
+                            <Trash className="h-5 w-5" />
+                          </Button>
                         </td>
                         
                       </tr>
@@ -151,6 +204,41 @@ const Users = () =>  {
         </div>
       </section>
     )}
+
+    {/* ✅ Delete Confirmation Dialog */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent className="sm:max-w-[400px] bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-red-600">
+              Confirm Delete
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Are you sure you want to delete{" "}
+              <span className="font-medium text-black">
+                {selectedUser?.first_name} {selectedUser?.last_name}
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex justify-end gap-3 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDialog(false)}
+              className="border-gray-300"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+              disabled={isLoading}
+            >
+              {isLoading ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
     
   )

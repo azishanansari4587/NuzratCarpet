@@ -26,3 +26,23 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ error: "Failed to update" }, { status: 500 });
   }
 }
+
+
+export async function DELETE(req, { params }) {
+  try {
+    const { id } = params;
+
+    await connection.query(`DELETE FROM custom_rug_requests WHERE id = ?`, [id]);
+
+    return NextResponse.json(
+      { success: true, message: "Custom rug enquiry deleted successfully!" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting enquiry:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to delete enquiry." },
+      { status: 500 }
+    );
+  }
+}

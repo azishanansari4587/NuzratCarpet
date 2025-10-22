@@ -19,27 +19,25 @@ import {
 } from "@/components/ui/card"
 
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog"
 
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Edit, Eye } from 'lucide-react'
+import { Edit, Eye, Trash } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from '@/components/ui/textarea'
 import withAuth from '@/lib/withAuth'
+import { toast } from 'react-toastify'
 
 
 const CustomRugs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [customRugs, setCustomRugs] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedRug, setSelectedRug] = useState(null);
   const [status, setStatus] = useState("");
 
@@ -65,9 +63,40 @@ useEffect(() => {
 const handleEditClick = (rug) => {
     setSelectedRug(rug);
     setStatus(rug.status || "");
-    setOpenDialog(true);
+    setOpenEditDialog(true);
   };
 
+  const confirmDelete = (rug) => {
+    setSelectedRug(rug);
+    setOpenDeleteDialog(true);
+  };
+
+  // ! Delete Logic
+   // ✅ Delete Logic
+  const handleDelete = async () => {
+    if (!selectedRug) return;
+    try {
+      setIsLoading(true);
+      const res = await fetch(`/api/customize/${selectedRug.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setCustomRugs((prev) => prev.filter((r) => r.id !== selectedRug.id));
+        toast.success("Enquiry deleted successfully!");
+        setOpenDeleteDialog(false);
+      } else {
+        toast.error("Failed to delete enquiry.");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error("Something went wrong while deleting.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ** Update Logic
   const handleUpdate = async () => {
     try {
       setIsLoading(true);
@@ -82,13 +111,16 @@ const handleEditClick = (rug) => {
         setCustomRugs((prev) =>
           prev.map((r) => (r.id === updated.id ? updated : r))
         );
-        setOpenDialog(false);
-        fetchCustomRugs();
+        toast.success("Status updated successfully!");
+        setOpenEditDialog(false);
+      } else {
+        toast.error("Failed to update status.");
       }
     } catch (error) {
       console.error("Failed to update:", error);
+      toast.error("Something went wrong while updating.");
     } finally {
-      setIsLoading(false); // 🔥 stop loading
+      setIsLoading(false);
     }
   };
 
@@ -131,10 +163,6 @@ const handleEditClick = (rug) => {
 
                   <TableHead className="hidden md:table-cell">
                     Color
-                  </TableHead>
-
-                  <TableHead className="hidden md:table-cell">
-                    Mateiral
                   </TableHead>
 
                   <TableHead className="hidden md:table-cell">
@@ -195,10 +223,6 @@ const handleEditClick = (rug) => {
                     {order.colors}
                   </TableCell>
 
-                  <TableCell className="hidden md:table-cell capitalize">
-                    {order.material}
-                  </TableCell>
-
                   <TableCell className="hidden md:table-cell">
                   {new Date(order.created_at).toLocaleDateString("en-US", {
                     day: "2-digit",
@@ -211,7 +235,7 @@ const handleEditClick = (rug) => {
                     {order.status}
                   </TableCell>
 
-                  <TableCell className="hidden md:table-cell capitalize">
+                  <TableCell className="hidden md:table-cell capitalize flex items-center gap-2">
                    <Button
                       variant="ghost"
                       size="icon"
@@ -219,6 +243,16 @@ const handleEditClick = (rug) => {
                     >
                       <Edit className="h-5 w-5" />
                     </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-600 hover:text-red-700"
+                      onClick={() => confirmDelete(order)}
+                    >
+                      <Trash className="h-5 w-5" />
+                    </Button>
+
                   </TableCell>
 
                 </TableRow>
@@ -242,7 +276,7 @@ const handleEditClick = (rug) => {
       {/* )} */}
 
       {/* Edit Dialog */}
-      <Dialog open={openDialog} onOpenChange={setOpenDialog} className="z-50 bg-white">
+      <Dialog  open={openEditDialog} onOpenChange={setOpenEditDialog} className="z-50 bg-white">
         <DialogContent className="sm:max-w-[600px] bg-white">
           <DialogHeader>
             <DialogTitle>Edit Custom Rug</DialogTitle>
@@ -251,38 +285,37 @@ const handleEditClick = (rug) => {
             <div className="space-y-4">
 
               {/* Image Preview Section */}
-{selectedRug?.uploaded_images && (
-  <div className="space-y-2">
-    <Label>Uploaded Image(s)</Label>
-    <div className="flex flex-wrap items-center gap-4">
-      {(Array.isArray(selectedRug.uploaded_images)
-        ? selectedRug.uploaded_images
-        : JSON.parse(selectedRug.uploaded_images || "[]")
-      ).map((url, idx) => (
-        <div key={idx} className="flex flex-col items-center gap-2">
-          <Image
-            src={url}
-            alt={`Uploaded Rug ${idx + 1}`}
-            width={150}
-            height={150}
-            className="rounded-md border object-cover"
-          />
-          <a
-            href={url}
-            download
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700"
-          >
-            Download
-          </a>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
- 
-
+              {selectedRug?.uploaded_images && (
+                <div className="space-y-2">
+                  <Label>Uploaded Image(s)</Label>
+                  <div className="flex flex-wrap items-center gap-4">
+                    {(Array.isArray(selectedRug.uploaded_images)
+                      ? selectedRug.uploaded_images
+                      : JSON.parse(selectedRug.uploaded_images || "[]")
+                    ).map((url, idx) => (
+                      <div key={idx} className="flex flex-col items-center gap-2">
+                        <Image
+                          src={url}
+                          alt={`Uploaded Rug ${idx + 1}`}
+                          width={150}
+                          height={150}
+                          className="rounded-md border object-cover"
+                        />
+                        <a
+                          href={url}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
               {/* Rug Details Section */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -385,6 +418,33 @@ const handleEditClick = (rug) => {
             </Button>
             <Button onClick={handleUpdate} disabled={isLoading}>
               {isLoading ? "Updating..." : "Update"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
+       {/* 🔴 Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <DialogContent className="sm:max-w-[400px] bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-red-600">Confirm Delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{" "}
+              <strong>{selectedRug?.email}</strong>? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" onClick={() => setOpenDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+              disabled={isLoading}
+            >
+              {isLoading ? "Deleting..." : "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

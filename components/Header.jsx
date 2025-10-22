@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -251,18 +250,18 @@ export default function Header() {
               </div>
 
               {/* Dynamic nav links */}
-      {navItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={`font-medium ${
-            pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
-          }`}
-          onClick={() => setIsMenuOpen(false)} // ✅ close on navigation
-        >
-          {item.label}
-        </Link>
-      ))}
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`font-medium ${
+                    pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
+                  }`}
+                  onClick={() => setIsMenuOpen(false)} // ✅ close on navigation
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
         )}

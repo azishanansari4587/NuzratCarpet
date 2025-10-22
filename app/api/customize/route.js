@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import  connection  from "@/lib/connection";
+import nodemailer from "nodemailer";
 
 export async function POST(req) {
   try {
@@ -8,11 +9,9 @@ export async function POST(req) {
       name,
       email,
       phone,
-      rugType,
       businessType,
       size,
       customSize,
-      material,
       colors,
       pattern,
       timeline,
@@ -25,18 +24,16 @@ export async function POST(req) {
 
     await connection.query(
       `INSERT INTO custom_rug_requests 
-        (name, email, phone, rug_type, business_type, size, custom_width, custom_length, material, colors, pattern, timeline, additional_info, uploaded_images)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (name, email, phone, business_type, size, custom_width, custom_length, colors, pattern, timeline, additional_info, uploaded_images)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         email,
         phone,
-        rugType,
         businessType,
         size,
         customWidth,
         customLength,
-        material,
         colors,
         pattern,
         timeline,
@@ -44,6 +41,72 @@ export async function POST(req) {
         JSON.stringify(body.uploadedImages || [])
       ]
     );
+
+    //* Configure Nodemailer Transporter
+    const transporter = await nodemailer.createTransport({
+      service: 'gmail', // Use your email service
+      auth: {
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    //* Create Email HTML (for Admin)
+    const adminHtml = `
+      <h2>🧾 New Custom Rug Enquiry Received</h2>
+      <p><b>Name:</b> ${name}</p>
+      <p><b>Email:</b> ${email}</p>
+      <p><b>Phone:</b> ${phone}</p>
+      <p><b>Business Type:</b> ${businessType}</p>
+      <p><b>Size:</b> ${size}</p>
+      ${
+        customSize
+          ? `<p><b>Custom Size:</b> ${customSize.width} x ${customSize.length}</p>`
+          : ""
+      }
+      <p><b>Colors:</b> ${colors}</p>
+      <p><b>Pattern:</b> ${pattern}</p>
+      <p><b>Timeline:</b> ${timeline}</p>
+      <p><b>Additional Info:</b> ${additionalInfo || "N/A"}</p>
+      ${
+        uploadedImages?.length
+          ? `<p><b>Uploaded Images:</b><br>${uploadedImages
+              .map((img) => `<a href="${img}" target="_blank">${img}</a>`)
+              .join("<br>")}</p>`
+          : ""
+      }
+    `; 
+
+    // ✅ 4. Create Email HTML (for User)
+    const userHtml = `
+      <h3>Dear ${name},</h3>
+      <p>Thank you for your custom rug enquiry at <b>Nuzrat Carpet Emporium</b>!</p>
+      <p>We have received your request and will get back to you shortly.</p>
+      <br/>
+      <p>Here’s a summary of your enquiry:</p>
+      <p><b>Size:</b> ${size}</p>
+      <p><b>Colors:</b> ${colors}</p>
+      <p><b>Pattern:</b> ${pattern}</p>
+      <br/>
+      <p>Warm regards,</p>
+      <p><b>Nuzrat Carpet Emporium</b></p>
+    `;
+
+     // ✅ 5. Send Email to Admin
+    await transporter.sendMail({
+      from: `"Nuzrat Carpet Emporium" <${process.env.EMAIL_ADDRESS}>`,
+      to: "nuzratcarpet@gmail.com", // admin email
+      subject: "New Custom Rug Enquiry Received",
+      html: adminHtml,
+    });
+
+    // ✅ 6. Send Confirmation Email to User
+    await transporter.sendMail({
+      from: `"Nuzrat Carpet Emporium" <${process.env.EMAIL_ADDRESS}>`,
+      to: email,
+      subject: "Your Custom Rug Enquiry - Nuzrat Carpet Emporium",
+      html: userHtml,
+    });
 
     return NextResponse.json(
       { success: true, message: "Customization request submitted successfully!" },

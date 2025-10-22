@@ -17,13 +17,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import withAuth from '@/lib/withAuth'
 import Spinner from '@/components/Spinner'
-import { Edit } from 'lucide-react'
+import { Edit, Trash } from 'lucide-react'
 import { jwtDecode } from 'jwt-decode'
+import { toast } from 'react-toastify'
 
 
 
@@ -38,8 +46,8 @@ const Enquiry = () => {
   const [status, setStatus] = useState("")
 
   const [role, setRole] = useState(null);
-
-  
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
 
   useEffect(() => {
@@ -73,12 +81,45 @@ const Enquiry = () => {
     fetchOrders();
   }, []);
 
-const handleEdit = (order) => {
-    setSelectedOrder(order)
-    setStatus(order.status || "pending")
-    setOpenDialog(true)
-  }
+  const handleEdit = (order) => {
+    setSelectedOrder(order);
+    setStatus(order.status || "pending");
+    setOpenEditDialog(true);
+  };
 
+  const confirmDelete = (order) => {
+    setSelectedOrder(order);
+    setOpenDeleteDialog(true);
+  };
+
+
+    // ! Delete Logic
+  const handleDelete = async () => {
+  if (!selectedOrder) return;
+
+  try {
+    setIsLoading(true);
+    const res = await fetch(`/api/myEnquiry/${selectedOrder.id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setOrders((prev) => prev.filter((r) => r.id !== selectedOrder.id));
+      toast.success("Enquiry deleted successfully!");
+      setOpenDeleteDialog(false);
+    } else {
+      toast.error("Failed to delete enquiry.");
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+    toast.error("Something went wrong while deleting.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+// ** Update Logic
   const handleUpdate = async () => {
     try {
       setIsLoading(true);
@@ -93,7 +134,7 @@ const handleEdit = (order) => {
         setOrders((prev) =>
           prev.map((r) => (r.id === updated.id ? updated : r))
         );
-        setOpenDialog(false);
+        setOpenEditDialog(false);
         fetchOrders();
       }
     } catch (error) {
@@ -207,7 +248,7 @@ const handleEdit = (order) => {
                   })}
                   </TableCell>
 
-                  <TableCell className="hidden md:table-cell capitalize">
+                  <TableCell className="hidden md:table-cell capitalize flex items-center gap-2">
                     {order.status}
                   </TableCell>
 
@@ -218,6 +259,15 @@ const handleEdit = (order) => {
                       onClick={() => handleEdit({ ...order, ...item })}
                     >
                       <Edit className="h-4 w-4"/>
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-600 hover:text-red-700"
+                      onClick={() => confirmDelete(order)}
+                    >
+                      <Trash className="h-5 w-5" />
                     </Button>
                   </TableCell>
 
@@ -240,7 +290,7 @@ const handleEdit = (order) => {
       )}
 
       {/* Edit Dialog */}
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
         <DialogContent className="sm:max-w-[600px] bg-white">
           <DialogHeader>
             <DialogTitle>Edit Enquiry</DialogTitle>
@@ -298,6 +348,42 @@ const handleEdit = (order) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* ✅ Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+        <DialogContent className="sm:max-w-[400px] bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-red-600">
+              Confirm Delete
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Are you sure you want to delete{" "}
+              <span className="font-medium text-black">
+                {selectedOrder?.user_email}
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex justify-end gap-3 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setOpenDeleteDialog(false)}
+              className="border-gray-300"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+              disabled={isLoading}
+            >
+              {isLoading ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </>
   )
 }
