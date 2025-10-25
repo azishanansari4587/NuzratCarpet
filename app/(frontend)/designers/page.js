@@ -33,7 +33,7 @@ const Designers = () => {
                 <p className='py-4 leading-6 text-gray-700'>Karim is a frequent guest lecturer at universities and conferences globally disseminating the importance of design in everyday life. He holds Honorary Doctorates from the OCAD, Toronto and Corcoran College of Art & Design, Washington. Karim has been featured in magazines and books including Time, Vogue, Esquire, GQ, Wallpaper, and countless more.</p>
 
                 <Link
-                href="https://nuzrat-carpet.vercel.app/collection/k" // yahan apna actual path de
+                href="https://nuzrat-carpet.vercel.app/collection/karim-rashid" // yahan apna actual path de
                 className="inline-flex items-center gap-1 rounded-md bg-neutral-800 text-white p-2 text-sm hover:bg-neutral-700 transition"
                 >
                 <span>View Products of Karim Rashid</span>
