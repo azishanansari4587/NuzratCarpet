@@ -183,7 +183,7 @@ const CustomizeInquiry = () => {
                         <FormItem>
                           <FormLabel>Phone Number</FormLabel>
                           <FormControl>
-                            <PhoneNumber {...field}/>
+                            <PhoneNumber {...field} required/>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -215,7 +215,7 @@ const CustomizeInquiry = () => {
                         <FormItem>
                           <FormLabel>Business Type</FormLabel>
                           <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value} required>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select bussiness type" />
                               </SelectTrigger>
@@ -244,6 +244,7 @@ const CustomizeInquiry = () => {
                       <FormLabel>Size</FormLabel>
                       <RadioGroup 
                         value={sizeOption} 
+                        required
                         onValueChange={setSizeOption}
                         className="flex flex-col space-y-2"
                       >
@@ -362,6 +363,7 @@ const CustomizeInquiry = () => {
                       multiple
                       accept="image/*"
                       onChange={handleImageUpload}
+                      required
                       className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                     />
                   </div>

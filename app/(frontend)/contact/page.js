@@ -35,7 +35,7 @@ const Contact = () => {
                                 Contact
                             </h2>
 
-                            <h4 className='mt-5'>Head Office, Showroom & Warehouses</h4>
+                            <h4 className='mt-5'>Head Office & Showroom</h4>
                             <address className="mt-4 text-gray-700">  
                                 Hayat Nagar Mirzapur,<br/>
                                 231001<br/>

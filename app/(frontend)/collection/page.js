@@ -57,9 +57,9 @@ export default function Collection() {
                     />
                   </div>
 
-                  <div className="absolute top-3 right-3 bg-forest-700 text-white px-2 py-1 rounded-full text-xs font-medium">
+                  {/* <div className="absolute top-3 right-3 bg-forest-700 text-white px-2 py-1 rounded-full text-xs font-medium">
                     {collection.productCount} items
-                  </div>
+                  </div> */}
                 </div>
                 
                 <CardContent className="p-5">

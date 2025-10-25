@@ -27,6 +27,7 @@ import RelatedProduct from '@/components/RelatedProduct';
 
 
 import { useSearchParams } from "next/navigation";
+import ProductThumbnails from '@/components/ProductThumbnail';
 
 
 const Product = () => {
@@ -225,18 +226,14 @@ const Product = () => {
       <section className='container mx-auto px-4 py-4'>
         <div className="grid grid-cols-1 gap-8 items-start lg:grid-cols-2">
           {/* Product Images */}
-          <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-8">
+           <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-4">
             {/* Thumbnails */}
-            <div className="flex flex-row md:flex-col gap-4 md:mr-4 mb-4 md:mb-0 order-2 md:order-1">
-              {currentImages.map((i, index) => (
-                <button key={index} onClick={() => { setSelectedImage(index); }}
-                  className="w-16 h-16 rounded-full overflow-hidden border border-gray-300">
-                  <div className="relative w-full h-full bg-stone-300">
-                    <Image src={`${i}?height=64&width=64`} alt={`Thumbnail ${index}`} fill className="object-cover" />
-                  </div>
-                </button>
-              ))}
-            </div>
+
+            <ProductThumbnails
+              currentImages={currentImages}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
+            />
 
             {/* Main Image */}
             <div className="relative aspect-square w-full bg-stone-100 mb-4 md:mb-0 cursor-zoom-in order-1 md:order-2"
@@ -283,8 +280,13 @@ const Product = () => {
               )}
 
               <Separator />
-              <div className="space-y-4 text-md text-gray-500">
+              {/* <div className="space-y-4 text-md text-gray-500">
                 <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
+              </div> */}
+              <div className='text-sm font-medium py-4'>
+                <div className="prose max-w-none mt-4 text-gray-700 whitespace-pre-wrap">
+                  {product.description}
+                </div>
               </div>
             </div>
 

@@ -8,6 +8,7 @@ const PhoneNumber = ({value, onChange}) => {
      <PhoneInput
         country={'us'}
         value={value}
+        required
         onChange={(phone) => {
           onChange({ target: { value: phone } }); // This makes it compatible with react-hook-form
         }}
