@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Analytics } from "@vercel/analytics/next"
 
 // const inter = Inter({ subsets: ["latin"] });
 const playfair = Barlow({
@@ -71,6 +71,7 @@ export default function RootLayout({ children }) {
         </head>
       <body className={`${playfair.variable} ${lora.variable}`.className} data-cjcrx="addYes">
       <GoogleAnalytics trackingId="YOUR_GA_TRACKING_ID" />
+       <Analytics/>
         <div className="min-h-screen bg-[#f8f8f6]">
           <Header/>
             <main>
