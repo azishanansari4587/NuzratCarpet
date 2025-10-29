@@ -11,13 +11,13 @@ const About = () => {
         <div className='w-full bg-white'>
             <div className='mx-auto max-w-screen-2xl lg:px-8'>
                 <div className='flex flex-col justify-center px-4 py-10 lg:px-6'>
-                    <div className='py-4'>
+                    {/* <div className='py-4'> */}
                     <Image
-                        className="w-full  object-cover  lg:h-[500px]"
+                        className="w-full h-screen  object-cover"
                         src={first}
                         alt="Nuzrat Carpet Image"
                     />
-                    </div>
+                    {/* </div> */}
 
                     <div className='mx-auto max-w-7xl px-4 py-10 lg:px-64'>
                         <h1 className='text-3xl leading-8  font-bold py-2 lg:py-3 '>Nuzrat Carpet Emporium </h1>

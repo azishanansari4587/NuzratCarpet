@@ -80,40 +80,116 @@ const Rugs = () => {
   const productsPerPage = 9;
 
   // Apply filters to products
-  const filteredProducts = products.filter(product => {
+  // const filteredProducts = products.filter(product => {
 
-    // Category filter
+  //   // Category filter
+  //   if (
+  //     filters.categories.length > 0 &&
+  //     !filters.categories.map(String).includes(String(product.collectionId))
+  //   ) {
+  //     return false;
+  //   }
+
+  //       // Color filter
+  //     if (
+  //       filters.colors.length > 0 &&
+  //       !product.colors.some(color => filters.colors.includes(color.name))
+  //     ) {
+  //       return false;
+  //     }
+
+  //     // Designer filter
+  //     if (
+  //       filters.designers.length > 0 &&
+  //       !product.designers.some(designer => filters.designers.includes(designer))
+  //     ) {
+  //       return false;
+  //     }
+    
+  //   return true;
+  // });
+  
+  // Pagination fix section
+
+  // Step 1: Flatten products color-wise first
+  const expandedProducts = products.flatMap((product) => {
+    let images = [];
+    try {
+      if (Array.isArray(product.images)) {
+        images = product.images;
+      } else if (typeof product.images === "string") {
+        if (product.images.trim().startsWith("[")) {
+          images = JSON.parse(product.images);
+        } else {
+          images = [product.images];
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse images:", e);
+    }
+
+    if (Array.isArray(product.colors) && product.colors.length > 0) {
+      return product.colors.map((color, idx) => ({
+        ...product,
+        key: `${product.id}-${idx}`,
+        displayName: `${product.name} - ${color.name}`,
+        displayImage: color.images?.[0] || images[0],
+        hoverImage: color.images?.[1] || images[1] || null,
+        selectedColor: color,
+      }));
+    }
+
+    return [
+      {
+        ...product,
+        key: product.id,
+        displayName: product.name,
+        displayImage: images[0],
+        hoverImage: images[1] || null,
+      },
+    ];
+  });
+
+  // Step 2: Apply filters
+  const filteredProducts = expandedProducts.filter((product) => {
     if (
       filters.categories.length > 0 &&
       !filters.categories.map(String).includes(String(product.collectionId))
-    ) {
+    )
       return false;
-    }
 
-        // Color filter
-      if (
-        filters.colors.length > 0 &&
-        !product.colors.some(color => filters.colors.includes(color.name))
-      ) {
-        return false;
-      }
+    if (
+      filters.colors.length > 0 &&
+      !product.colors?.some((color) => filters.colors.includes(color.name))
+    )
+      return false;
 
-      // Designer filter
-      if (
-        filters.designers.length > 0 &&
-        !product.designers.some(designer => filters.designers.includes(designer))
-      ) {
-        return false;
-      }
-    
+    if (
+      filters.designers.length > 0 &&
+      !product.designers?.some((designer) =>
+        filters.designers.includes(designer)
+      )
+    )
+      return false;
+
     return true;
   });
 
-  // Pagination
+  // Step 3: Apply pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+
+  // Pagination
+  // const indexOfLastProduct = currentPage * productsPerPage;
+  // const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  // const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  // const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
 
   const handlePageChange = (page) => {
@@ -281,58 +357,21 @@ const Rugs = () => {
                         : "space-y-6"
                     }
                   >
-                    {currentProducts.flatMap((product) => {
-                      let images = [];
-
-                      try {
-                        if (Array.isArray(product.images)) {
-                          images = product.images;
-                        } else if (typeof product.images === "string") {
-                          if (product.images.trim().startsWith("[")) {
-                            images = JSON.parse(product.images);
-                          } else {
-                            images = [product.images];
-                          }
-                        }
-                      } catch (e) {
-                        console.error("Failed to parse images:", e);
-                      }
-
-                      // ✅ color wise cards
-                      if (Array.isArray(product.colors) && product.colors.length > 0) {
-                        return product.colors.map((color, idx) => (
-                          <ProductCard
-                            key={`${product.id}-${idx}`}
-                            productId={product.id}
-                            id={product.slug}
-                            name={`${product.name} - ${color.name}`} // ✅ name ke sath color bhi
-                            image={color.images?.[0] || images[0]}   // ✅ color ka image
-                            hoverImage={color.images?.[1] || images[1] || null}
-                            category={product.category}
-                            colors={product.colors}
-                            badges={product.badges}
-                            sizes={product.sizes || []}
-                            selectedColor={color} // ✅ send complete color object
-                          />
-                        ));
-                      }
-
-                      // ✅ agar koi colors nahi hai
-                      return (
+                      { currentProducts.map((product) => (
                         <ProductCard
-                          key={product.id}
+                          key={product.key}
                           productId={product.id}
                           id={product.slug}
-                          name={product.name}
-                          image={images[0]}
-                          hoverImage={images[1] || null}
+                          name={product.displayName}
+                          image={product.displayImage}
+                          hoverImage={product.hoverImage}
                           category={product.category}
                           colors={product.colors || []}
                           badges={product.badges}
                           sizes={product.sizes || []}
+                          selectedColor={product.selectedColor}
                         />
-                      );
-                    })}
+                      ))}
                   </div>
                 ) : (
                   <div className="text-center py-12">
