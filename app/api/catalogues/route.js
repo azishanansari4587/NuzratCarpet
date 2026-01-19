@@ -19,7 +19,7 @@ export async function POST(req) {
     }
 
     // ✅ Upload image
-    const imageUpload = await uploadToCloudinary(image, "catalogues", "image");
+    const imageUpload = await uploadToCloudinary(image, "catalogues");
 
     // ✅ Upload PDF
     const pdfUpload = await uploadToCloudinary(pdf, "catalogues", "raw"); // 👈 raw for PDF
