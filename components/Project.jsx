@@ -30,7 +30,7 @@ const Project = () => {
         </div>
 
         <ul className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {projects.map((project, index) => (
+          {projects?.map((project, index) => (
             <li
               key={project.id}
               // className={

@@ -16,13 +16,13 @@ const CollectionsGrid = () => {
         const res = await fetch('/api/collections', { cache: "no-store" });
         // const res = await fetch('/api/collections', { next: { revalidate: 60 } });
         const data = await res.json();
-  
+
         if (Array.isArray(data)) {
           // ✅ Sirf wahi collections jinka isFeatured === 1 hai
-        const featuredCollections = data.filter(
-          (item) => item.isFeatured === 1 || item.isFeatured === "1"
-        );
-        setCollections(featuredCollections);
+          const featuredCollections = data.filter(
+            (item) => item.isFeatured === 1 || item.isFeatured === "1"
+          );
+          setCollections(featuredCollections);
           // setCollections(data);
         } else {
           console.error("Invalid API response:", data);
@@ -37,7 +37,7 @@ const CollectionsGrid = () => {
     };
     fetchCollection();
   }, []);
-  
+
 
 
   return (
@@ -53,11 +53,11 @@ const CollectionsGrid = () => {
         </div>
         {loading ? (
           <Spinner />
-        ):
+        ) :
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.isArray(collections) && collections.map((category) => (
-              <Link 
-              key={category.slug}
+              <Link
+                key={category.slug}
                 href={`/collection/${category.slug}`}
                 className="group relative overflow-hidden rounded-lg"
               >
@@ -77,8 +77,8 @@ const CollectionsGrid = () => {
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <div className="flex justify-between items-end">
                     {/* <div> */}
-                      <h3 className="text-white text-2xl font-serif font-medium mb-2">{category.name}</h3>
-                      {/* <span className="text-white text-sm font-medium bg-primary/80 px-3 py-1 rounded-full">
+                    <h3 className="text-white text-2xl font-serif font-medium mb-2">{category.name}</h3>
+                    {/* <span className="text-white text-sm font-medium bg-primary/80 px-3 py-1 rounded-full">
                       {category.productCount || 0} products
                       </span> */}
                     {/* </div> */}
@@ -90,7 +90,7 @@ const CollectionsGrid = () => {
               </Link>
             ))}
           </div>
-         }
+        }
       </div>
     </section>
   )
