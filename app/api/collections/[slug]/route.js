@@ -4,8 +4,55 @@ import cloudinary from "@/lib/cloudinary";
 
 
 
+// export async function GET(req, { params }) {
+//   const { slug } = params;
+
+//   try {
+//     // Step 1: Get the collection by slug
+//     const [collectionRows] = await connection.query(
+//       `SELECT * FROM collection WHERE slug = ?`, 
+//       [slug]
+//     );
+
+//     if (collectionRows.length === 0) {
+//       return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+//     }
+
+//     const collection = collectionRows[0];
+
+//     // Step 2: Get products from that collection
+//     const [productRows] = await connection.query(
+//       `SELECT * FROM product WHERE collectionId = ? ORDER BY id DESC`, 
+//       [collection.id]
+//     );
+
+//     // Step 3: Format fields (like images, colors, etc.)
+//     const formattedProducts = productRows.map(product => ({
+//       ...product,
+//       images: JSON.parse(product.images || "[]"),
+//       colors: JSON.parse(product.colors || "[]"),
+//       sizes: JSON.parse(product.sizes || "[]"),
+//     }));
+
+//     return NextResponse.json({
+//       collection,
+//       products: formattedProducts,
+//     }, { status: 200 });
+
+//   } catch (error) {
+//     console.error("GET collection by slug error:", error);
+//     return NextResponse.json({ error: "Failed to fetch collection" }, { status: 500 });
+//   }
+// }
+
+
+// 📌 PUT update collection
+
 export async function GET(req, { params }) {
-  const { slug } = params;
+  // ✅ 1. Sabse pehle params ko await karo
+  const { slug } = await params; 
+
+  console.log("Fetching collection for slug:", slug); // Debugging ke liye
 
   try {
     // Step 1: Get the collection by slug
@@ -15,7 +62,8 @@ export async function GET(req, { params }) {
     );
 
     if (collectionRows.length === 0) {
-      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+      // 💡 Taaki humein pata chale error DB se hai ya route se
+      return NextResponse.json({ error: `Collection '${slug}' not found in DB` }, { status: 404 });
     }
 
     const collection = collectionRows[0];
@@ -26,7 +74,7 @@ export async function GET(req, { params }) {
       [collection.id]
     );
 
-    // Step 3: Format fields (like images, colors, etc.)
+    // Step 3: Format fields
     const formattedProducts = productRows.map(product => ({
       ...product,
       images: JSON.parse(product.images || "[]"),
@@ -41,12 +89,10 @@ export async function GET(req, { params }) {
 
   } catch (error) {
     console.error("GET collection by slug error:", error);
-    return NextResponse.json({ error: "Failed to fetch collection" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
-
-// 📌 PUT update collection
 export async function PUT(req, context) {
   const { slug } = await context.params; // ✅ await karo
 
