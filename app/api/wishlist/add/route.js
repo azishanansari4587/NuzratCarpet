@@ -53,7 +53,7 @@ export async function POST(req) {
 
 
 export async function GET(req, { params }) {
-  const { userId } = params;
+  const { userId } = await params;
 
   try {
     const [rows] = await connection.execute(

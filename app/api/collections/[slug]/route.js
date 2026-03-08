@@ -5,7 +5,7 @@ import cloudinary from "@/lib/cloudinary";
 
 
 // export async function GET(req, { params }) {
-//   const { slug } = params;
+//   const { slug } = await params;
 
 //   try {
 //     // Step 1: Get the collection by slug
@@ -159,7 +159,7 @@ export async function PUT(req, context) {
 
 // 📌 DELETE collection
 export async function DELETE(req, { params }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   try {
     const [result] = await connection.execute(

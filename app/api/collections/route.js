@@ -2,12 +2,6 @@ import { NextResponse } from "next/server";
 import connection from "@/lib/connection";
 import cloudinary from "@/lib/cloudinary";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(req) {
   try {
     const formData = await req.formData();
@@ -131,5 +125,5 @@ export async function GET() {
   } catch (error) {
     console.error("GET collection error:", error);
     return NextResponse.json({ error: "Failed to fetch collections" }, { status: 500 });
-  } 
+  }
 }

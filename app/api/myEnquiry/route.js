@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connection from "@/lib/connection"; 
-import jwt from "jsonwebtoken"; 
+import connection from "@/lib/connection";
+import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 // Ensure you import your DB connection
 
@@ -104,38 +104,42 @@ export async function POST(req) {
     //   },
     // });
     const transporter = nodemailer.createTransport({
-        service: 'gmail', // Use your email service
-        auth: {
-          user: process.env.EMAIL_ADDRESS,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
+      service: 'gmail', // Use your email service
+      auth: {
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
 
     const cartTable = `
-      <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <thead>
+      <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; text-align: left;">
+        <thead style="background-color: #f4f4f4;">
           <tr>
-            <th>Image</th>
+            <th>Product</th>
             <th>Product ID</th>
+            <th>Name</th>
             <th>Color</th>
             <th>Size</th>
-            <th>Quantity</th>
+            <th>Qty</th>
           </tr>
         </thead>
         <tbody>
           ${items
-            .map(
-              (item) => `
+        .map(
+          (item) => `
             <tr>
-              <td><img src="${item.image}" alt="Product" width="60"></td>
-              <td>${item.productId}</td>
-              <td>${item.color}</td>
-              <td>${item.size}</td>
-              <td>${item.quantity}</td>
+               <td>
+                 <img src="${item.image || 'https://via.placeholder.com/60'}" alt="${item.name || 'Product Image'}" width="70" style="border-radius: 4px;" />
+               </td>
+               <td style="font-weight: bold; color: #333;">${item.productId}</td>
+               <td>${item.name || 'N/A'}</td>
+               <td>${item.color || 'N/A'}</td>
+               <td>${item.size || 'N/A'}</td>
+               <td><strong>${item.quantity}</strong></td>
             </tr>
           `
-            )
-            .join("")}
+        )
+        .join("")}
         </tbody>
       </table>
     `;

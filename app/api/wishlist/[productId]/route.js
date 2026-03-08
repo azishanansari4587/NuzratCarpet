@@ -5,7 +5,7 @@ import connection from "@/lib/connection";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function DELETE(req, { params }) {
-  const { productId } = params;
+  const { productId } = await params;
   const authHeader = req.headers.get("authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

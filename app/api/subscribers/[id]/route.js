@@ -3,9 +3,16 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(req, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
-    await connection.query(`DELETE FROM subscriber WHERE id = ?`, [id]);
+    const [result] = await connection.execute(`DELETE FROM subscriber WHERE id = ?`, [id]);
+
+    if (result.affectedRows === 0) {
+      return NextResponse.json(
+        { success: false, message: "Subscriber not found or already deleted." },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json(
       { success: true, message: "Subscriber deleted successfully!" },

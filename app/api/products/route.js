@@ -1,16 +1,8 @@
-import  connection  from '@/lib/connection';
+import connection from '@/lib/connection';
 import { NextResponse } from 'next/server';
-import  cloudinary  from '@/lib/cloudinary';
+import cloudinary from '@/lib/cloudinary';
 
 
-// pages/api/products.js OR app/api/products/route.js (agar app router use kar raha h)
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb', // default 1mb hai
-    },
-  },
-};
 
 
 
@@ -69,7 +61,7 @@ export async function POST(req) {
     const certification = formData.get("certification");
 
     // ✅ Images & Colors are already Cloudinary URLs from frontend
-    const images = JSON.parse(formData.get("images") || "[]"); 
+    const images = JSON.parse(formData.get("images") || "[]");
     const colors = JSON.parse(formData.get("colors") || "[]");
 
     // Generate slug
@@ -90,7 +82,7 @@ export async function POST(req) {
 
     slug = uniqueSlug;
 
-    
+
 
     // Save to DB
     const [result] = await connection.execute(
@@ -116,7 +108,7 @@ export async function POST(req) {
         JSON.stringify(specifications),
         inStock ? 1 : 0,
         sku,
-        care, 
+        care,
         certification,
         badges,
         addInfo,

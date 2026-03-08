@@ -42,7 +42,7 @@ export async function GET(req, context) {
 
 export async function PUT(req, { params }) {
   try {
-    const { id } = params; // route params
+    const { id } = await params; // route params
     const { status } = await req.json();
 
     // Update query
@@ -68,7 +68,7 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     await connection.query(`DELETE FROM enquiries WHERE id = ?`, [id]);
 

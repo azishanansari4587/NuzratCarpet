@@ -38,7 +38,7 @@ export async function GET(req, context) {
 
 // ** Edit Product Page **//
 export async function PUT(req, { params }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   try {
     const body = await req.json();
@@ -126,7 +126,7 @@ export async function PUT(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   try {
     const [result] = await connection.execute(

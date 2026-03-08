@@ -11,7 +11,15 @@ import Logo1 from '@/public/LOGO1.png'
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from 'jwt-decode';
 import useWishlistStore from "@/store/useWishlistStore"
-import  useCartStore  from "@/store/cartStore";
+import useCartStore from "@/store/cartStore";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 
 
@@ -20,7 +28,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname();
 
-  
+
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -29,6 +37,7 @@ export default function Header() {
     { href: "/collection", label: "Collections" },
     { href: "/designers", label: "Designers" },
     { href: "/outlet", label: "Outlets" },
+    { href: "/decor-accessories", label: "Decor & Accessories" },
     { href: "/customizeInquiry", label: "Customize" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact Us" },
@@ -36,6 +45,7 @@ export default function Header() {
 
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,13 +55,24 @@ export default function Header() {
         const decoded = jwtDecode(token);
         if (decoded?.id) {
           setIsLoggedIn(true);
+          if (decoded?.role === 1) {
+            setIsAdmin(true);
+          }
         }
       } catch (err) {
         console.error("Invalid token");
         setIsLoggedIn(false);
+        setIsAdmin(false);
       }
     }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setIsAdmin(false);
+    router.push("/signin");
+  };
 
   const wishlist = useWishlistStore((state) => state.wishlist)
   const cart = useCartStore((state) => state.cart)
@@ -78,7 +99,7 @@ export default function Header() {
     } catch (error) {
       console.error("Search error:", error);
     }
-  }; 
+  };
 
 
   return (
@@ -91,64 +112,83 @@ export default function Header() {
           <Link href="/" className="flex items-center space-x-2">
             <div className='flex flex-col items-center gap-2'>
               <Image src={Logo1} alt='' width={30} />
-              <Image src={Logo} alt="" width={250}/>
+              <Image src={Logo} alt="" width={250} />
             </div>
           </Link>
 
-        <div className="hidden md:flex flex-1 max-w-lg mx-8 relative">
-          <Input
-            type="text"
-            placeholder="Search for rugs, patterns, colors..."
-            value={query}
-            onChange={handleSearch}
-            onBlur={() => setTimeout(() => setShowResults(false), 200)}
-            onFocus={() => query && setShowResults(true)}
-            className="pl-10 pr-4"
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <div className="hidden md:flex flex-1 max-w-lg mx-8 relative">
+            <Input
+              type="text"
+              placeholder="Search for rugs, patterns, colors..."
+              value={query}
+              onChange={handleSearch}
+              onBlur={() => setTimeout(() => setShowResults(false), 200)}
+              onFocus={() => query && setShowResults(true)}
+              className="pl-10 pr-4"
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
 
-          {/* Dropdown results */}
-          {showResults && Array.isArray(results) && results.length > 0 && (
-            <div className="absolute top-full left-0 w-full bg-white shadow-lg border mt-1 rounded z-50 max-h-64 overflow-auto">
-              {results.map((item) => {
-                const imageUrl = Array.isArray(item.images) && item.images.length > 0
-                  ? item.images[0]
-                  : "/placeholder.png"; // fallback image
+            {/* Dropdown results */}
+            {showResults && Array.isArray(results) && results.length > 0 && (
+              <div className="absolute top-full left-0 w-full bg-white shadow-lg border mt-1 rounded z-50 max-h-64 overflow-auto">
+                {results.map((item) => {
+                  const imageUrl = Array.isArray(item.images) && item.images.length > 0
+                    ? item.images[0]
+                    : "/placeholder.png"; // fallback image
 
-                const colorName = Array.isArray(item.colors) && item.colors.length > 0
-                  ? item.colors[0].name
-                  : "";
+                  const colorName = Array.isArray(item.colors) && item.colors.length > 0
+                    ? item.colors[0].name
+                    : "";
 
-                return (
-                  <Link
-                    key={item.id}
-                    href={`/products/${item.slug}`}
-                    className="flex items-center gap-3 p-2 hover:bg-gray-100"
-                  >
-                    <img
-                      src={imageUrl}
-                      alt={item.name}
-                      className="w-12 h-12 object-cover rounded"
-                    />
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">{colorName}</p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
+                  return (
+                    <Link
+                      key={item.id}
+                      href={`/products/${item.slug}`}
+                      className="flex items-center gap-3 p-2 hover:bg-gray-100"
+                    >
+                      <img
+                        src={imageUrl}
+                        alt={item.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-sm text-gray-500">{colorName}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
 
-        </div>
+          </div>
 
 
-          {/* Navigation icons */}
           <div className="flex items-center space-x-4">
             {isLoggedIn ? (
-              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={() => router.push('/profile')}>
-                <User className="w-5 h-5" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="hidden md:flex focus-visible:ring-0">
+                    <User className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => router.push('/dashboard')} className="cursor-pointer">
+                      Admin Dashboard
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => router.push('/profile')} className="cursor-pointer">
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-700">
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button variant="outline" size="sm" onClick={() => router.push('/signin')}>
                 Sign In
@@ -187,9 +227,8 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`font-medium ${
-                pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
-              }`}
+              className={`font-medium ${pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
+                }`}
             >
               {item.label}
             </Link>
@@ -254,9 +293,8 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`font-medium ${
-                    pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
-                  }`}
+                  className={`font-medium ${pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
+                    }`}
                   onClick={() => setIsMenuOpen(false)} // ✅ close on navigation
                 >
                   {item.label}

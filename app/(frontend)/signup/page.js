@@ -36,13 +36,13 @@ const SignUp = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ first_name:firstName, last_name:lastName, email, password, contact, businessType, country}),
+                body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, contact, businessType, country }),
             });
 
             const data = await result.json();
 
-            if( result.ok) {
-                toast.success('Account created successfully!');
+            if (result.ok) {
+                toast.success('Account created successfully! Please check your email inbox to verify your account before logging in.', { autoClose: 5000 });
                 // router.push('/signin');
             } else {
                 setError(data.error);
@@ -66,50 +66,50 @@ const SignUp = () => {
                     <form onSubmit={handleSubmit} className="space-y-4 ">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                            <Input 
-                                id="firstName" 
-                                name="first_name" 
-                                placeholder="First Name"
-                                value={firstName} 
-                                onChange={(e) => setfirstName(e.target.value)} 
-                                className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black"
-                                required 
-                            />
+                                <Input
+                                    id="firstName"
+                                    name="first_name"
+                                    placeholder="First Name"
+                                    value={firstName}
+                                    onChange={(e) => setfirstName(e.target.value)}
+                                    className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black"
+                                    required
+                                />
                             </div>
                             <div className="space-y-2">
-                            <Input 
-                                id="lastName" 
-                                name="last_name" 
-                                value={lastName} 
-                                placeholder="Last Name"
-                                onChange={(e) => setLastName(e.target.value)} 
-                                className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black"
-                                required />
+                                <Input
+                                    id="lastName"
+                                    name="last_name"
+                                    value={lastName}
+                                    placeholder="Last Name"
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black"
+                                    required />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <Input 
-                                id="email" 
-                                name="email" 
-                                type="email" 
-                                value={email} 
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={email}
                                 placeholder="Email"
-                                onChange={(e) => setEmail(e.target.value.trim())} 
+                                onChange={(e) => setEmail(e.target.value.trim())}
                                 className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black"
                                 required />
                         </div>
 
                         <div className="space-y-2">
                             <Input
-                            id="password"
-                            name="password"
-                            type="password"
-                            value={password}
-                            placeholder="Password"
-                            onChange={(e) => setPassword(e.target.value.trim())}
-                            required
-                            className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black" 
+                                id="password"
+                                name="password"
+                                type="password"
+                                value={password}
+                                placeholder="Password"
+                                onChange={(e) => setPassword(e.target.value.trim())}
+                                required
+                                className="w-full border-t-0 border-x-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-black"
                             />
                         </div>
 
@@ -119,7 +119,7 @@ const SignUp = () => {
                                 country={'in'}
                                 value={contact}
                                 onChange={setContact}
-                                enableSearch={true} 
+                                enableSearch={true}
                                 inputStyle={{ width: '100%' }}
                                 placeholder="Enter phone number"
                             />
@@ -147,17 +147,17 @@ const SignUp = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <label htmlFor="country" className="text-sm font-medium text-forest-800">
-                            Country
-                          </label>
-                          <input
-                            id="country"
-                            name="country"
-                            type="text"
-                            value={country}
-                            onChange={(e) => setCountry(e.target.value)}
-                            className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
-                          />
+                            <label htmlFor="country" className="text-sm font-medium text-forest-800">
+                                Country
+                            </label>
+                            <input
+                                id="country"
+                                name="country"
+                                type="text"
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                className="w-full px-3 py-2 border border-forest-300 rounded-md focus:outline-none focus:ring-1 focus:ring-forest-500"
+                            />
                         </div>
 
 
@@ -173,7 +173,7 @@ const SignUp = () => {
                 </CardContent>
             </Card>
         </main>
-      )
+    )
 }
 
 export default SignUp
