@@ -59,10 +59,11 @@ const ProductGrid = () => {
     )
 
   return (
-    <section className="py-16 md:py-24">
-      <div className="container mx-auto relative">
-        <h2 className="text-2xl font-light mb-12 text-center">NEW ARRIVALS</h2>
+    <section className="py-12 md:py-24">
+      <div className="container mx-auto px-4 md:px-6 relative">
+        <h2 className="text-2xl font-light mb-8 md:mb-12 text-center">NEW ARRIVALS</h2>
 
+        <div className="relative px-8 md:px-10">
         <Carousel
           setApi={setApi}
           loop
@@ -70,7 +71,7 @@ const ProductGrid = () => {
           opts={{ align: "start", containScroll: "trimSnaps" }}
           className="relative"
         >
-          <CarouselContent className="-ml-2 gap-4 md:gap-6">
+          <CarouselContent className="-ml-2 gap-2 md:gap-4">
             {products.map((product) => {
               let images = []
               try {
@@ -85,7 +86,7 @@ const ProductGrid = () => {
               return (
                 <CarouselItem
                   key={product.id}
-                  className="pl-2 md:basis-1/2 lg:basis-1/3 xl:basis-1/4 flex-shrink-0"
+                  className="pl-2 basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4 flex-shrink-0"
                 >
                   <div className="p-1">
                     <Link href={`/products/${product.slug}`} className="group block">
@@ -97,7 +98,7 @@ const ProductGrid = () => {
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
-                      <h3 className="mt-2 text-sm font-medium text-center text-gray-800">
+                      <h3 className="mt-2 text-xs sm:text-sm font-medium text-center text-gray-800 line-clamp-2">
                         {product.name}
                       </h3>
                     </Link>
@@ -108,14 +109,15 @@ const ProductGrid = () => {
           </CarouselContent>
 
           {/* Navigation Arrows */}
-          <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/50 shadow-lg flex items-center justify-center cursor-pointer hover:bg-amber-600 hover:text-white transition-all duration-300">
-            <ChevronLeft className="w-6 h-6" />
+          <CarouselPrevious className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-12 md:h-12 rounded-full bg-white/80 shadow-lg flex items-center justify-center cursor-pointer hover:bg-amber-600 hover:text-white transition-all duration-300">
+            <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
           </CarouselPrevious>
-          <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/50 shadow-lg flex items-center justify-center cursor-pointer hover:bg-amber-600 hover:text-white transition-all duration-300">
-            <ChevronRight className="w-6 h-6" />
+          <CarouselNext className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-12 md:h-12 rounded-full bg-white/80 shadow-lg flex items-center justify-center cursor-pointer hover:bg-amber-600 hover:text-white transition-all duration-300">
+            <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
           </CarouselNext>
 
         </Carousel>
+        </div>
       </div>
     </section>
   )

@@ -226,11 +226,11 @@ export default function GalleryPage() {
     <>
       <div className="min-h-screen bg-gray-50">
         {/* Hero banner */}
-        <div className="bg-gradient-to-r from-amber-900 via-amber-800 to-amber-700 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-3">
+        <div className="bg-gradient-to-r from-amber-900 via-amber-800 to-amber-700 py-10 sm:py-16 px-4 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white mb-2 sm:mb-3">
             Our Gallery
           </h1>
-          <p className="text-amber-200 text-lg max-w-xl mx-auto">
+          <p className="text-amber-200 text-sm sm:text-lg max-w-xl mx-auto">
             A curated collection of our finest rugs, crafted with tradition and artistry.
           </p>
         </div>

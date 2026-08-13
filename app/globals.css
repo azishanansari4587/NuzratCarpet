@@ -200,6 +200,38 @@
   @apply bg-primary/40 rounded-full hover:bg-primary/60;
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Mobile thin scrollbar, hidden on desktop */
+.mobile-thin-scrollbar::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+.mobile-thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 9999px;
+}
+.mobile-thin-scrollbar {
+  scrollbar-width: thin;
+}
+
+@media (min-width: 768px) {
+  .mobile-thin-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .mobile-thin-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /* LightGallery white background */
 .lg-backdrop {
   background-color: #fff !important;  /* White background */

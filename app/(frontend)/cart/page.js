@@ -125,69 +125,78 @@ const Cart = () => {
 
 
 
-  return (
+  const handleMoveToWishlist = async (productId, name) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to save to wishlist");
+      return;
+    }
+    try {
+      const res = await fetch("/api/wishlist/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+      if (res.ok) {
+        toast.success(`${name || "Item"} saved to wishlist`);
+      } else {
+        toast.warning("Item already in wishlist or error occurred");
+      }
+    } catch {
+      toast.error("Failed to save to wishlist");
+    }
+  };
 
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-serif font-semibold mb-6">Your Cart</h1>
-        <div className="border-b border-forest-200 pb-4 mb-4">
-          <h2 className="text-lg font-medium text-forest-800 mb-1">
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+      <h1 className="text-2xl sm:text-3xl font-serif font-semibold mb-6">Your Cart</h1>
+      <div className="border-b border-gray-200 pb-4 mb-6">
+        <h2 className="text-lg font-medium text-gray-800 mb-1">
           Cart Items ({cartItems.reduce((total, item) => total + item.quantity, 0)})
-          </h2>
-          <p className="text-sm text-forest-600">Review your items before checkout</p>
-        </div>
+        </h2>
+        <p className="text-sm text-gray-500">Review your items before enquiry</p>
+      </div>
       {loading ? (
         <Spinner />
       ) : cartItems.length > 0 ? (
         <>
-          <div className="max-w-7xl mx-auto space-y-6">
+          <div className="space-y-4">
             {cartItems.map((item) => (
               <div
-                key={item.cartId}
-                className="flex flex-col sm:flex-row border rounded-lg p-4 shadow-sm"
+                key={item.cartId || item.id}
+                className="flex flex-col sm:flex-row border rounded-xl p-4 shadow-sm bg-white gap-4"
               >
-                <div className="w-full sm:w-40 h-40 overflow-hidden rounded-md mb-4 sm:mb-0">
-
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={item.image || "/placeholder.jpg"} // fallback if image is missing
-                      alt={item.name || "Item image"}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-
-
+                <div className="w-full sm:w-36 h-36 relative overflow-hidden rounded-lg flex-shrink-0 bg-gray-100">
+                  <Image
+                    src={item.image || "/placeholder.jpg"}
+                    alt={item.name || "Item image"}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-                <div className="flex-1 sm:ml-6 flex flex-col">
-                  <div className="flex justify-between">
-                    <div>
-                    <h3 className="font-medium text-lg">{item.cartId}</h3>
-                      <h3 className="font-medium text-lg">{item.name}</h3>
-                      <p className="text-md text-muted-foreground">Size: {item.size}</p>
-                      <p className="text-md text-muted-foreground">Color: {item.color}</p>
-                      <p className="text-md text-muted-foreground">Quantity: {item.quantity}</p>
-                    </div>
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-medium text-lg text-gray-800">{item.name}</h3>
+                    {item.size && <p className="text-sm text-gray-500 mt-1">Size: {item.size}</p>}
+                    {item.color && <p className="text-sm text-gray-500">Color: {item.color}</p>}
+                    <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
                   </div>
 
-                  <div className="flex items-center gap-6 mt-auto">
+                  <div className="flex items-center gap-6 mt-4 pt-2 border-t border-gray-100 sm:border-0 sm:pt-0">
                     <button 
                       onClick={() => handleMoveToWishlist(item.id, item.name)}
-                      className="text-forest-600 hover:text-forest-800 flex items-center gap-1"
+                      className="text-gray-600 hover:text-amber-600 flex items-center gap-1.5 text-sm font-medium transition-colors"
                     >
                       <Heart className="h-4 w-4" /> Save
                     </button>
                     <button 
-                      onClick={() => handleRemoveItem(item.cartId)}
-                      className="text-forest-600 hover:text-red-500 flex items-center gap-1"
+                      onClick={() => handleRemoveItem(item.cartId || item.id)}
+                      className="text-gray-600 hover:text-red-600 flex items-center gap-1.5 text-sm font-medium transition-colors"
                     >
                       <Trash2 className="h-4 w-4" /> Remove
                     </button>
                   </div>
-
                 </div>
-
-                
-
               </div>
             ))}
           </div>

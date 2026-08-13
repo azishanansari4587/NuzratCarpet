@@ -223,22 +223,31 @@ const Product = () => {
       </div>
 
       {/* Product Section */}
-      <section className='container mx-auto px-4 py-4'>
+      <section className='container mx-auto px-4 py-4 md:py-8'>
         <div className="grid grid-cols-1 gap-8 items-start lg:grid-cols-2">
-          {/* Product Images */}
-           <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-4">
-            {/* Thumbnails */}
+          {/* Product Images Container */}
+          <div className="md:sticky top-24 self-start flex flex-col md:flex-row gap-4">
+            {/* Main Image - First on Mobile, Second on Desktop */}
+            <div 
+              className="relative aspect-square w-full bg-stone-100 cursor-zoom-in order-1 md:order-2 rounded-xl overflow-hidden shadow-sm"
+              onClick={() => handleOpenGallery(selectedImage)}
+            >
+              <Image 
+                src={`${currentImages[selectedImage]}?height=700&width=700`} 
+                alt={product.name || "Main product"} 
+                fill 
+                className="object-cover" 
+                priority
+              />
+            </div>
 
-            <ProductThumbnails
-              currentImages={currentImages}
-              selectedImage={selectedImage}
-              setSelectedImage={setSelectedImage}
-            />
-
-            {/* Main Image */}
-            <div className="relative aspect-square w-full bg-stone-100 mb-4 md:mb-0 cursor-zoom-in order-1 md:order-2"
-              onClick={() => handleOpenGallery(selectedImage)}>
-              <Image src={`${currentImages[selectedImage]}?height=700&width=700`} alt="Main product" fill className="object-cover" />
+            {/* Thumbnails - Second on Mobile (Below Main Image), First on Desktop (Left of Main Image) */}
+            <div className="order-2 md:order-1 w-full md:w-auto flex-shrink-0">
+              <ProductThumbnails
+                currentImages={currentImages}
+                selectedImage={selectedImage}
+                setSelectedImage={setSelectedImage}
+              />
             </div>
 
             {/* Hidden LightGallery */}
@@ -260,69 +269,75 @@ const Product = () => {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div>
-              <h1 className="text-2xl font-medium uppercase mb-2 flex justify-between gap-2">
-              {product.name}
+              <h1 className="text-xl sm:text-2xl font-medium uppercase mb-3 text-gray-900">
+                {product.name}
               </h1>
 
               {product.isOutlet === 1 && (
-                <div className='flex justify-between gap-6'>
-                  <span className="text-md font-semibold text-green-600">
-                    Starting from USD {product.outletNewPrice } to
-                    USD {product.outletOldPrice } 
-                    
+                <div className='flex flex-wrap items-center justify-between gap-2 mb-3'>
+                  <span className="text-sm sm:text-base font-semibold text-green-600">
+                    Starting from USD {product.outletNewPrice} to USD {product.outletOldPrice}
                   </span>
-                  <span className="ml-2 text-lg text-red-500 font-semibold border border-red-500 rounded-md p-2 ">
-                   - {product.outletDiscount}% Off
+                  <span className="text-sm font-semibold text-red-500 border border-red-500 rounded-md px-2 py-1">
+                    -{product.outletDiscount}% Off
                   </span>
                 </div>
               )}
 
               <Separator />
-              {/* <div className="space-y-4 text-md text-gray-500">
-                <div className="prose max-w-none mt-4" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }} />
-              </div> */}
-              <div className='text-sm font-medium py-4'>
-                <div className="prose max-w-none mt-4 text-gray-700 whitespace-pre-wrap">
+              <div className='text-sm font-medium py-3'>
+                <div className="prose max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed">
                   {product.description}
                 </div>
               </div>
             </div>
 
             {/* Color */}
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Color</h3>
-              <span className="text-primary font-medium bg-primary/10 px-3 py-1 rounded-full">{currentColorObj?.name}</span>
-            </div>
+            <div>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-base font-semibold text-gray-800">Color</h3>
+                <span className="text-amber-700 font-medium bg-amber-50 px-3 py-1 rounded-full text-xs sm:text-sm">{currentColorObj?.name}</span>
+              </div>
 
-            <div className="flex flex-wrap gap-4">
-              {product.colors.map(color => (
-                <button key={color.name} onClick={() => color.inStock && handleColorChange(color.name)}
-                  disabled={!color.inStock}
-                  title={color.name}
-                  aria-label={`Select color: ${color.name}`}
-                  className={`relative w-16 h-16 rounded-full overflow-hidden transition-all duration-200
-                    ${!color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
-                    ${selectedColor === color.name ? 'ring-4 ring-primary ring-offset-2 scale-110 shadow-lg' : 'ring-2 ring-border hover:ring-primary/50'}`}>
-                  <Image src={`${color.images?.[0]}?height=100&width=100`} alt={color.name} fill className="object-cover w-full h-full rounded-full" />
-                  {selectedColor === color.name && <Check size={20} className="absolute inset-0 m-auto text-white drop-shadow-lg" />}
-                  {!color.inStock && <div className="absolute inset-0 bg-gray-400/50 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-0.5 bg-red-500 rotate-45"></div>
-                  </div>}
-                </button>
-              ))}
+              <div className="flex flex-wrap gap-3">
+                {product.colors.map(color => (
+                  <button 
+                    key={color.name} 
+                    onClick={() => color.inStock && handleColorChange(color.name)}
+                    disabled={!color.inStock}
+                    title={color.name}
+                    aria-label={`Select color: ${color.name}`}
+                    className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden transition-all duration-200
+                      ${!color.inStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:scale-105'}
+                      ${selectedColor === color.name ? 'ring-4 ring-amber-600 ring-offset-2 scale-105 shadow-md' : 'ring-2 ring-gray-200 hover:ring-amber-500'}`}
+                  >
+                    <Image src={`${color.images?.[0]}?height=100&width=100`} alt={color.name} fill className="object-cover w-full h-full rounded-full" />
+                    {selectedColor === color.name && <Check size={18} className="absolute inset-0 m-auto text-white drop-shadow-lg" />}
+                    {!color.inStock && <div className="absolute inset-0 bg-gray-400/50 rounded-full flex items-center justify-center">
+                      <div className="w-5 h-0.5 bg-red-500 rotate-45"></div>
+                    </div>}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Size Selector */}
-            <div className="flex flex-wrap gap-2">
-              {product.sizes.map((size, index) => (
-                <div key={index} onClick={() => setSelectedSize(size.value || size)}
-                  className={`cursor-pointer border rounded px-4 py-2 text-sm font-semibold transition duration-200
-                    ${selectedSize === (size.value || size) ? " text-black border-black" : "border-gray-300 text-gray-700 hover:border-black"}`}>
-                  {size.value || size}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-base font-semibold text-gray-800 mb-2">Size</h3>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((size, index) => (
+                  <div 
+                    key={index} 
+                    onClick={() => setSelectedSize(size.value || size)}
+                    className={`cursor-pointer border rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold transition duration-200
+                      ${selectedSize === (size.value || size) ? "text-amber-700 border-amber-700 bg-amber-50/50" : "border-gray-300 text-gray-700 hover:border-gray-800"}`}
+                  >
+                    {size.value || size}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <Separator />

@@ -74,15 +74,10 @@ const CollectionsGrid = () => {
                 </div>
 
 
-                <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6">
                   <div className="flex justify-between items-end">
-                    {/* <div> */}
-                    <h3 className="text-white text-2xl font-serif font-medium mb-2">{category.name}</h3>
-                    {/* <span className="text-white text-sm font-medium bg-primary/80 px-3 py-1 rounded-full">
-                      {category.productCount || 0} products
-                      </span> */}
-                    {/* </div> */}
-                    <span className="text-white underline text-sm flex-shrink-0 transition-transform group-hover:translate-x-1">
+                    <h3 className="text-white text-lg sm:text-2xl font-serif font-medium mb-1 sm:mb-2 leading-tight">{category.name}</h3>
+                    <span className="text-white underline text-xs sm:text-sm flex-shrink-0 transition-transform group-hover:translate-x-1 ml-2">
                       Shop Now
                     </span>
                   </div>

@@ -22,8 +22,8 @@ const Project = () => {
   return (
     <section>
       <div className="mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-        <div className="text-center">
-          <p className="text-5xl text-center font-Open text-gray-700">
+        <div className="text-center px-4">
+          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center font-Open text-gray-700 leading-tight">
             <span className="text-amber-700">Projects</span> from the World of{" "}
             <span className="text-amber-700">Nuzrat Carpet Emporium</span>
           </p>

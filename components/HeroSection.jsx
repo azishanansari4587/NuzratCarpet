@@ -40,7 +40,7 @@ const HeroSection = () => {
     )
 
   return (
-    <section className="relative h-[80vh] md:h-[70vh] w-full overflow-hidden">
+    <section className="relative h-[45vh] sm:h-[60vh] md:h-[70vh] w-full overflow-hidden">
       <Carousel
         ref={carouselRef}
         loop
@@ -52,7 +52,7 @@ const HeroSection = () => {
           {slides.map((slide, index) => (
             <CarouselItem
               key={index}
-              className="w-full relative h-[80vh] md:h-[70vh]"
+              className="w-full relative h-[45vh] sm:h-[60vh] md:h-[70vh]"
             >
               <div className="relative w-full h-full">
                 <Image
@@ -60,6 +60,7 @@ const HeroSection = () => {
                   alt={`Slide ${index}`}
                   fill
                   className="object-cover"
+                  priority={index === 0}
                 />
               </div>
             </CarouselItem>
@@ -67,11 +68,11 @@ const HeroSection = () => {
         </CarouselContent>
 
         {/* Navigation Arrows */}
-        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-amber-500 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg transition">
-          <ChevronLeft size={28} />
+        <CarouselPrevious className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/40 hover:bg-amber-500 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg transition">
+          <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
         </CarouselPrevious>
-        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white/20 hover:bg-amber-500 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg transition">
-          <ChevronRight size={28} />
+        <CarouselNext className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/40 hover:bg-amber-500 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg transition">
+          <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
         </CarouselNext>
       </Carousel>
     </section>

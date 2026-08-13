@@ -155,12 +155,12 @@ const Footer = () => {
               <h4 className="font-medium mb-2">Newsletter</h4>
               <p className="text-sm text-gray-700 mb-3">Subscribe for exclusive offers and new arrivals</p>
               <form onSubmit={handleSubscribe}>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input type="email" 
                   placeholder="Your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)} className="bg-gray-800 border-gray-700 text-white" />
-                <Button type="submit" className="bg-amber-600 hover:bg-amber-700">Subscribe</Button>
+                  onChange={(e) => setEmail(e.target.value)} className="bg-gray-800 border-gray-700 text-white flex-1" />
+                <Button type="submit" className="bg-amber-600 hover:bg-amber-700 whitespace-nowrap">Subscribe</Button>
               </div>
               </form>
             </div>

@@ -109,15 +109,16 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Main header */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between py-3 md:py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className='flex flex-col items-center gap-2'>
-              <Image src={Logo1} alt='' width={30} />
-              <Image src={Logo} alt="" width={250} />
+          <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+            <div className='flex flex-col items-center gap-1'>
+              <Image src={Logo1} alt='' width={22} className="md:w-[30px]" />
+              <Image src={Logo} alt="" width={160} className="md:w-[220px]" />
             </div>
           </Link>
 
+          {/* Desktop Search */}
           <div className="hidden md:flex flex-1 max-w-lg mx-8 relative">
             <Input
               type="text"
@@ -136,23 +137,17 @@ export default function Header() {
                 {results.map((item) => {
                   const imageUrl = Array.isArray(item.images) && item.images.length > 0
                     ? item.images[0]
-                    : "/placeholder.png"; // fallback image
-
+                    : "/placeholder.png";
                   const colorName = Array.isArray(item.colors) && item.colors.length > 0
                     ? item.colors[0].name
                     : "";
-
                   return (
                     <Link
                       key={item.id}
                       href={`/products/${item.slug}`}
                       className="flex items-center gap-3 p-2 hover:bg-gray-100"
                     >
-                      <img
-                        src={imageUrl}
-                        alt={item.name}
-                        className="w-12 h-12 object-cover rounded"
-                      />
+                      <img src={imageUrl} alt={item.name} className="w-12 h-12 object-cover rounded" />
                       <div>
                         <p className="font-medium">{item.name}</p>
                         <p className="text-sm text-gray-500">{colorName}</p>
@@ -162,11 +157,9 @@ export default function Header() {
                 })}
               </div>
             )}
-
           </div>
 
-
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             {isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -192,120 +185,145 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button variant="outline" size="sm" onClick={() => router.push('/signin')}>
+              <Button variant="outline" size="sm" onClick={() => router.push('/signin')} className="hidden md:flex">
                 Sign In
               </Button>
             )}
 
             <Link href="/wishlist">
-              <Button variant="ghost" size="sm" className="relative">
+              <Button variant="ghost" size="sm" className="relative p-2">
                 <Heart className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
+                <Badge className="absolute -top-1 -right-1 w-4 h-4 rounded-full p-0 flex items-center justify-center text-[10px]">
                   {wishlist?.length || 0}
                 </Badge>
               </Button>
             </Link>
 
             <Link href="/cart">
-              <Button variant="ghost" size="sm" className="relative">
+              <Button variant="ghost" size="sm" className="relative p-2">
                 <ShoppingCart className="w-5 h-5" />
-                <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  {/* {cart.reduce((total, item) => total + item.quantity, 0)} */}
+                <Badge className="absolute -top-1 -right-1 w-4 h-4 rounded-full p-0 flex items-center justify-center text-[10px]">
                   {cart.length}
                 </Badge>
               </Button>
             </Link>
 
-            <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Button variant="ghost" size="sm" className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Navigation menu */}
-
-        <nav className="hidden md:flex items-center justify-center space-x-8 py-4 border-t">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center justify-center flex-wrap gap-x-6 gap-y-2 py-3 border-t text-sm">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`font-medium ${pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
-                }`}
+              className={`font-medium whitespace-nowrap ${pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"}`}
             >
               {item.label}
             </Link>
           ))}
         </nav>
+      </div>
 
-
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col space-y-4">
-              {/* <Input type="text" placeholder="Search rugs..." className="mb-4" /> */}
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Search for rugs, patterns, colors..."
-                  value={query}
-                  onChange={handleSearch}
-                  onBlur={() => setTimeout(() => setShowResults(false), 200)}
-                  onFocus={() => query && setShowResults(true)}
-                  className="pl-10 pr-4"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-
-                {/* Dropdown results */}
-                {showResults && Array.isArray(results) && results.length > 0 && (
-                  <div className="absolute top-full left-0 w-full bg-white shadow-lg border mt-1 rounded z-50 max-h-64 overflow-auto">
-                    {results.map((item) => {
-                      const imageUrl = Array.isArray(item.images) && item.images.length > 0
-                        ? item.images[0]
-                        : "/placeholder.png"; // fallback image
-
-                      const colorName = Array.isArray(item.colors) && item.colors.length > 0
-                        ? item.colors[0].name
-                        : "";
-
-                      return (
-                        <Link
-                          key={item.id}
-                          href={`/products/${item.slug}`}
-                          className="flex items-center gap-3 p-2 hover:bg-gray-100"
-                        >
-                          <img
-                            src={imageUrl}
-                            alt={item.name}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            <p className="text-sm text-gray-500">{colorName}</p>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-
+      {/* Mobile full-screen menu */}
+      {isMenuOpen && (
+        <div className="md:hidden fixed inset-0 top-0 z-40 bg-white flex flex-col">
+          {/* Mobile menu header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b shadow-sm">
+            <Link href="/" onClick={() => setIsMenuOpen(false)}>
+              <div className='flex flex-col items-center gap-1'>
+                <Image src={Logo1} alt='' width={22} />
+                <Image src={Logo} alt="" width={160} />
               </div>
+            </Link>
+            <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(false)}>
+              <X className="w-6 h-6" />
+            </Button>
+          </div>
 
-              {/* Dynamic nav links */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            {/* Mobile Search */}
+            <div className="relative mb-6">
+              <Input
+                type="text"
+                placeholder="Search for rugs, patterns, colors..."
+                value={query}
+                onChange={handleSearch}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                onFocus={() => query && setShowResults(true)}
+                className="pl-10 pr-4 w-full"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+
+              {/* Mobile search results */}
+              {showResults && Array.isArray(results) && results.length > 0 && (
+                <div className="absolute top-full left-0 w-full bg-white shadow-lg border mt-1 rounded z-50 max-h-52 overflow-auto">
+                  {results.map((item) => {
+                    const imageUrl = Array.isArray(item.images) && item.images.length > 0
+                      ? item.images[0] : "/placeholder.png";
+                    const colorName = Array.isArray(item.colors) && item.colors.length > 0
+                      ? item.colors[0].name : "";
+                    return (
+                      <Link
+                        key={item.id}
+                        href={`/products/${item.slug}`}
+                        className="flex items-center gap-3 p-2 hover:bg-gray-100"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <img src={imageUrl} alt={item.name} className="w-10 h-10 object-cover rounded" />
+                        <div>
+                          <p className="font-medium text-sm">{item.name}</p>
+                          <p className="text-xs text-gray-500">{colorName}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile nav links */}
+            <nav className="flex flex-col divide-y divide-gray-100">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`font-medium ${pathname === item.href ? "text-amber-600" : "text-gray-700 hover:text-amber-600"
-                    }`}
-                  onClick={() => setIsMenuOpen(false)} // ✅ close on navigation
+                  className={`py-3 text-base font-medium ${pathname === item.href ? "text-amber-600" : "text-gray-800 hover:text-amber-600"}`}
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
+            </nav>
+
+            {/* Mobile account actions */}
+            <div className="mt-6 pt-4 border-t flex flex-col gap-3">
+              {isLoggedIn ? (
+                <>
+                  {isAdmin && (
+                    <Button variant="outline" className="w-full" onClick={() => { router.push('/dashboard'); setIsMenuOpen(false); }}>
+                      Admin Dashboard
+                    </Button>
+                  )}
+                  <Button variant="outline" className="w-full" onClick={() => { router.push('/profile'); setIsMenuOpen(false); }}>
+                    My Profile
+                  </Button>
+                  <Button variant="destructive" className="w-full" onClick={() => { handleLogout(); setIsMenuOpen(false); }}>
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white" onClick={() => { router.push('/signin'); setIsMenuOpen(false); }}>
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   )
 }
