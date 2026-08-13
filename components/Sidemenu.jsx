@@ -1,5 +1,5 @@
 import React from 'react'
-import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe, Mail, ImageIcon, Projector, SquareDashedBottom, Book  } from 'lucide-react'
+import { Shapes,LayoutDashboard,ShoppingBag, ListTodo, Settings, Users,  LogOut, Globe, Mail, ImageIcon, Projector, SquareDashedBottom, Book, Images  } from 'lucide-react'
 import Link from 'next/link'
 import Logo1 from '@/public/LOGO1.png'
 import Logo2 from '@/public/LOGO2.png'
@@ -53,6 +53,11 @@ const sideMenu =[
         title: 'Projects',
         icon: <Projector className="h-5 w-5" aria-hidden="true"/>,
         path: '/projects',
+    },
+    {
+        title: 'Gallery',
+        icon: <Images className="h-5 w-5" aria-hidden="true"/>,
+        path: '/gallery-manage',
     },
     {
         title: 'Banners',

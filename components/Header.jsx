@@ -39,9 +39,11 @@ export default function Header() {
     { href: "/outlet", label: "Outlets" },
     { href: "/decor-accessories", label: "Decor & Accessories" },
     { href: "/customizeInquiry", label: "Customize" },
+    { href: "/gallery", label: "Gallery" },
     { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact Us" },
   ];
+
 
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
